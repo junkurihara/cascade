@@ -110,7 +110,7 @@ export async function encryptSeq({message, keys, procedureConfig}){
  * { suite: 'jscu',
  *   passphrase: 'omg',
  *   keyParams: {type: 'ECC', curve} } }
- * @return {Promise<any>}
+ * @return {Promise<*>}
  */
 export async function generateKey (keyParams) {
   const keyObj = await generateKeyObject(keyParams);
@@ -223,9 +223,14 @@ export async function sign({message, keys, config}){
   const msgObj = importMessage(message);
 
   // do signing
-  const signed = await signBase({
-    message: msgObj, keys, options: config.sign.options, output: {sign: config.sign.output }
-  }).catch((e) => { throw new Error(`SigningFailed: ${e.message}`); });
+  let signed;
+  if(keys.keys.privateKeys) {
+    signed = await signBase({
+      message: msgObj, keys, options: config.sign.options, output: {sign: config.sign.output}
+    }).catch((e) => {
+      throw new Error(`SigningFailed: ${e.message}`);
+    });
+  } else throw new Error('InvalidPrivateKeys');
 
   return signed;
 }
@@ -241,8 +246,10 @@ export async function verify({message, signature, keys}){
   if(typeof signature !== 'undefined' && keys.keys.publicKeys) {
     verified = await verifyBase({
       message: msgObj, signature, keys, options: signature.options
+    }).catch((e) => {
+      throw new Error(`VerificationFailed: ${e.message}`);
     });
-  }
+  } else throw new Error('InvalidSignatureOrInvalidPublicKey');
 
   return verified;
 }
