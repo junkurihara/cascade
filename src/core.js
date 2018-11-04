@@ -201,7 +201,7 @@ export async function decrypt({data, keys}){
   if(typeof data.signature !== 'undefined' && keys.keys.publicKeys) {
     verified = await verifyBase({
       message: importMessage(decrypted.data), signature: data.signature, keys, options: data.signature.options
-    });
+    }).catch((e) => { throw new Error(`VerificationFailed: ${e.message}`); });
   }
   else if (typeof decrypted.signatures !== 'undefined') verified = decrypted.signatures;
 

@@ -58,6 +58,7 @@ describe(`${env}: single public key encryption/decryption`, () => {
         'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
       );
       const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
+      console.log(encryptionResult);
 
       const decryptionKeys = {
         privateKeyPassSets:[ { privateKey: ECKeys[idx].privateKey.keyString, passphrase: '' } ],
@@ -85,7 +86,7 @@ describe(`${env}: single public key encryption/decryption`, () => {
         'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['encrypt', 'sign']}
       );
       const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig });
-      // console.log(encryptionResult);
+      console.log(encryptionResult);
 
       const decryptionKeys = {
         privateKeyPassSets:[ { privateKey: ECKeysGPG[idx].privateKey.keyString, passphrase: '' } ],

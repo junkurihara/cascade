@@ -3,7 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
-import {KeyId} from './keyid';
+import {KeyId, KeyIdList} from './keyid.js';
 
 export function importMessage(msg){
   const obj = new Message(msg);
@@ -46,14 +46,36 @@ class Message {
   get signature () { return this._signature; } // will be removed
 }
 
-class encryptedMessage {
+const suites = ['jscu', 'openpgp'];
+const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
 
+
+export class EncryptedMessage {
+  constructor(suite, keyType, message, options = {}){
+    // assertion
+    if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
+    if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
+
+    this._suite = suite;
+    this._keyType = keyType;
+    this._setMessage(message);
+    this._options = options;
+  }
+
+  _setMessage(message){
+    this._message = new RawEncryptedMessageList(message);
+  }
+
+  get suite () { return this._suite; }
+  get keyType () { return this._keyType; }
+  get message () { return this._message; }
+  get options () { return this._options; }
 }
 
 export class RawEncryptedMessage extends Uint8Array {
   constructor(data, keyId, params = {}){
     if(!(data instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
-    if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');
+    if(!(keyId instanceof KeyId) && !(keyId instanceof KeyIdList)) throw new Error('NonKeyIdOrKeyIdListObject');
 
     super(data);
     this._keyId = keyId;
@@ -68,7 +90,17 @@ export class RawEncryptedMessage extends Uint8Array {
 }
 
 class RawEncryptedMessageList extends Array {
-  constructor(list){
+  constructor(message){
     super();
+    this._set(message);
+  }
+
+  _set(message){
+    if (!(message instanceof Array)) throw new Error('InvalidEncryptedMessageList');
+    const binaryMessage = message.map( (m) => {
+      if(!(m instanceof RawEncryptedMessage)) throw new Error('NotEncryptedMessage');
+      return m;
+    });
+    this.push(...binaryMessage);
   }
 }

@@ -21,7 +21,7 @@ export class Signature {
   }
 
   _setSignatures(signatures){
-    this._signatures = new SignatureList(signatures, this._suite);
+    this._signatures = new SignatureList(signatures);
   }
 
   get suite () { return this._suite; }

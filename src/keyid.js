@@ -51,3 +51,19 @@ export class KeyId extends Uint8Array {
 
   toHex() { return jseu.encoder.arrayBufferToHexString(this); }
 }
+
+export class KeyIdList extends Array {
+  constructor(keyIds){
+    super();
+    this._set(keyIds);
+  }
+
+  _set(keyIds){
+    if (!(keyIds instanceof Array)) throw new Error('InvalidKeyIdList');
+    const binaryKeyIds = keyIds.map( (k) => {
+      if(!(k instanceof KeyId)) throw new Error('NotKeyId');
+      return k;
+    });
+    this.push(...binaryKeyIds);
+  }
+}

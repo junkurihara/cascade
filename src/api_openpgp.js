@@ -5,9 +5,9 @@
 import jseu from 'js-encoding-utils';
 import openpgpDefault from './params_openpgp.js';
 import * as util from './util.js';
-import {fromOpenPgpKey, fromRawKey} from './keyid.js';
-import {rawSignature, Signature} from './signature';
-import {RawEncryptedMessage} from './message';
+import {fromOpenPgpKey, fromRawKey, KeyIdList} from './keyid.js';
+import {rawSignature, Signature} from './signature.js';
+import {RawEncryptedMessage, EncryptedMessage} from './message.js';
 
 /**
  *
@@ -158,7 +158,7 @@ export async function encrypt({message, keys, options={}}){
 export async function decrypt({ encrypted, keys, options = {} }){
   const openpgp = util.getOpenPgp();
 
-  const message = await openpgp.message.read(encrypted.message.message, false);
+  const message = await openpgp.message.read(encrypted.message.message[0].toBuffer(), false);
 
   let decrypted;
   if(encrypted.message.keyType === 'public_key_encrypt'){
@@ -257,12 +257,14 @@ export async function verify({message, signature, keys, options}){
 const getEncryptedObject = async (type, message, key=null, options) => {
   let encryptionKeyType;
   let encryptionKeyId;
+
   if(type === 'public'){
     encryptionKeyType = 'public_key_encrypt';
     const internalHexKeyIds = message.getEncryptionKeyIds().map( (id) => id.toHex());
     const externalKeyIds = [];
     key.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(fromOpenPgpKey(k));} ) );
     encryptionKeyId = externalKeyIds.filter( (fp) => internalHexKeyIds.indexOf(fp.toHex().slice(0, 16)) >= 0);
+    encryptionKeyId = new KeyIdList(encryptionKeyId);
   }
   else if (type === 'session'){
     encryptionKeyType = 'session_key_encrypt';
@@ -270,15 +272,10 @@ const getEncryptedObject = async (type, message, key=null, options) => {
   }
   else throw new Error('type must be either public or session');
 
-  return {
-    message: {
-      suite: 'openpgp',
-      keyType: encryptionKeyType,
-      keyIds: encryptionKeyId,
-      message: message.packets.write(),
-      options
-    }
-  };
+  const encryptedMessage = [new RawEncryptedMessage(message.packets.write(), encryptionKeyId, {})];
+
+  return {message: new EncryptedMessage('openpgp', encryptionKeyType, encryptedMessage, options)};
+
 };
 
 const listFromOpenPgpSig = (signatures, keys) => {

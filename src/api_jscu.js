@@ -5,7 +5,7 @@
 import defaultParams from './params_jscu.js';
 import * as util from './util.js';
 import {Signature, rawSignature} from './signature.js';
-import {RawEncryptedMessage} from './message.js';
+import {RawEncryptedMessage, EncryptedMessage} from './message.js';
 import {fromJscuKey, fromRawKey} from './keyid.js';
 
 /**
@@ -156,7 +156,7 @@ export async function decrypt({encrypted, keys, options}) {
     const msgKeySet = [];
     await Promise.all(keys.privateKeys.map( async (pk) => {
       const keyId = await fromJscuKey(pk);
-      const filtered = encrypted.message.message.filter( (m) => (m.keyId.toHex() === keyId.toHex()));
+      const filtered = Array.from(encrypted.message.message).filter( (m) => (m.keyId.toHex() === keyId.toHex()));
       msgKeySet.push(...filtered.map((m) => ({message: m, privateKey: pk}) ));
     }));
     if (msgKeySet.length === 0) throw new Error('UnableToDecryptWithGivenPrivateKey');
@@ -252,7 +252,6 @@ export async function verify({message, signature, keys, options}){
  * @param options
  * @return {Promise<*>}
  */
-// TODO: EncryptedMessageクラスのインスタンスを吐くように修正
 const getEncryptedObject = async (type, message, options = {}) => {
   let encryptionKeyType;
 
@@ -272,12 +271,5 @@ const getEncryptedObject = async (type, message, options = {}) => {
   }
   else throw new Error('JscuInvalidKeyType');
 
-  return {
-    message: {
-      suite: 'jscu',
-      keyType: encryptionKeyType,
-      message,
-      options
-    }
-  };
+  return {message: new EncryptedMessage('jscu', encryptionKeyType, message, options)};
 };
