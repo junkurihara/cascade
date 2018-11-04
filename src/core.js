@@ -58,6 +58,7 @@ export async function decryptSeq({encryptedArray, keys}){
     return Object.assign({success: validity, status: (validity) ? 'OK': 'ValidationFailure'}, decrypted.message);
   }
   catch (e) {
+    console.error(e);
     return {success: false, status: `DecryptionFailed: ${e.message}`};
   }
 }
@@ -91,6 +92,7 @@ export async function encryptSeq({message, keys, procedureConfig}){
     return {success: true, status: 'OK', data: encrypted};
   }
   catch (e) {
+    console.error(e);
     return {success: false, status: `EncryptionFailed: ${e.message}`};
   }
 }
@@ -201,6 +203,8 @@ export async function decrypt({data, keys}){
       message: importMessage(decrypted.data), signature: data.signature, keys, options: data.signature.options
     });
   }
+  else if (typeof decrypted.signatures !== 'undefined') verified = decrypted.signatures;
+
   return {data: decrypted.data, signatures: verified};
 }
 

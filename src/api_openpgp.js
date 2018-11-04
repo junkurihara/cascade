@@ -2,10 +2,12 @@
  * api_openpgp.js
  */
 
+import jseu from 'js-encoding-utils';
 import openpgpDefault from './params_openpgp.js';
 import * as util from './util.js';
 import {fromOpenPgpKey, fromRawKey} from './keyid.js';
 import {rawSignature, Signature} from './signature';
+import {RawEncryptedMessage} from './message';
 
 /**
  *
@@ -121,7 +123,7 @@ export async function encrypt({message, keys, options={}}){
       format: 'binary'
     };
     encrypted = await openpgp.encrypt(Object.assign(opt, options));
-    encryptedObject = await getEncryptedObject('public', encrypted.message, keys.publicKeys);
+    encryptedObject = await getEncryptedObject('public', encrypted.message, keys.publicKeys, {});
   }
   else if (keys.sessionKey) { // symmetric key encryption
     const opt = {
@@ -131,14 +133,14 @@ export async function encrypt({message, keys, options={}}){
       format: 'binary'
     };
     encrypted = await openpgp.encrypt(Object.assign(opt, options));
-    encryptedObject = await getEncryptedObject('session', encrypted.message, keys.sessionKey);
+    encryptedObject = await getEncryptedObject('session', encrypted.message, keys.sessionKey, {algorithm: keys.sessionKey.algorithm});
   }
   else throw new Error('InvalidEncryptionKey');
 
   let signatureObj = {};
   if (keys.privateKeys && encrypted.signature) { // if detached is true
     // signatureObj = getDetachedSignatureObject(encrypted.signature, signingKeys);
-    const signatureObjectList = ListfromOpenPgpSig(encrypted.signature.packets, signingKeys);
+    const signatureObjectList = listFromOpenPgpSig(encrypted.signature.packets, signingKeys);
     signatureObj = {signature: new Signature('openpgp', 'public_key_sign', signatureObjectList, {})};
   }
 
@@ -157,7 +159,6 @@ export async function decrypt({ encrypted, keys, options = {} }){
   const openpgp = util.getOpenPgp();
 
   const message = await openpgp.message.read(encrypted.message.message, false);
-
 
   let decrypted;
   if(encrypted.message.keyType === 'public_key_encrypt'){
@@ -178,6 +179,16 @@ export async function decrypt({ encrypted, keys, options = {} }){
   }
 
   decrypted.data = new Uint8Array(decrypted.data);
+
+  if (decrypted.signatures instanceof Array){
+    decrypted.signatures = decrypted.signatures.map( (sig) => {
+      const short = sig.keyid.toHex();
+      const long = sig.signature.packets.map( (s) => new Uint8Array(s.issuerFingerprint));
+      const filtered = long.filter((l) => short === jseu.encoder.arrayBufferToHexString(l).slice(0, 16) );
+      if (filtered.length === 0) throw new Error('SomethingWrongInOpenPGPSignature');
+      return {keyId: filtered[0], valid: sig.valid};
+    });
+  }
 
   return decrypted;
 }
@@ -205,7 +216,7 @@ export async function sign({message, keys, options={}}){
     privateKeys: keys.privateKeys // for signing (optional)
   };
   const signature = await openpgp.sign(Object.assign(opt, options));
-  const signatureObjectList = ListfromOpenPgpSig(signature.signature.packets, keys.privateKeys);
+  const signatureObjectList = listFromOpenPgpSig(signature.signature.packets, keys.privateKeys);
   return {signature: new Signature('openpgp', 'public_key_sign', signatureObjectList, {})};
 }
 
@@ -227,9 +238,9 @@ export async function verify({message, signature, keys, options}){
   return await Promise.all(sigKeyList.map( async (sigKey) => {
     const msg = msgObj.unwrapCompressed();
     const literalDataList = msg.packets.filterByTag(openpgp.enums.packet.literal);
-    const signatureList = [sigKey.signature];
+    const signatureList = [sigKey.openpgpSignature];
     const valid = await openpgp.message.createVerificationObjects(signatureList, literalDataList, [sigKey.publicKey], new Date());
-    return Object.assign(sigKey.signature, {valid: await valid[0].verified});
+    return {keyId: sigKey.signature.keyId, valid: await valid[0].verified};
   }));
 }
 
@@ -238,12 +249,12 @@ export async function verify({message, signature, keys, options}){
  * Encrypted message object is formatted here
  * {message: { message, suite, type = 'encrypt|encrypt_session', keyIds}, signature: {signature, suite, type=sign, keyIds} }
  * @param type
- * @param output
  * @param message
  * @param key
+ * @param options
  * @return {*}
  */
-const getEncryptedObject = async (type, message, key=null) => {
+const getEncryptedObject = async (type, message, key=null, options) => {
   let encryptionKeyType;
   let encryptionKeyId;
   if(type === 'public'){
@@ -255,10 +266,7 @@ const getEncryptedObject = async (type, message, key=null) => {
   }
   else if (type === 'session'){
     encryptionKeyType = 'session_key_encrypt';
-    encryptionKeyId = [{
-      digest: await fromRawKey(key.key),
-      algorithm: key.algorithm
-    }];
+    encryptionKeyId = await fromRawKey(key.key);
   }
   else throw new Error('type must be either public or session');
 
@@ -268,12 +276,12 @@ const getEncryptedObject = async (type, message, key=null) => {
       keyType: encryptionKeyType,
       keyIds: encryptionKeyId,
       message: message.packets.write(),
-      messageType: 'binary'
+      options
     }
   };
 };
 
-const ListfromOpenPgpSig = (signatures, keys) => {
+const listFromOpenPgpSig = (signatures, keys) => {
   if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
 
   const externalKeyIds = [];
@@ -299,7 +307,7 @@ const ListToOpenPgpSig = (signatures, keys) => {
     if (!(sig instanceof rawSignature)) throw new Error('NotRawSignatureObject');
     const obj = new openpgp.packet.Signature();
     obj.read(sig.toBuffer(), 0, -1);
-    return obj;
+    return {openpgpSignature: obj, signature: sig};
   });
 
   const externalKey = [];
@@ -307,22 +315,11 @@ const ListToOpenPgpSig = (signatures, keys) => {
 
   const signatureObjects = [];
   externalKey.map( (fp) => {
-    const correspondingSig = openpgpObjects.filter( (sig) => sig.issuerKeyId.toHex() === fp.keyId.toHex().slice(0,16));
+    const correspondingSig = openpgpObjects.filter( (sig) => sig.openpgpSignature.issuerKeyId.toHex() === fp.keyId.toHex().slice(0,16));
     correspondingSig.map((sig) => {
-      signatureObjects.push({signature: sig, publicKey: fp.publicKey});
+      signatureObjects.push(Object.assign({publicKey: fp.publicKey}, sig));
     });
   });
 
   return signatureObjects;
-};
-
-/**
- * Detached signature object is formatted here
- * @param signature
- * @param privateKeys
- * @return {Signature}
- */
-const getDetachedSignatureObject = (signature, privateKeys) => {
-  const signatureObjectList = ListfromOpenPgpSig(signature.packets, privateKeys);
-  return new Signature('openpgp', 'public_key_sign', signatureObjectList, {});
 };

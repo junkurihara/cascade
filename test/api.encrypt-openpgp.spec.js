@@ -23,31 +23,31 @@ describe(`${env}: OpenPGP encryption test with detached signatures`, () => {
   it('OpenPGP Single: Message should be successfully encrypted and decrypted', async function () {
     this.timeout(5000);
     const encrypted = await core.encryptSeq({message: msg, keys, procedureConfig: opgpProcedureSingle.procedure});
-    console.log(encrypted);
+    // console.log(encrypted);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys});
     expect(decrypted.success).to.be.true;
-    console.log(decrypted);
+    // console.log(decrypted);
   });
 
 
   it('OpenPGP Hybrid: Message should be successfully encrypted and decrypted', async function () {
     this.timeout(5000);
     const encrypted = await core.encryptSeq({message: msg, keys, procedureConfig: opgpProcedureHybrid.procedure});
-    console.log(encrypted);
+    // console.log(encrypted);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys});
     expect(decrypted.success).to.be.true;
-    console.log(decrypted);
+    // console.log(decrypted);
   });
 
   it('OpenPGP Tribrid: Message should be successfully encrypted and decrypted', async function () {
     this.timeout(5000);
     const encrypted = await core.encryptSeq({message: msg, keys, procedureConfig: opgpProcedureTribrid.procedure});
-    console.log(encrypted.data[0]);
+    // console.log(encrypted.data[0]);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys});
     expect(decrypted.success).to.be.true;
-    console.log(decrypted);
+    // console.log(decrypted);
   });
 });

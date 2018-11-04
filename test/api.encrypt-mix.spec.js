@@ -33,10 +33,10 @@ describe(`${env}: Encryption test with mixed encryption algorithms using OpenPGP
     };
 
     const encrypted = await core.encryptSeq({message: msg, keys: sortedKeys, procedureConfig: mixProcedureHybrid.procedure});
-    console.log(encrypted);
+    // console.log(encrypted.data);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys: sortedDecryptionKeys});
-    console.log(decrypted);
+    //console.log(decrypted);
     expect(decrypted.success).to.be.true;
   });
 });

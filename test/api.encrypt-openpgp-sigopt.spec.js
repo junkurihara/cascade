@@ -22,11 +22,11 @@ describe(`${env}: OpenPGP encryption test with embedded signatures and without s
   it('OpenPGP Single: Message should be successfully encrypted and decrypted with embedded signature', async function () {
     this.timeout(5000);
     const encrypted = await core.encryptSeq({message: msg, keys, procedureConfig: opgpProcedureSingleEmbed.procedure});
-    console.log(encrypted);
+    // console.log(encrypted);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys});
     expect(decrypted.success).to.be.true;
-    console.log(decrypted);
+    // console.log(decrypted);
   });
 
   it('OpenPGP Single: Message should be successfully encrypted and decrypted without signature', async function () {
@@ -35,11 +35,11 @@ describe(`${env}: OpenPGP encryption test with embedded signatures and without s
     const noPub = {privateKeyPassSets: keys.privateKeyPassSets};
 
     const encrypted = await core.encryptSeq({message: msg, keys: noPriv, procedureConfig: opgpProcedureSingleNoSig.procedure});
-    console.log(encrypted);
+    // console.log(encrypted);
     expect(encrypted.success).to.be.true;
     const decrypted = await core.decryptSeq({encryptedArray: encrypted.data, keys: noPub});
     expect(decrypted.success).to.be.true;
-    console.log(decrypted);
+    // console.log(decrypted);
   });
 
 });

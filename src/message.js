@@ -3,6 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
+import {KeyId} from './keyid';
 
 export function importMessage(msg){
   const obj = new Message(msg);
@@ -10,7 +11,7 @@ export function importMessage(msg){
 }
 
 export function importEncryptedObject(encryptedMessageObj){
-
+// TODO for external encrypted message import
 }
 
 class Message {
@@ -45,8 +46,29 @@ class Message {
   get signature () { return this._signature; } // will be removed
 }
 
-class EncryptedMessage extends Message {
-  constructor(encryptedObj){
+class encryptedMessage {
+
+}
+
+export class RawEncryptedMessage extends Uint8Array {
+  constructor(data, keyId, params = {}){
+    if(!(data instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
+    if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');
+
+    super(data);
+    this._keyId = keyId;
+    this._params = params;
+  }
+
+  toBase64 () { return jseu.encoder.encodeBase64(this); }
+  toBuffer () { return new Uint8Array(this); }
+
+  get keyId () { return this._keyId; }
+  get params () { return this._params; }
+}
+
+class RawEncryptedMessageList extends Array {
+  constructor(list){
     super();
   }
 }

@@ -52,14 +52,14 @@ export const decryptSingle = async ({encrypted, keys, nextEncrypted}) => {
       if (nextEncrypted.message.keyType === 'public_key_encrypt') {
         keyObject = {privateKeyPassSets: [{privateKey: decryptedObj.data, passphrase: ''}]};
       } else if (nextEncrypted.message.keyType === 'session_key_encrypt') {
-        keyObject = {sessionKey: {key: decryptedObj.data, algorithm: nextEncrypted.message.keyIds[0].algorithm}};
+        keyObject = {sessionKey: {key: decryptedObj.data, algorithm: nextEncrypted.message.options.algorithm}};
       }
     }
     else if(nextEncrypted.message.suite === 'jscu') { /** js-crypto-utils **/
       if (nextEncrypted.message.keyType === 'public_key_encrypt') {
         throw new Error('public_key_encrypt using jscu is not supported'); // TODO
       } else if (nextEncrypted.message.keyType === 'session_key_encrypt') {
-        keyObject = {sessionKey: {key: decryptedObj.data, algorithm: nextEncrypted.message.keyIds[0].algorithm}};
+        keyObject = {sessionKey: {key: decryptedObj.data, algorithm: nextEncrypted.message.options.algorithm}};
       }
     }
     else throw new Error('UnsupportedCryptoSuite');

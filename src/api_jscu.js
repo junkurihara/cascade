@@ -5,6 +5,7 @@
 import defaultParams from './params_jscu.js';
 import * as util from './util.js';
 import {Signature, rawSignature} from './signature.js';
+import {RawEncryptedMessage} from './message.js';
 import {fromJscuKey, fromRawKey} from './keyid.js';
 
 /**
@@ -83,26 +84,34 @@ export async function encrypt({message, keys, options}) {
   let encrypted;
   let encryptedObject;
   if (keys.publicKeys) { // public key encryption
-    if(options.privateKeyPass){
+
+    if(options.privateKeyPass){ // for ECDH TODO: Reconsider if the pem formatted key could be assumed.
       options.privateKey = await importKey('pem', options.privateKeyPass.privateKey, options.privateKeyPass.passphrase);
       options.privateKey = await options.privateKey.export('jwk');
       delete options.privateKeyPass;
     }
+
     encrypted = await Promise.all(keys.publicKeys.map( async (publicKeyObj) => {
       const publicJwk = await publicKeyObj.export('jwk');
-      return jscu.pkc.encrypt(message.binary, publicJwk, options);
+      const data = await jscu.pkc.encrypt(message.binary, publicJwk, options);
+      const fed = new Uint8Array(data.data);
+      delete data.data;
+      return new RawEncryptedMessage(fed, await fromJscuKey(publicKeyObj), data);
     }));
-    encryptedObject = getEncryptedObject('public', encrypted, keys.publicKeys, options);
+    encryptedObject = getEncryptedObject('public', encrypted, options);
   }
   else if (keys.sessionKey) { // symmetric key encryption
-    const options = {};
+    const opt = { algorithm: keys.sessionKey.algorithm };
+    Object.assign(options, opt);
     if(keys.sessionKey.algorithm === 'AES-GCM') {  // TODO: other iv-required algorithms
       const iv = await jscu.random.getRandomBytes(defaultParams.RECOMMENDED_IV_LENGTH);
-      options.iv = iv;
-      encrypted = await jscu.aes.encrypt(message.binary, keys.sessionKey.key, {name: keys.sessionKey.algorithm, iv});
+      const data = await jscu.aes.encrypt(message.binary, keys.sessionKey.key, {name: keys.sessionKey.algorithm, iv});
+      const keyId = await fromRawKey(keys.sessionKey.key);
+      const obj = new RawEncryptedMessage(data, keyId, {iv});
+      encrypted = [obj]; // TODO, should be an Array?
     }
     else throw new Error('JscuInvalidEncryptionAlgorithm');
-    encryptedObject = await getEncryptedObject('session', encrypted, keys.sessionKey, options);
+    encryptedObject = getEncryptedObject('session', encrypted, options);
   }
   else throw new Error('JscuInvalidEncryptionKey');
 
@@ -117,7 +126,8 @@ export async function encrypt({message, keys, options}) {
  * @return {Promise<{data: *}>}
  */
 export async function decrypt({encrypted, keys, options}) {
-
+  if (typeof encrypted.message === 'undefined') throw new Error('InvalidEncryptedMessage'); // TODO, change according to the class
+  if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
   const jscu = util.getJscu();
 
   const keyType = encrypted.message.keyType;
@@ -127,7 +137,6 @@ export async function decrypt({encrypted, keys, options}) {
   if (keyType === 'public_key_encrypt'){
     // public key decryption
     if (!keys.privateKeys) throw new Error('JscuPrivateKeyRequired');
-    if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
     if (options.publicKey){
       options.publicKey = await importKey('der', options.publicKey);
       options.publicKey = await options.publicKey.export('jwk');
@@ -135,9 +144,9 @@ export async function decrypt({encrypted, keys, options}) {
 
     // function definition
     const decryptMessageObject = async (msgObject, privateKeyObject) => {
-      const data = msgObject.data;
-      const salt = (typeof msgObject.salt !== 'undefined') ? msgObject.salt : undefined;
-      const iv = (typeof msgObject.iv !== 'undefined') ? msgObject.iv : undefined;
+      const data = msgObject.toBuffer();
+      const salt = (typeof msgObject.params.salt !== 'undefined') ? msgObject.params.salt : undefined;
+      const iv = (typeof msgObject.params.iv !== 'undefined') ? msgObject.params.iv : undefined;
       const privateJwk = await privateKeyObject.export('jwk');
       const decOptions = Object.assign({ salt, iv }, options);
       return await jscu.pkc.decrypt(data, privateJwk, decOptions);
@@ -167,14 +176,14 @@ export async function decrypt({encrypted, keys, options}) {
   ////////////////////////////////////////////////////////////////////
   else if (keyType === 'session_key_encrypt'){
     // session key decryption
+    if (!keys.sessionKey) throw new Error('JscuSessionKeyRequired');
+    if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
 
-    if(!keys.sessionKey) throw new Error('JscuSessionKeyRequired');
-
-    const message = encrypted.message.message;
-    const iv = (typeof encrypted.message.iv !== 'undefined') ? encrypted.message.iv : null;
+    const message = encrypted.message.message[0]; //TODO
+    const iv = (typeof message.params.iv !== 'undefined') ? message.params.iv : null;
 
     decrypted = await jscu.aes.decrypt(
-      message,
+      message.toBuffer(),
       keys.sessionKey.key,
       { name: keys.sessionKey.algorithm, iv }
     );
@@ -213,7 +222,7 @@ export async function sign({message, keys, options}){
  * @param signature
  * @param keys
  * @param options
- * @return {Promise<[any , any , any , any , any , any , any , any , any , any]>}
+ * @return {Promise<{keyId: *, valid: *}[]>}
  */
 export async function verify({message, signature, keys, options}){
   if(!keys.publicKeys) throw new Error('JscuInvalidVerificationKeys');
@@ -229,7 +238,7 @@ export async function verify({message, signature, keys, options}){
 
   return await Promise.all(signatureKeySet.map( async (sigKey) => {
     const valid = await jscu.pkc.verify(message.binary, sigKey.signature.toBuffer(), await sigKey.publicKey.export('jwk'), options.hash, {format: 'raw'});
-    return Object.assign(sigKey.signature, {valid});
+    return {keyId: sigKey.signature.keyId, valid};
   }));
 }
 
@@ -244,43 +253,31 @@ export async function verify({message, signature, keys, options}){
  * @return {Promise<*>}
  */
 // TODO: EncryptedMessageクラスのインスタンスを吐くように修正
-const getEncryptedObject = async (type, message, key, options = {}) => {
+const getEncryptedObject = async (type, message, options = {}) => {
   let encryptionKeyType;
-  let encryptedMessage;
-  const encryptionOptions = {};
 
   if (type === 'public') {
     encryptionKeyType = 'public_key_encrypt';
 
-    // get encryption key ids
-    const keyIds = await Promise.all( key.map( async (k) => fromJscuKey(k)));
-    encryptedMessage = message.map( (m, idx) => Object.assign(m, {keyId: keyIds[idx]}) );
-    encryptionOptions.options = Object.assign({}, options);
-
     // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
-    if(typeof encryptionOptions.options.privateKey !== 'undefined'){
+    if(typeof options.privateKey !== 'undefined'){
       const jscu = util.getJscu();
-      const publicKey = new jscu.Key('jwk', encryptionOptions.options.privateKey);
-      encryptionOptions.options.publicKey = await publicKey.export('der', {outputPublic: true}); // export public key from private key
-      delete encryptionOptions.options.privateKey;
+      const publicKey = new jscu.Key('jwk', options.privateKey);
+      options.publicKey = await publicKey.export('der', {outputPublic: true}); // export public key from private key
+      delete options.privateKey;
     }
   }
   else if (type === 'session'){
     encryptionKeyType = 'session_key_encrypt';
-    encryptionOptions.keyIds = [{
-      digest: await fromRawKey(key.key),
-      algorithm: key.algorithm
-    }];
-    if(options.iv) encryptionOptions.iv = options.iv;
-    encryptedMessage = message;
   }
   else throw new Error('JscuInvalidKeyType');
 
   return {
-    message: Object.assign({
+    message: {
       suite: 'jscu',
       keyType: encryptionKeyType,
-      message: encryptedMessage,
-    }, encryptionOptions)
+      message,
+      options
+    }
   };
 };
