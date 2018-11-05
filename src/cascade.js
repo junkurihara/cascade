@@ -4,8 +4,9 @@
 
 import * as openpgp from './api_openpgp.js';
 import * as jscu from './api_jscu.js';
-import {importKey, generateKeyObject} from './keys.js';
+import {generateKeyObject} from './keys.js';
 import {importMessage} from './message';
+import {importKey} from './obsolete';
 
 
 export class Cascade {

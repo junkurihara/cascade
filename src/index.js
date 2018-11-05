@@ -22,7 +22,7 @@
  */
 
 import {
-  encryptSeq, decryptSeq, // will be removed
+  // will be removed
   generateKey,
   encrypt,
   decrypt,
@@ -31,6 +31,7 @@ import {
 } from './core.js';
 import { importKeys } from './keys.js';
 import {Cascade} from './cascade.js';
+import {decryptSeq, encryptSeq} from './obsolete';
 
 export default {
   encryptSeq, decryptSeq, // will be removed

@@ -69,18 +69,12 @@ export async function importKey (type, key, passphrase){
     ? await openpgp.key.readArmored(key)
     : await openpgp.key.read(key);
 
-  if(read.err){
-    console.log(key);
-    console.log(type);
-    console.error(read.err);
-    throw new Error('InvalidOpenPGPKeyFormat');
-  }
+  if(read.err) throw new Error(`InvalidOpenPGPKeyFormat: ${read.err}`);
 
   const keyArray = await Promise.all(read.keys.map(async (keyObject) => {
     if (keyObject.isPrivate() && keyObject.primaryKey.isEncrypted) {
       await keyObject.decrypt(passphrase);
     }
-
     return keyObject;
   }));
 

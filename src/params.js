@@ -21,13 +21,11 @@ export default {
         detached: true,
         compression: 'zlib'
       },
-      output: 'armored' // or 'binary'
     },
     sign: {
       required: true,
       suite: 'openpgp', // 'jscu'
       options: { },
-      output: 'armored' // or 'binary'
     }
   },
   ////////////////////////////////////////////////////////////
@@ -44,12 +42,10 @@ export default {
           detached: false,
           compression: 'zlib'
         },
-        output: 'armored' // or 'binary'
       },
       sign: {
         required: true,
         options: {},
-        output: 'armored' // or 'binary'
       }
     }, // -> output "encrypted data" "key id"
 
@@ -63,13 +59,11 @@ export default {
           detached: false, // for signing simultaneously with encryption
           compression: 'zlib'
         },
-        output: 'armored' // or 'binary'
       },
       sign: {
         required: true,
         suite: 'openpgp', // 'jscu'
         options: { },
-        output: 'armored' // or 'binary'
       }
       // keyParams is unnecessary to be set. key params will be ignored at last step.
     } // -> output "encrypted decryption key for 1", "key id for 1"

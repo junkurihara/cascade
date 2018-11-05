@@ -5,13 +5,14 @@
 import jseu from 'js-encoding-utils';
 import {KeyId, KeyIdList} from './keyid.js';
 
+/**
+ * import message and translate it to message object.
+ * @param msg
+ * @return {Message}
+ */
 export function importMessage(msg){
   const obj = new Message(msg);
   return obj;
-}
-
-export function importEncryptedObject(encryptedMessageObj){
-// TODO for external encrypted message import
 }
 
 class Message {

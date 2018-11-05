@@ -5,87 +5,36 @@
 import * as openpgp from './api_openpgp.js';
 import * as jscu from './api_jscu.js';
 
-/**
- * Import keys as objects
- * @param keys
- * @param proc
- * @param mode
- * @return {Promise<void>}
- */
-export const importKey = async function (keys, proc, mode) {
-  const keyArrObj = {};
-  ///////////////////////////////////////////////
-  // For encryption and decryption
-  if (proc.encrypt) {
-    switch (proc.encrypt.suite) {
-    case 'openpgp': {
-      /** OpenPGP **/
-      if (keys.publicKeys && mode === 'encrypt')
-        keyArrObj.publicKeys = await Promise.all( keys.publicKeys.map( (pk) => openpgp.importKey('pem', pk)) );
-      if (keys.sessionKey) keyArrObj.sessionKey = keys.sessionKey; // symmetric key
-      if (keys.privateKeyPassSets && mode === 'decrypt')
-        keyArrObj.privateKeys = await Promise.all(keys.privateKeyPassSets.map( async (pkps) => {
-          if(pkps.privateKey instanceof Uint8Array) return openpgp.importKey('der', pkps.privateKey, pkps.passphrase);
-          else return openpgp.importKey('pem', pkps.privateKey, pkps.passphrase);
-        })); //await readPrivateOpenPGP(keys.privateKeyPassSets); // privateKey
-      break;
-    }
-    case 'jscu': {
-      if (keys.sessionKey) keyArrObj.sessionKey = keys.sessionKey; // symmetric key
-      break;
-    }
-    default:
-      throw new Error('invalid specification of proc');
-    }
-  }
-
-  ///////////////////////////////////////////////
-  // For signing and verification
-  if (proc.sign) {
-    switch (proc.sign.suite) {
-    case 'openpgp': {
-      /** OpenPGP **/
-      if (keys.privateKeyPassSets && mode === 'encrypt')
-        keyArrObj.privateKeys = await Promise.all(keys.privateKeyPassSets.map( async (pkps) => {
-          if(pkps.privateKey instanceof Uint8Array) return openpgp.importKey('der', pkps.privateKey, pkps.passphrase);
-          else return openpgp.importKey('pem', pkps.privateKey, pkps.passphrase);
-        })); //await readPrivateOpenPGP(keys.privateKeyPassSets); // privateKey
-      if (keys.publicKeys && mode === 'decrypt')
-        keyArrObj.publicKeys = await Promise.all( keys.publicKeys.map( (pk) => openpgp.importKey('pem', pk)) );
-      break;
-    }
-    case 'jscu': {
-      /** js-crypto-utils **/
-      if (keys.privateKeyPassSets && mode === 'encrypt') keyArrObj.privateKeys =
-        await Promise.all(
-          keys.privateKeyPassSets.map( (pkps) => jscu.importKey('pem', pkps.privateKey, pkps.passphrase))
-        );
-      if (keys.publicKeys && mode === 'decrypt') keyArrObj.publicKeys =
-        await Promise.all(
-          keys.publicKeys.map( (pk) => jscu.importKey('pem', pk))
-        );
-      //await readPublicJscu(keys.publicKeys); // my public key for verification
-      break;
-    }
-    default:
-      if (proc.sign.required) throw new Error('invalid specification of proc');
-    }
-  }
-
-  return keyArrObj;
-};
-
-
-
-
-
-
-
-
-
-//////////////////////////////// TODO: 20181031 below
 class Keys {
   async from(format, {keys, suite, mode}){
+
+    if(mode.indexOf('encrypt') >= 0) {
+      if(mode.indexOf('verify') >= 0 || mode.indexOf('decrypt') >= 0) throw new Error('InvalidMode');
+      if (typeof keys.publicKeys !== 'undefined'){
+        if (typeof keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPublicKeyAreExclusive');
+      } else {
+        if (typeof keys.sessionKey === 'undefined') throw new Error('NoSessionKeyOrPublicKeyIsGiven');
+      }
+    }
+
+    if(mode.indexOf('decrypt') >= 0) {
+      if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
+      if (typeof keys.privateKeyPassSets !== 'undefined'){
+        if (typeof keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPrivateKeyAreExclusive');
+      } else {
+        if (typeof keys.sessionKey === 'undefined') throw new Error('NoSessionKeyOrPrivateKeyIsGiven');
+      }
+    }
+
+    if(mode.indexOf('sign') >= 0){
+      if(mode.indexOf('verify') >= 0 || mode.indexOf('decrypt') >= 0) throw new Error('InvalidMode');
+      if(typeof keys.privateKeyPassSets === 'undefined') throw new Error('NoPrivateKey');
+    }
+    if(mode.indexOf('verify') >= 0){
+      if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
+      if(typeof keys.publicKeys === 'undefined') throw new Error('NoPublicKey');
+    }
+
     let obj;
     if (format === 'string') obj = await importKeyStrings({keys, suite, mode});
     else if (format === 'object') obj = await importKeyObjects({keys, suite, mode});
@@ -94,25 +43,6 @@ class Keys {
     this._keys = obj.keys;
     this._suite = obj.suite;
     this._mode = obj.mode;
-
-    if(mode.indexOf('encrypt') >= 0) {
-      if (typeof this.keys.publicKeys !== 'undefined'){
-        if (typeof this.keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPublicKeyAreExclusive');
-      } else {
-        if (typeof this.keys.sessionKey === 'undefined') throw new Error('NoSessionKeyOrPublicKeyIsGiven');
-      }
-    }
-
-    if(mode.indexOf('decrypt') >= 0) {
-      if (typeof this.keys.privateKeys !== 'undefined'){
-        if (typeof this.keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPrivateKeyAreExclusive');
-      } else {
-        if (typeof this.keys.sessionKey === 'undefined') throw new Error('NoSessionKeyOrPrivateKeyIsGiven');
-      }
-    }
-
-    if(mode.indexOf('sign') >= 0 && typeof this.keys.privateKeys === 'undefined') throw new Error('NoPrivateKey');
-    if(mode.indexOf('verify') >= 0 && typeof this.keys.publicKeys === 'undefined') throw new Error('NoPublicKey');
 
     return true;
   }
@@ -128,42 +58,68 @@ class Keys {
 
 }
 
+/**
+ * Functions to import keys and translate them to suite-specific key objects.
+ * @param format
+ * @param keys
+ * @param suite
+ * @param mode
+ * @return {Promise<Keys>}
+ */
 export async function importKeys(format='string', {keys, suite, mode}){
   const keyObj = new Keys();
   await keyObj.from(format, {keys, suite, mode});
   return keyObj;
 }
 
+
+/**
+ * import from keystring, i.e., pem
+ * @param keys
+ * @param suite
+ * @param mode
+ * @return {Promise<{keys, suite: *, mode: *}>}
+ */
 async function importKeyStrings({keys, suite, mode}){
   const keyObjects = {};
 
   if (keys.sessionKey) keyObjects.sessionKey = keys.sessionKey; // symmetric key
 
-  if (suite.encrypt_decrypt) {
-    let suiteObj;
-    if(suite.encrypt_decrypt === 'jscu') suiteObj = jscu;
-    else if (suite.encrypt_decrypt === 'openpgp') suiteObj = openpgp;
-    else throw new Error('InvalidPublicKeyType');
+  const modes = [
+    {name: 'encrypt_decrypt', op: {public: 'encrypt', private: 'decrypt'}},
+    {name: 'sign_verify', op: {public: 'verify', private: 'sign'}}
+  ];
+  await Promise.all(modes.map( async (modeOjbect) => {
+    if(typeof suite[modeOjbect.name] !== 'undefined') {
+      let suiteObj;
+      if (suite[modeOjbect.name] === 'jscu') suiteObj = jscu;
+      else if (suite[modeOjbect.name] === 'openpgp') suiteObj = openpgp;
+      else throw new Error('InvalidSuite');
 
-    if (keys.publicKeys) keyObjects.publicKeys = await Promise.all(keys.publicKeys.map( (pk) => suiteObj.importKey('pem', pk)));
-  }
-
-  if(suite.sign_verify) {
-    let suiteObj;
-    if(suite.sign_verify === 'jscu') suiteObj = jscu;
-    else if (suite.sign_verify === 'openpgp') suiteObj = openpgp;
-    else throw new Error('InvalidConfigForKeyImport');
-
-    if (keys.privateKeyPassSets) {
-      keyObjects.privateKeys = await Promise.all(
-        keys.privateKeyPassSets.map((pkps) => suiteObj.importKey('pem', pkps.privateKey, pkps.passphrase))
-      );
+      if (mode.indexOf(modeOjbect.op.public) >= 0) {
+        if (keys.publicKeys) keyObjects.publicKeys = await Promise.all(keys.publicKeys.map( (pk) => suiteObj.importKey('pem', pk)));
+      }
+      else if (mode.indexOf(modeOjbect.op.private) >= 0) {
+        if (keys.privateKeyPassSets) {
+          keyObjects.privateKeys = await Promise.all(
+            keys.privateKeyPassSets.map((pkps) => suiteObj.importKey('pem', pkps.privateKey, pkps.passphrase))
+          );
+        }
+      }
+      else throw new Error('InvalidKeyMode');
     }
-  }
+  }));
 
   return { keys: keyObjects, suite, mode };
 }
 
+/**
+ * just import from key object
+ * @param keys
+ * @param suite
+ * @param mode
+ * @return {Promise<{keys, suite: *, mode: *}>}
+ */
 async function importKeyObjects({keys, suite, mode}){
   const keyObjects = {};
 
