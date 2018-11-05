@@ -3814,10 +3814,10 @@ js-crypto-rsa@^0.3.2:
     js-crypto-random "^0.1.6"
     js-encoding-utils "^0.2.7"
 
-js-crypto-utils@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-utils/-/js-crypto-utils-0.12.1.tgz#b4a709671c374492b9b6476b20c3f016b58f7a8a"
-  integrity sha512-ld8MyVZ6759wqTXclrPTQ10ywnyW/IBT7qaj6/NgJlw9U8XsS3jU8Qu2NULgla4jQaOLidIyr+qwGNA5lgU8+Q==
+js-crypto-utils@^0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-utils/-/js-crypto-utils-0.12.3.tgz#6ccedb1953fdbf11b7df3bc76bafdc7b69a2de85"
+  integrity sha512-/af6TXm4L8aIwWGutcaGBa/h9XtoTEOKirrDupPNwpFKqMu1/YZSwF6br4s0/sSWtmJo3GmdgA45Kna7kQu3GA==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.2"

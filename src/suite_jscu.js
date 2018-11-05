@@ -224,7 +224,7 @@ export class Jscu extends Suite {
 
     const signatures = await Promise.all(keys.privateKeys.map( async (privKey) => {
       const privateJwk = await privKey.export('jwk');
-      const signature = await jscu.pkc.sign(message.binary, privateJwk, options.hash, {format: 'raw'});
+      const signature = await jscu.pkc.sign(message.binary, privateJwk, options.hash, Object.assign({format: 'raw'}, options));
       const keyId = await utilKeyId.fromJscuKey(privKey);
 
       return new RawSignature(signature, keyId);
@@ -254,7 +254,13 @@ export class Jscu extends Suite {
     }));
 
     return await Promise.all(signatureKeySet.map( async (sigKey) => {
-      const valid = await jscu.pkc.verify(message.binary, sigKey.signature.toBuffer(), await sigKey.publicKey.export('jwk'), options.hash, {format: 'raw'});
+      const valid = await jscu.pkc.verify(
+        message.binary,
+        sigKey.signature.toBuffer(),
+        await sigKey.publicKey.export('jwk'),
+        options.hash,
+        Object.assign({format: 'raw'}, options)
+      );
       return {keyId: sigKey.signature.keyId, valid};
     }));
   }
