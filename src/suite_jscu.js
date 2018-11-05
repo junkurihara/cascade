@@ -81,7 +81,7 @@ export class Jscu extends Suite {
    * @param message
    * @param keys
    * @param options
-   * @return {Promise<{message: {suite: string, keyType: string, keyIds: {digest: *, algorithm: *}[], message: *}}>}
+   * @return {Promise<{message: EncryptedMessage}>}
    */
   static async encrypt({message, keys, options}) {
     const jscu = getJscu();
@@ -107,7 +107,15 @@ export class Jscu extends Suite {
         delete data.data;
         return new RawEncryptedMessage(fed, await utilKeyId.fromJscuKey(publicKeyObj), data);
       }));
-      encryptedObject = Jscu._getEncryptedObject('public', encrypted, options);
+
+      // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
+      if(typeof options.privateKey !== 'undefined'){
+        const publicKey = new jscu.Key('jwk', options.privateKey);
+        options.publicKey = await publicKey.export('der', {outputPublic: true}); // export public key from private key
+        delete options.privateKey;
+      }
+
+      encryptedObject = {message: new EncryptedMessage('jscu', 'public_key_encrypt', encrypted, options)};
     }
     else if (keys.sessionKey) { // symmetric key encryption
       const opt = { algorithm: keys.sessionKey.algorithm };
@@ -120,7 +128,7 @@ export class Jscu extends Suite {
         encrypted = [obj]; // TODO, should be an Array?
       }
       else throw new Error('JscuInvalidEncryptionAlgorithm');
-      encryptedObject = Jscu._getEncryptedObject('session', encrypted, options);
+      encryptedObject = {message: new EncryptedMessage('jscu', 'session_key_encrypt', encrypted, options)};
     }
     else throw new Error('JscuInvalidEncryptionKey');
 
@@ -250,35 +258,4 @@ export class Jscu extends Suite {
       return {keyId: sigKey.signature.keyId, valid};
     }));
   }
-
-
-
-  /**
-   * Compose an encrypted objects from encrypted messages and other supplemental data
-   * @param type
-   * @param message
-   * @param options
-   * @return {Promise<*>}
-   */
-  static async _getEncryptedObject (type, message, options = {}) {
-    let encryptionKeyType;
-
-    if (type === 'public') {
-      encryptionKeyType = 'public_key_encrypt';
-
-      // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
-      if(typeof options.privateKey !== 'undefined'){
-        const jscu = getJscu();
-        const publicKey = new jscu.Key('jwk', options.privateKey);
-        options.publicKey = await publicKey.export('der', {outputPublic: true}); // export public key from private key
-        delete options.privateKey;
-      }
-    }
-    else if (type === 'session'){
-      encryptionKeyType = 'session_key_encrypt';
-    }
-    else throw new Error('JscuInvalidKeyType');
-
-    return {message: new EncryptedMessage('jscu', encryptionKeyType, message, options)};
-  };
 }

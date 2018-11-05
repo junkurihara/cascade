@@ -119,7 +119,16 @@ export class OpenPGP extends Suite {
         format: 'binary'
       };
       encrypted = await openpgp.encrypt(Object.assign(opt, options));
-      encryptedObject = await OpenPGP._getEncryptedObject('public', encrypted.message, keys.publicKeys, {});
+
+      // construct an encrypted message object
+      const internalHexKeyIds = encrypted.message.getEncryptionKeyIds().map( (id) => id.toHex());
+      const externalKeyIds = [];
+      keys.publicKeys.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(utilKeyId.fromOpenPgpKey(k));} ) );
+      const encryptionKeyId = externalKeyIds.filter( (fp) => internalHexKeyIds.indexOf(fp.toHex().slice(0, 16)) >= 0);
+      const encryptedMessage = [
+        new RawEncryptedMessage(encrypted.message.packets.write(), new KeyIdList(encryptionKeyId), {})
+      ];
+      encryptedObject = {message: new EncryptedMessage('openpgp', 'public_key_encrypt', encryptedMessage, {})};
     }
     else if (keys.sessionKey) { // symmetric key encryption
       const opt = {
@@ -129,13 +138,19 @@ export class OpenPGP extends Suite {
         format: 'binary'
       };
       encrypted = await openpgp.encrypt(Object.assign(opt, options));
-      encryptedObject = await OpenPGP._getEncryptedObject('session', encrypted.message, keys.sessionKey, {algorithm: keys.sessionKey.algorithm});
+
+      // construct an encrypted message object
+      const encryptedMessage = [
+        new RawEncryptedMessage(encrypted.message.packets.write(), await utilKeyId.fromRawKey(keys.sessionKey.key), {})
+      ];
+      encryptedObject = {message: new EncryptedMessage(
+        'openpgp', 'session_key_encrypt', encryptedMessage, {algorithm: keys.sessionKey.algorithm}
+      )};
     }
     else throw new Error('InvalidEncryptionKey');
 
     let signatureObj = {};
     if (keys.privateKeys && encrypted.signature) { // if detached is true
-      // signatureObj = getDetachedSignatureObject(encrypted.signature, signingKeys);
       const signatureObjectList = OpenPGP._listFromOpenPgpSig(encrypted.signature.packets, signingKeys);
       signatureObj = {signature: new Signature('openpgp', 'public_key_sign', signatureObjectList, {})};
     }
@@ -238,40 +253,6 @@ export class OpenPGP extends Suite {
       const valid = await openpgp.message.createVerificationObjects(signatureList, literalDataList, [sigKey.publicKey], new Date());
       return {keyId: sigKey.signature.keyId, valid: await valid[0].verified};
     }));
-  }
-
-
-  /**
-   * Encrypted message object is formatted here
-   * {message: { message, suite, type = 'encrypt|encrypt_session', keyIds}, signature: {signature, suite, type=sign, keyIds} }
-   * @param type
-   * @param message
-   * @param key
-   * @param options
-   * @return {*}
-   */
-  static async _getEncryptedObject (type, message, key=null, options) {
-    let encryptionKeyType;
-    let encryptionKeyId;
-
-    if(type === 'public'){
-      encryptionKeyType = 'public_key_encrypt';
-      const internalHexKeyIds = message.getEncryptionKeyIds().map( (id) => id.toHex());
-      const externalKeyIds = [];
-      key.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(utilKeyId.fromOpenPgpKey(k));} ) );
-      encryptionKeyId = externalKeyIds.filter( (fp) => internalHexKeyIds.indexOf(fp.toHex().slice(0, 16)) >= 0);
-      encryptionKeyId = new KeyIdList(encryptionKeyId);
-    }
-    else if (type === 'session'){
-      encryptionKeyType = 'session_key_encrypt';
-      encryptionKeyId = await utilKeyId.fromRawKey(key.key);
-    }
-    else throw new Error('type must be either public or session');
-
-    const encryptedMessage = [new RawEncryptedMessage(message.packets.write(), encryptionKeyId, {})];
-
-    return {message: new EncryptedMessage('openpgp', encryptionKeyType, encryptedMessage, options)};
-
   }
 
   static _listFromOpenPgpSig (signatures, keys) {
