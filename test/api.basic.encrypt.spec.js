@@ -10,7 +10,7 @@ const expect = chai.expect;
 describe(`${env}: single public key encryption/decryption`, () => {
   const curves = [ 'P-256', 'P-384', 'P-521' ];
   const modulusLength = [ 2048 ];
-  const userIds = [ 'kurihara@ieee.org' ];
+  const userIds = [ 'test@example.com' ];
   let ECKeys;
   let ECKeysGPG;
   let RSAKeys;

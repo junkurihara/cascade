@@ -2,7 +2,7 @@
  * utils.js
  */
 
-import openpgpDefault from './params_openpgp.js';
+import paramsOpenPGP from './params_openpgp.js';
 
 export function getJscu() {
   let jscu;
@@ -25,11 +25,11 @@ export function getOpenPgp(){
   let workerPath;
   if(typeof window !== 'undefined' && typeof window.openpgp !== 'undefined') {
     openpgp = window.openpgp;
-    workerPath = openpgpDefault.WORKER_PATH_WEB;
+    workerPath = paramsOpenPGP.WORKER_PATH_WEB;
   }
   else {
     openpgp = require('openpgp');
-    workerPath = openpgpDefault.WORKER_PATH_NODE;
+    workerPath = paramsOpenPGP.WORKER_PATH_NODE;
     // const path = require('path');
     // workerPath = path.join(path.resolve(), openpgpDefault.WORKER_PATH);
   }

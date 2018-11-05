@@ -2,7 +2,7 @@
  * signature
  */
 import {KeyId} from './keyid';
-import * as jseu from 'js-encoding-utils';
+import jseu from 'js-encoding-utils';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];
@@ -40,14 +40,14 @@ class SignatureList extends Array {
   _set(signatures){
     if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
     const binarySignatures = signatures.map( (sig) => {
-      if(!(sig instanceof rawSignature)) throw new Error('NotRawSignatureObject');
+      if(!(sig instanceof RawSignature)) throw new Error('NotRawSignatureObject');
       return sig;
     });
     this.push(...binarySignatures);
   }
 }
 
-export class rawSignature extends Uint8Array {
+export class RawSignature extends Uint8Array {
   constructor(sig, keyId){
     if(!(sig instanceof Uint8Array)) throw new Error('NonUint8ArraySignature');
     if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');

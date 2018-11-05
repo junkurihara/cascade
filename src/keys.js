@@ -2,8 +2,8 @@
  * keys.js
  */
 
-import * as openpgp from './api_openpgp.js';
-import * as jscu from './api_jscu.js';
+import {Jscu} from './suite_jscu.js';
+import {OpenPGP} from './suite_openpgp.js';
 
 class Keys {
   async from(format, {keys, suite, mode}){
@@ -91,9 +91,11 @@ async function importKeyStrings({keys, suite, mode}){
   ];
   await Promise.all(modes.map( async (modeOjbect) => {
     if(typeof suite[modeOjbect.name] !== 'undefined') {
+
+
       let suiteObj;
-      if (suite[modeOjbect.name] === 'jscu') suiteObj = jscu;
-      else if (suite[modeOjbect.name] === 'openpgp') suiteObj = openpgp;
+      if (suite[modeOjbect.name] === 'jscu') suiteObj = Jscu;
+      else if (suite[modeOjbect.name] === 'openpgp') suiteObj = OpenPGP;
       else throw new Error('InvalidSuite');
 
       if (mode.indexOf(modeOjbect.op.public) >= 0) {
@@ -146,7 +148,7 @@ async function importKeyObjects({keys, suite, mode}){
 export async function generateKeyObject(keyParams) {
   let returnKey;
   if (keyParams.suite === 'openpgp') { /** OpenPGP **/
-    returnKey = await openpgp.generateKey({
+    returnKey = await OpenPGP.generateKey({
       userIds: keyParams.userIds,
       passphrase: keyParams.passphrase,
       params: keyParams.keyParams
@@ -154,9 +156,10 @@ export async function generateKeyObject(keyParams) {
       .catch((e) => {
         throw new Error(`GPGKeyGenerationFailed: ${e.message}`);
       });
+
   }
   else if (keyParams.suite === 'jscu') { /** js-crypto-utils **/
-    returnKey = await jscu.generateKey({
+    returnKey = await Jscu.generateKey({
       passphrase: keyParams.passphrase,
       params: keyParams.keyParams,
       encryptOptions: keyParams.encryptOptions

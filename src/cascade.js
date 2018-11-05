@@ -2,8 +2,8 @@
  * cascade.js
  */
 
-import * as openpgp from './api_openpgp.js';
-import * as jscu from './api_jscu.js';
+import {OpenPGP} from './suite_openpgp.js';
+import {Jscu} from './suite_jscu.js';
 import {generateKeyObject} from './keys.js';
 import {importMessage} from './message';
 import {importKey} from './obsolete';
@@ -28,11 +28,11 @@ export const decryptSingle = async ({encrypted, keys, nextEncrypted}) => {
   let decryptedObj;
   if (encrypted.message.suite === 'openpgp') { /** OpenPGP **/
     const options = {}; // api_openpgp.js encrypt API options
-    decryptedObj = await openpgp.decrypt({encrypted, keys, options});
+    decryptedObj = await OpenPGP.decrypt({encrypted, keys, options});
   }
   else if (encrypted.message.suite === 'jscu') { /** js-crypto-utils **/
     const options = {};
-    decryptedObj = await jscu.decrypt({encrypted, keys, options});
+    decryptedObj = await Jscu.decrypt({encrypted, keys, options});
   }
   else throw new Error('UnsupportedCryptoSuite');
 
@@ -182,11 +182,11 @@ const encryptSingle = async ({procedure, message, keys}) => {
   let encryptedObj;
   if (procedure.encrypt.suite ==='openpgp') { /** OpenPGP **/
     const options = procedure.encrypt.options;
-    encryptedObj = await openpgp.encrypt({message, keys, options, output});
+    encryptedObj = await OpenPGP.encrypt({message, keys, options, output});
   }
   else if (procedure.encrypt.suite === 'jscu') { /** js-crypto-utils **/
     const options = procedure.encrypt.options;
-    encryptedObj = await jscu.encrypt({message, keys, options, output});
+    encryptedObj = await Jscu.encrypt({message, keys, options, output});
   }
   else throw new Error('UnsupportedCryptoSuite');
 
@@ -210,14 +210,14 @@ const signSingle = async ({procedure, message, keys, output}) => {
     const options = procedure.sign.options; // api_openpgp.js encrypt API options
     options.armor = false;
     options.detached = true; // default values
-    signature = await openpgp.sign({
+    signature = await OpenPGP.sign({
       message, keys,
       options,
       output: {sign: output}
     });
   }
   else if (procedure.sign.suite === 'jscu') { /** Naiive suite using jscu **/
-    signature = await jscu.sign({
+    signature = await Jscu.sign({
       message, keys,
       options: procedure.sign.options,
       output: {sign: output}
@@ -242,13 +242,13 @@ const verifySingle = async ({keys, message, signature}) => {
 
   let verifiedSig;
   if (signature.suite === 'openpgp') { /** OpenPGP **/
-    verifiedSig = await openpgp.verify({
+    verifiedSig = await OpenPGP.verify({
       message: importMessage(message), signature,
       keys, options: {}, output
     });
   }
   else if (signature.suite === 'jscu') { /** js-crypto-utils **/
-    verifiedSig = await jscu.verify({
+    verifiedSig = await Jscu.verify({
       message: importMessage(message), signature, keys, options: {}, output
     });
   }

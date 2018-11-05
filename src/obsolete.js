@@ -1,7 +1,7 @@
 import {decryptSingle, encryptParallel} from './cascade';
 import params from './params';
-import * as openpgp from './api_openpgp';
-import * as jscu from './api_jscu';
+import {OpenPGP} from './suite_openpgp';
+import {Jscu} from './suite_jscu';
 
 /**
  * Import keys as objects
@@ -19,12 +19,12 @@ export const importKey = async function (keys, proc, mode) {
     case 'openpgp': {
       /** OpenPGP **/
       if (keys.publicKeys && mode === 'encrypt')
-        keyArrObj.publicKeys = await Promise.all(keys.publicKeys.map((pk) => openpgp.importKey('pem', pk)));
+        keyArrObj.publicKeys = await Promise.all(keys.publicKeys.map((pk) => OpenPGP.importKey('pem', pk)));
       if (keys.sessionKey) keyArrObj.sessionKey = keys.sessionKey; // symmetric key
       if (keys.privateKeyPassSets && mode === 'decrypt')
         keyArrObj.privateKeys = await Promise.all(keys.privateKeyPassSets.map(async (pkps) => {
-          if (pkps.privateKey instanceof Uint8Array) return openpgp.importKey('der', pkps.privateKey, pkps.passphrase);
-          else return openpgp.importKey('pem', pkps.privateKey, pkps.passphrase);
+          if (pkps.privateKey instanceof Uint8Array) return OpenPGP.importKey('der', pkps.privateKey, pkps.passphrase);
+          else return OpenPGP.importKey('pem', pkps.privateKey, pkps.passphrase);
         })); //await readPrivateOpenPGP(keys.privateKeyPassSets); // privateKey
       break;
     }
@@ -45,22 +45,22 @@ export const importKey = async function (keys, proc, mode) {
       /** OpenPGP **/
       if (keys.privateKeyPassSets && mode === 'encrypt')
         keyArrObj.privateKeys = await Promise.all(keys.privateKeyPassSets.map(async (pkps) => {
-          if (pkps.privateKey instanceof Uint8Array) return openpgp.importKey('der', pkps.privateKey, pkps.passphrase);
-          else return openpgp.importKey('pem', pkps.privateKey, pkps.passphrase);
+          if (pkps.privateKey instanceof Uint8Array) return OpenPGP.importKey('der', pkps.privateKey, pkps.passphrase);
+          else return OpenPGP.importKey('pem', pkps.privateKey, pkps.passphrase);
         })); //await readPrivateOpenPGP(keys.privateKeyPassSets); // privateKey
       if (keys.publicKeys && mode === 'decrypt')
-        keyArrObj.publicKeys = await Promise.all(keys.publicKeys.map((pk) => openpgp.importKey('pem', pk)));
+        keyArrObj.publicKeys = await Promise.all(keys.publicKeys.map((pk) => OpenPGP.importKey('pem', pk)));
       break;
     }
     case 'jscu': {
       /** js-crypto-utils **/
       if (keys.privateKeyPassSets && mode === 'encrypt') keyArrObj.privateKeys =
           await Promise.all(
-            keys.privateKeyPassSets.map((pkps) => jscu.importKey('pem', pkps.privateKey, pkps.passphrase))
+            keys.privateKeyPassSets.map((pkps) => Jscu.importKey('pem', pkps.privateKey, pkps.passphrase))
           );
       if (keys.publicKeys && mode === 'decrypt') keyArrObj.publicKeys =
           await Promise.all(
-            keys.publicKeys.map((pk) => jscu.importKey('pem', pk))
+            keys.publicKeys.map((pk) => Jscu.importKey('pem', pk))
           );
       //await readPublicJscu(keys.publicKeys); // my public key for verification
       break;

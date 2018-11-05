@@ -4,8 +4,8 @@
 
 import {generateKeyObject} from './keys.js';
 import {importMessage} from './message.js';
-import * as jscu from './api_jscu.js';
-import * as openpgp from './api_openpgp.js';
+import {OpenPGP} from './suite_openpgp';
+import {Jscu} from './suite_jscu';
 
 /**
  * Generate key (pair). This API must be called externally.
@@ -169,8 +169,8 @@ const encryptBase = async ({message, keys, options}) => {
   if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
 
   let suiteObj;
-  if (keys.suite.encrypt_decrypt === 'jscu') suiteObj = jscu;
-  else if (keys.suite.encrypt_decrypt === 'openpgp') suiteObj = openpgp;
+  if (keys.suite.encrypt_decrypt === 'jscu') suiteObj = Jscu;
+  else if (keys.suite.encrypt_decrypt === 'openpgp') suiteObj = OpenPGP;
   else throw new Error('UnknownEncryptionSuite');
 
   return suiteObj.encrypt({ message, keys: keys.keys, options });
@@ -180,8 +180,8 @@ const decryptBase = async ({encrypted, keys, options}) => {
   if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
 
   let suiteObj;
-  if (keys.suite.encrypt_decrypt === 'jscu') suiteObj = jscu;
-  else if (keys.suite.encrypt_decrypt === 'openpgp') suiteObj = openpgp;
+  if (keys.suite.encrypt_decrypt === 'jscu') suiteObj = Jscu;
+  else if (keys.suite.encrypt_decrypt === 'openpgp') suiteObj = OpenPGP;
   else throw new Error('UnknownDecryptionSuite');
 
   return suiteObj.decrypt({ encrypted, keys: keys.keys, options });
@@ -191,8 +191,8 @@ const signBase = async ({message, keys, options}) => {
   if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
 
   let suiteObj;
-  if (keys.suite.sign_verify === 'jscu') suiteObj = jscu;
-  else if (keys.suite.sign_verify === 'openpgp') suiteObj = openpgp;
+  if (keys.suite.sign_verify === 'jscu') suiteObj = Jscu;
+  else if (keys.suite.sign_verify === 'openpgp') suiteObj = OpenPGP;
   else throw new Error('UnknownSigningSuite');
 
   return suiteObj.sign({ message, keys: keys.keys, options });
@@ -202,8 +202,8 @@ const verifyBase = async ({message, signature, keys, options}) => {
   if(!keys.canVerify()) throw new Error('UnsupportedKeyForVerification');
 
   let suiteObj;
-  if (keys.suite.sign_verify === 'jscu') suiteObj = jscu;
-  else if (keys.suite.sign_verify === 'openpgp') suiteObj = openpgp;
+  if (keys.suite.sign_verify === 'jscu') suiteObj = Jscu;
+  else if (keys.suite.sign_verify === 'openpgp') suiteObj = OpenPGP;
   else throw new Error('UnknownSigningSuite');
 
   return suiteObj.verify({ message, signature, keys: keys.keys, options});
