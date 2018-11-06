@@ -133,7 +133,7 @@ export class OpenPGP extends Suite {
     else if (keys.sessionKey) { // symmetric key encryption
       const opt = {
         message: msgObj,
-        sessionKey: {data: keys.sessionKey.key, algorithm: keys.sessionKey.algorithm}, // for encryption
+        sessionKey: {data: keys.sessionKey, algorithm: options.algorithm}, // for encryption
         privateKeys: signingKeys, // for signing (optional)
         format: 'binary'
       };
@@ -141,10 +141,10 @@ export class OpenPGP extends Suite {
 
       // construct an encrypted message object
       const encryptedMessage = [
-        new RawEncryptedMessage(encrypted.message.packets.write(), await utilKeyId.fromRawKey(keys.sessionKey.key), {})
+        new RawEncryptedMessage(encrypted.message.packets.write(), await utilKeyId.fromRawKey(keys.sessionKey), {})
       ];
       encryptedObject = {message: new EncryptedMessage(
-        'openpgp', 'session_key_encrypt', encryptedMessage, {algorithm: keys.sessionKey.algorithm}
+        'openpgp', 'session_key_encrypt', encryptedMessage, {algorithm: options.algorithm}
       )};
     }
     else throw new Error('InvalidEncryptionKey');
@@ -183,7 +183,7 @@ export class OpenPGP extends Suite {
     else if (encrypted.message.keyType === 'session_key_encrypt'){
       decrypted = await openpgp.decrypt(Object.assign({
         message,
-        sessionKeys: [ {data: keys.sessionKey.key, algorithm: keys.sessionKey.algorithm} ],
+        sessionKeys: [ {data: keys.sessionKey, algorithm: options.algorithm} ],
         publicKeys: keys.publicKeys,
         format: 'binary'
       }, options));
@@ -243,16 +243,18 @@ export class OpenPGP extends Suite {
     const openpgp = getOpenPgp();
 
     if(!keys.publicKeys) throw new Error('VerificationKeyRequired');
-    const sigKeyList = OpenPGP._ListToOpenPgpSig(Array.from(signature.signatures), keys.publicKeys);
+    const list = OpenPGP._ListToOpenPgpSig(Array.from(signature.signatures), keys.publicKeys);
     const msgObj = openpgp.message.fromBinary(message.binary);
 
-    return await Promise.all(sigKeyList.map( async (sigKey) => {
+    const verified = await Promise.all(list.signatureObjects.map( async (sigKey) => {
       const msg = msgObj.unwrapCompressed();
       const literalDataList = msg.packets.filterByTag(openpgp.enums.packet.literal);
       const signatureList = [sigKey.openpgpSignature];
       const valid = await openpgp.message.createVerificationObjects(signatureList, literalDataList, [sigKey.publicKey], new Date());
       return {keyId: sigKey.signature.keyId, valid: await valid[0].verified};
     }));
+
+    return verified.concat(list.unverified);
   }
 
   static _listFromOpenPgpSig (signatures, keys) {
@@ -294,7 +296,14 @@ export class OpenPGP extends Suite {
         signatureObjects.push(Object.assign({publicKey: fp.publicKey}, sig));
       });
     });
+    const unverified = [];
+    const idArray = signatureObjects.map( (x) => x.openpgpSignature.issuerKeyId.toHex());
+    openpgpObjects.map( (sig) => {
+      if(idArray.indexOf(sig.openpgpSignature.issuerKeyId.toHex().slice(0,16)) < 0){
+        unverified.push({keyId: sig.openpgpSignature.issuerFingerprint, valid: undefined});
+      }
+    });
 
-    return signatureObjects;
+    return {signatureObjects, unverified};
   }
 }

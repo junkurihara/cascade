@@ -118,12 +118,10 @@ export class Jscu extends Suite {
       encryptedObject = {message: new EncryptedMessage('jscu', 'public_key_encrypt', encrypted, options)};
     }
     else if (keys.sessionKey) { // symmetric key encryption
-      const opt = { algorithm: keys.sessionKey.algorithm };
-      Object.assign(options, opt);
-      if(keys.sessionKey.algorithm === 'AES-GCM') {  // TODO: other iv-required algorithms
+      if(options.name === 'AES-GCM') {  // TODO: other iv-required algorithms
         const iv = await jscu.random.getRandomBytes(paramsJscu.RECOMMENDED_IV_LENGTH);
-        const data = await jscu.aes.encrypt(message.binary, keys.sessionKey.key, {name: keys.sessionKey.algorithm, iv});
-        const keyId = await utilKeyId.fromRawKey(keys.sessionKey.key);
+        const data = await jscu.aes.encrypt(message.binary, keys.sessionKey, {name: options.name, iv});
+        const keyId = await utilKeyId.fromRawKey(keys.sessionKey);
         const obj = new RawEncryptedMessage(data, keyId, {iv});
         encrypted = [obj]; // TODO, should be an Array?
       }
@@ -179,14 +177,15 @@ export class Jscu extends Suite {
       if (msgKeySet.length === 0) throw new Error('UnableToDecryptWithGivenPrivateKey');
 
       // decrypt
-      const decryptedArray = [];
       let errMsg = '';
-      await Promise.all(msgKeySet.map( async (set) => {
+      const decryptedArray = await Promise.all(msgKeySet.map( async (set) => {
         const d = await decryptMessageObject(set.message, set.privateKey).catch( (e) => { errMsg = e.message; });
-        if(d) decryptedArray.push(d);
+        if(d) return d;
+        else return null;
       }));
+      const returnArray = decryptedArray.filter( (d) => (d !== null));
 
-      if(decryptedArray.length > 0) decrypted = decryptedArray[0];
+      if(returnArray.length > 0) decrypted = returnArray[0];
       else throw new Error(errMsg);
 
     }
@@ -196,14 +195,17 @@ export class Jscu extends Suite {
       if (!keys.sessionKey) throw new Error('JscuSessionKeyRequired');
       if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
 
-      const message = encrypted.message.message[0]; //TODO
+      const message = encrypted.message.message[0]; // TODO Should be an array?
       const iv = (typeof message.params.iv !== 'undefined') ? message.params.iv : null;
 
-      decrypted = await jscu.aes.decrypt(
-        message.toBuffer(),
-        keys.sessionKey.key,
-        { name: keys.sessionKey.algorithm, iv }
-      );
+      if(options.name === 'AES-GCM') {
+        decrypted = await jscu.aes.decrypt(
+          message.toBuffer(),
+          keys.sessionKey,
+          {name: keys.sessionKey.algorithm, iv}
+        );
+      }
+      else throw new Error('JscuInvalidEncryptionAlgorithm');
     }
     else throw new Error('JscuInvalidKeyType_NotSessionKey');
 
@@ -247,13 +249,20 @@ export class Jscu extends Suite {
     const jscu = getJscu();
 
     const signatureKeySet = [];
+    const unverified = [];
     await Promise.all(keys.publicKeys.map( async (pk) => {
       const keyId = await utilKeyId.fromJscuKey(pk);
-      const filtered = Array.from(signature.signatures).filter( (s) => (s.keyId.toHex() === keyId.toHex())); // WA
+      const filtered = Array.from(signature.signatures).filter( (s) => {
+        if(s.keyId.toHex() === keyId.toHex()) return true;
+        else{
+          unverified.push({keyId: s.keyId, valid: undefined});
+          return false;
+        }
+      }); // WA
       signatureKeySet.push(...filtered.map((s) => ({signature: s, publicKey: pk}) ));
     }));
 
-    return await Promise.all(signatureKeySet.map( async (sigKey) => {
+    const verified = await Promise.all(signatureKeySet.map( async (sigKey) => {
       const valid = await jscu.pkc.verify(
         message.binary,
         sigKey.signature.toBuffer(),
@@ -263,5 +272,7 @@ export class Jscu extends Suite {
       );
       return {keyId: sigKey.signature.keyId, valid};
     }));
+
+    return verified.concat(unverified);
   }
 }
