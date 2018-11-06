@@ -4,7 +4,7 @@
 
 import {OpenPGP} from './suite_openpgp.js';
 import {Jscu} from './suite_jscu.js';
-import {generateKeyObject, Keys} from './keys.js';
+import {generateKeyObject, importKeys, Keys} from './keys.js';
 import {importMessage} from './message';
 import {importKey} from './obsolete';
 
@@ -26,7 +26,7 @@ class Cascade extends Array {
     if (!(keys instanceof Keys)) throw new Error('NotKeyObject');
     if (keys.mode.indexOf(mode) < 0) throw new Error('UnmatchedKeyMode');
 
-    this._mode = mode;
+    this._cascadeMode = mode;
     this._orgKeys = keys;
 
     if (mode === 'encrypt') {
@@ -53,28 +53,43 @@ class Cascade extends Array {
     const signingKeys = this._orgKeys.keys.privateKeys;
 
     const precedence = Array.from(this).slice(0, this.length -1);
-    precedence.map( async (proc) => {
-      // updated config for signing
+    await Promise.all(precedence.map( async (proc, idx) => {
+      if (typeof proc.config.encrypt.onetimeKey === 'undefined') throw new Error('NoKeyParamsGiven');
+
+      const suiteObject = {encrypt_decrypt: proc.config.encrypt.suite};
+      const modeArray = ['encrypt'];
+
+      // key generation for encryption at this step
+      const keyParams = Object.assign({ suite: proc.config.encrypt.suite}, proc.config.encrypt.onetimeKey);
+      delete proc.config.encrypt.onetimeKey;
+      const onetimeKey = await generateKeyObject(keyParams); // generate keys
+      const onetimeKeyObject = (keyParams.keyParams.type === 'session')
+        ? {sessionKey: onetimeKey.key}
+        : {publicKeys: [onetimeKey.publicKey]};
+
+      // TODO: TempKeyをMessageとして設定しておく
+      // TODO: suiteごとにBinaryへの仕方が異なるのでそこを吸収。Key Classのでexportできるラッパ関数を考えたほうがいい？
+      // message for encryption at next step
+      const nextStepMessage = (keyParams.keyParams.type === 'session')
+        ? onetimeKey.key : onetimeKey.privateKey;
+
+      // updated config and key object for signing and key import
       if (typeof proc.config.sign !== 'undefined' && proc.config.sign.required){
         proc.config.sign = Object.assign(proc.config.sign, this[this.length-1].config.sign);
+        onetimeKeyObject.privateKeys = signingKeys;
+        suiteObject.sign_verify = proc.config.sign.suite;
+        modeArray.push('sign');
       }
-      // generate keys
-      if (typeof proc.config.encrypt.keyParams === 'undefined') throw new Error('NoKeyParamsGiven');
-      const keygenParam = {suite: proc.config.encrypt.suite};
 
-      console.log(proc.config.encrypt);
-
-    });
-
-
-
+      this[idx].keys = await importKeys('object', {keys:onetimeKeyObject, suite: suiteObject, mode: modeArray});
+    }));
   }
 
   async _initDecryptionProcedure(){
 
   }
 
-  get mode () { return this._mode; }
+  get mode () { return this._cascadeMode; }
   get keys () { return this._orgKeys; }
   get allKeys () { return null; } // TOD
 }

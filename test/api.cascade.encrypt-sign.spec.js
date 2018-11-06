@@ -31,7 +31,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
           privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}] // for Signing
         };
         const encryptionProcedure = [
-          {encrypt: Object.assign({keyParams: {length: 32}}, param.jscuSessionEncryptConf), sign: {required: true}},
+          {encrypt: Object.assign({onetimeKey: {keyParams: {type: 'session', length: 32}}}, param.jscuSessionEncryptConf), sign: {required: true}},
           {encrypt: param.jscuEncryptConf(paramObject, idx), sign: param.jscuSignConf(paramObject)}
         ];
 

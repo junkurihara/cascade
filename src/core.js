@@ -25,7 +25,7 @@ export async function generateKey (keyParams) {
   const keyObj = await generateKeyObject(keyParams);
 
   // formatting
-  if (keyParams.keyParams.type === 'SYMMETRIC') {
+  if (keyParams.keyParams.type === 'session') {
     return keyObj;
   }
   else {

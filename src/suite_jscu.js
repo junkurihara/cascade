@@ -20,7 +20,7 @@ export class Jscu extends Suite {
   static async generateKey({params, passphrase=null, encryptOptions={}}) {
     const jscu = getJscu();
 
-    if (params.type === 'SYMMETRIC') {
+    if (params.type === 'session') {
       if (!params.length) throw new Error('params.length must be specified');
       const rawKey = await jscu.random.getRandomBytes(params.length);
       const keyIds = [await utilKeyId.fromRawKey(rawKey)];
@@ -29,9 +29,9 @@ export class Jscu extends Suite {
         keyIds
       };
     }
-    else if (params.type === 'ECC' || params.type === 'RSA') {
-      const keyType = (params.type === 'ECC') ? 'EC' : 'RSA';
-      const options = (params.type === 'ECC') ? {namedCurve: params.curve} : {modulusLength: params.modulusLength};
+    else if (params.type === 'ec' || params.type === 'rsa') {
+      const keyType = (params.type === 'ec') ? 'EC' : 'RSA';
+      const options = (params.type === 'ec') ? {namedCurve: params.curve} : {modulusLength: params.modulusLength};
 
       const jwKeys = await jscu.pkc.generateKey(keyType, options);
       const keyIds = [await utilKeyId.fromJscuKey(new jscu.Key('jwk', jwKeys.publicKey))];

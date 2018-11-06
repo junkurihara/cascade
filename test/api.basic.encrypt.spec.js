@@ -53,7 +53,7 @@ describe(`${env}: public key encryption/decryption`, () => {
         const encryptionKeys = {
           publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ],
         };
-        const encryptConfig = { encrypt: param.openpgpEncryptConf};
+        const encryptConfig = { encrypt: param.openpgpEncryptConf };
 
         const encryptionKeyImported = await cascade.importKeys(
           'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'openpgp'}, mode: ['encrypt']}

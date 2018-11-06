@@ -16,7 +16,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     this.timeout(5000);
 
     const keyArray = await Promise.all( curves.map ( (curve) => {
-      const keyParam = {suite: 'openpgp', userIds, passphrase: 'omg', keyParams: {type: 'ECC', keyExpirationTime: 0, curve}};
+      const keyParam = {suite: 'openpgp', userIds, passphrase: 'omg', keyParams: {type: 'ec', keyExpirationTime: 0, curve}};
       return core.generateKey(keyParam);
     }) );
     // console.log(keyArray);
@@ -27,7 +27,7 @@ describe(`${env}: public and private key pair generation test`, () => {
   it('OpenPGP key generation without passphrase', async function () {
     this.timeout(5000);
 
-    const baseParam = { type: 'ECC', keyExpirationTime: 0 };
+    const baseParam = { type: 'ec', keyExpirationTime: 0 };
 
     const keyArray = await Promise.all( curves.map ( (curve) => {
       const keyParam = {suite: 'openpgp', userIds, keyParams: Object.assign(baseParam, {curve})};
@@ -42,7 +42,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     this.timeout(5000);
     let success = true;
     const keyArray = await Promise.all( curves.map ( (curve) => {
-      const keyParam = {suite: 'jscu', keyParams: {type: 'ECC', curve}};
+      const keyParam = {suite: 'jscu', keyParams: {type: 'ec', curve}};
       return core.generateKey(keyParam);
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).to.be.true;
@@ -53,7 +53,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     this.timeout(5000);
     let success = true;
     const keyArray = await Promise.all( curves.map ( (curve) => {
-      const keyParam = {suite: 'jscu', keyParams: {type: 'ECC', curve}, passphrase: 'omg'};
+      const keyParam = {suite: 'jscu', keyParams: {type: 'ec', curve}, passphrase: 'omg'};
       return core.generateKey(keyParam);
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).to.be.true;
@@ -64,7 +64,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     this.timeout(5000);
     let success = true;
     const keyArray = await Promise.all( modulusLength.map ( (ml) => {
-      const keyParam = {suite: 'jscu', keyParams: {type: 'RSA', modulusLength: ml}};
+      const keyParam = {suite: 'jscu', keyParams: {type: 'rsa', modulusLength: ml}};
       return core.generateKey(keyParam);
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).to.be.true;
@@ -75,7 +75,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     this.timeout(5000);
     let success = true;
     const keyArray = await Promise.all( modulusLength.map ( (ml) => {
-      const keyParam = {suite: 'jscu', keyParams: {type: 'RSA', modulusLength: ml}, passphrase: 'omg'};
+      const keyParam = {suite: 'jscu', keyParams: {type: 'rsa', modulusLength: ml}, passphrase: 'omg'};
       return core.generateKey(keyParam);
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).to.be.true;
@@ -84,7 +84,7 @@ describe(`${env}: public and private key pair generation test`, () => {
 
   it('OpenPGP symmetric session key generation', async function (){
     this.timeout(5000);
-    const keyParam = {suite: 'openpgp', keyParams: {type: 'SYMMETRIC', length: 32}};
+    const keyParam = {suite: 'openpgp', keyParams: {type: 'session', length: 32}};
     const key = await core.generateKey(keyParam);
     expect((key.key instanceof Uint8Array) && (key.key.length === 32)).to.be.true;
     // console.log(key);
@@ -93,7 +93,7 @@ describe(`${env}: public and private key pair generation test`, () => {
 
   it('JSCU symmetric session key generation', async function (){
     this.timeout(5000);
-    const keyParam = {suite: 'jscu', keyParams: {type: 'SYMMETRIC', length: 32}};
+    const keyParam = {suite: 'jscu', keyParams: {type: 'session', length: 32}};
     const key = await core.generateKey(keyParam);
     expect((key.key instanceof Uint8Array) && (key.key.length === 32)).to.be.true;
     // console.log(key);

@@ -24,7 +24,7 @@ export class OpenPGP extends Suite {
 
     let options;
     switch (params.type) {
-    case 'RSA':
+    case 'rsa':
       options = {
         userIds,       // multiple user IDs
         numBits: params.modulusLength,// RSA key size
@@ -32,7 +32,7 @@ export class OpenPGP extends Suite {
         keyExpirationTime: params.keyExpirationTime
       };
       break;
-    case 'ECC':
+    case 'ec':
       options = {
         userIds,       // multiple user IDs
         curve: paramsPGP.CURVE_LIST[params.curve].name,  // applied the naming rule of jscu
@@ -40,7 +40,7 @@ export class OpenPGP extends Suite {
         keyExpirationTime: params.keyExpirationTime
       };
       break;
-    case 'SYMMETRIC':
+    case 'session':
       options = {
         length: params.length
       };
@@ -49,7 +49,7 @@ export class OpenPGP extends Suite {
       throw new Error('GPGUnsupportedAlgorithm');
     }
 
-    if (params.type === 'RSA' || params.type === 'ECC') {
+    if (params.type === 'rsa' || params.type === 'ec') {
       const kp = await openpgp.generateKey(options);
       return {
         publicKey: kp.key.toPublic(),
@@ -57,7 +57,7 @@ export class OpenPGP extends Suite {
         keyIds: kp.key.getKeys().map((k) => utilKeyId.fromOpenPgpKey(k)) //kp.key.getKeyIds().map( (bid) => bid.toHex())
       };
     }
-    else if (params.type === 'SYMMETRIC') {
+    else if (params.type === 'session') {
       const rawKey = await openpgp.crypto.random.getRandomBytes(options.length);
       const keyIds = [await utilKeyId.fromRawKey(rawKey)];
       return {key: rawKey, keyIds};

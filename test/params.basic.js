@@ -9,7 +9,7 @@ import * as cascade from '../src/index.js';
 const curves = [ 'P-256', 'P-384', 'P-521' ];
 const modulusLength = [ 1024, 2048 ];
 const userIds = [ 'test@example.com' ];
-const paramArray = [{name: 'EC', param: curves}, {name: 'RSA', param: modulusLength}];
+const paramArray = [{name: 'ec', param: curves}, {name: 'rsa', param: modulusLength}];
 
 const openpgpEncryptConf = { suite: 'openpgp', options: { detached: true, compression: 'zlib' }};
 const openpgpSignConf = {required: true, suite: 'openpgp', options: {}};
@@ -31,18 +31,18 @@ class ParamsBasic{
   }
 
   async init (){
-    this.Keys.EC = await Promise.all(
-      curves.map ( (curve) => cascade.generateKey({suite: 'jscu', keyParams: {type: 'ECC', curve}}))
+    this.Keys.ec = await Promise.all(
+      curves.map ( (curve) => cascade.generateKey({suite: 'jscu', keyParams: {type: 'ec', curve}}))
     );
-    this.KeysGPG.EC = await Promise.all(
-      curves.map ( (curve) => cascade.generateKey({suite: 'openpgp', userIds, keyParams: {type: 'ECC', keyExpirationTime: 0, curve}}))
+    this.KeysGPG.ec = await Promise.all(
+      curves.map ( (curve) => cascade.generateKey({suite: 'openpgp', userIds, keyParams: {type: 'ec', keyExpirationTime: 0, curve}}))
     );
-    this.Keys.RSA = await Promise.all(
-      modulusLength.map ( (ml) => cascade.generateKey({suite: 'jscu', keyParams: {type: 'RSA', modulusLength: ml}}))
+    this.Keys.rsa = await Promise.all(
+      modulusLength.map ( (ml) => cascade.generateKey({suite: 'jscu', keyParams: {type: 'rsa', modulusLength: ml}}))
     );
-    this.KeysGPG.RSA = await Promise.all(
+    this.KeysGPG.rsa = await Promise.all(
       modulusLength.map (
-        (ml) => cascade.generateKey({suite: 'openpgp', userIds, keyParams: {type: 'RSA', keyExpirationTime: 0, modulusLength: ml}}))
+        (ml) => cascade.generateKey({suite: 'openpgp', userIds, keyParams: {type: 'rsa', keyExpirationTime: 0, modulusLength: ml}}))
     );
     this.Keys.sessionKey = await jscu.random.getRandomBytes(32);
   }
@@ -50,7 +50,7 @@ class ParamsBasic{
   jscuEncryptConf (paramObject, idx) {
     return {
       suite: 'jscu',
-      options: (paramObject.name === 'EC')
+      options: (paramObject.name === 'ec')
         ? {
           privateKeyPass: {privateKey: this.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}, // only for ECDH
           hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: ''
@@ -63,7 +63,7 @@ class ParamsBasic{
     return {
       required: true,
       suite: 'jscu',
-      options: (paramObject.name === 'EC') ? {hash: 'SHA-256'} : {hash: 'SHA-256', name: 'RSA-PSS', saltLength: 32}
+      options: (paramObject.name === 'ec') ? {hash: 'SHA-256'} : {hash: 'SHA-256', name: 'RSA-PSS', saltLength: 32}
     };
   }
 

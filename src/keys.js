@@ -19,7 +19,7 @@ export class Keys {
 
     if(mode.indexOf('decrypt') >= 0) {
       if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
-      if (typeof keys.privateKeyPassSets !== 'undefined'){
+      if (typeof keys.privateKeyPassSets !== 'undefined' || typeof keys.privateKeys !== 'undefined'){
         if (typeof keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPrivateKeyAreExclusive');
       } else {
         if (typeof keys.sessionKey === 'undefined') throw new Error('NoSessionKeyOrPrivateKeyIsGiven');
@@ -28,7 +28,7 @@ export class Keys {
 
     if(mode.indexOf('sign') >= 0){
       if(mode.indexOf('verify') >= 0 || mode.indexOf('decrypt') >= 0) throw new Error('InvalidMode');
-      if(typeof keys.privateKeyPassSets === 'undefined') throw new Error('NoPrivateKey');
+      if(typeof keys.privateKeyPassSets === 'undefined' &&  typeof keys.privateKeys === 'undefined') throw new Error('NoPrivateKey');
     }
     if(mode.indexOf('verify') >= 0){
       if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
