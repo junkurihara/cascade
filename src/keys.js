@@ -5,7 +5,7 @@
 import {Jscu} from './suite_jscu.js';
 import {OpenPGP} from './suite_openpgp.js';
 
-class Keys {
+export class Keys {
   async from(format, {keys, suite, mode}){
 
     if(mode.indexOf('encrypt') >= 0) {
@@ -129,12 +129,7 @@ async function importKeyObjects({keys, suite, mode}){
 
   if (keys.publicKeys) keyObjects.publicKeys = keys.publicKeys;
 
-  if (keys.privateKeyPassSets) {
-    keyObjects.privateKeys = keys.privateKeys.map( (pk) => {
-      if(pk.isEncrypted) throw new Error('SigningPrivateKeyIsNotDecrypted');
-      return pk;
-    });
-  }
+  if (keys.privateKeys) keyObjects.privateKeys = keys.privateKeys;
 
   return {keys: keyObjects, suite, mode};
 }

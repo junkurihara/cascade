@@ -30,7 +30,7 @@ import {
   verify
 } from './core.js';
 import { importKeys } from './keys.js';
-import {Cascade} from './cascade.js';
+import {createEncryptionCascade} from './cascade.js';
 import {decryptSeq, encryptSeq} from './obsolete';
 
 export default {
@@ -41,7 +41,7 @@ export default {
   sign,
   verify,
   importKeys,
-  Cascade
+  createEncryptionCascade
 };
 export {
   encryptSeq, decryptSeq, // will be removed
@@ -51,5 +51,5 @@ export {
   sign,
   verify,
   importKeys,
-  Cascade
+  createEncryptionCascade
 };

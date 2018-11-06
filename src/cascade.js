@@ -4,18 +4,82 @@
 
 import {OpenPGP} from './suite_openpgp.js';
 import {Jscu} from './suite_jscu.js';
-import {generateKeyObject} from './keys.js';
+import {generateKeyObject, Keys} from './keys.js';
 import {importMessage} from './message';
 import {importKey} from './obsolete';
 
+export async function createEncryptionCascade({keys, procedure}){
+  const cascade = new Cascade({mode: 'encrypt', keys, procedure});
+  await cascade._initEncryptionProcedure();
 
-export class Cascade {
-  ////////////////////
-  constructor(){
+  return cascade;
+}
+
+////////////////////
+const modes = ['encrypt', 'decrypt'];
+class Cascade extends Array {
+
+  constructor({mode, keys, procedure, encrypted}){
+    super();
+    // assertions
+    if (modes.indexOf(mode) < 0) throw new Error('InvalidMode');
+    if (!(keys instanceof Keys)) throw new Error('NotKeyObject');
+    if (keys.mode.indexOf(mode) < 0) throw new Error('UnmatchedKeyMode');
+
+    this._mode = mode;
+    this._orgKeys = keys;
+
+    if (mode === 'encrypt') {
+      if (!(procedure instanceof Array)) throw new Error('NotArrayProcedure');
+      const initial = procedure.map( (config) => {
+        if(typeof config.encrypt === 'undefined') throw new Error('InvalidProcedure');
+        return {config};
+      });
+      this.push(...initial);
+      this._encrypted = [];
+    }
+
+    if (mode === 'decrypt') {
+      if (!(encrypted instanceof Array)) throw new Error('NotArrayEncryptedData');
+      this._encrypted = encrypted;
+    }
   }
 
-  ////////////////////
+  async _initEncryptionProcedure(){
+    // set original key to the final step in the procedure
+    this[this.length - 1].keys = this._orgKeys;
+
+    // export signingKey for precedence
+    const signingKeys = this._orgKeys.keys.privateKeys;
+
+    const precedence = Array.from(this).slice(0, this.length -1);
+    precedence.map( async (proc) => {
+      // updated config for signing
+      if (typeof proc.config.sign !== 'undefined' && proc.config.sign.required){
+        proc.config.sign = Object.assign(proc.config.sign, this[this.length-1].config.sign);
+      }
+      // generate keys
+      if (typeof proc.config.encrypt.keyParams === 'undefined') throw new Error('NoKeyParamsGiven');
+      const keygenParam = {suite: proc.config.encrypt.suite};
+
+      console.log(proc.config.encrypt);
+
+    });
+
+
+
+  }
+
+  async _initDecryptionProcedure(){
+
+  }
+
+  get mode () { return this._mode; }
+  get keys () { return this._orgKeys; }
+  get allKeys () { return null; } // TOD
 }
+
+////////////////////
 
 /**
  * Decrypt single encrypted object in serialized manner
