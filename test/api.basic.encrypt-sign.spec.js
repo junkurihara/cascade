@@ -45,7 +45,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
           'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
         );
         const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
   });
@@ -73,7 +73,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
           'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
         );
         const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
   });
@@ -102,7 +102,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
           'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
         );
         const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
   });
@@ -131,14 +131,9 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
           'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
         );
         const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
   });
-
-
-  // TODO: symmetric (with and without sign)
-  // TODO: only encrypt
-  // TODO: onnly sign
 
 });

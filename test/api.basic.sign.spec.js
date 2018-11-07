@@ -43,7 +43,7 @@ describe(`${env}: public key signing/verification`, () => {
           'string', {keys: decryptionKeys, suite: {sign_verify: 'jscu'}, mode: ['verify']}
         );
         const decryptionResult = await cascade.verify({ message, signature: encryptionResult.signature, keys: decryptionKeyImported });
-        expect(decryptionResult.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.every((s) => s.valid), `failed at ${p}`).to.be.a.true;
       }));
     }));
   });
@@ -69,7 +69,7 @@ describe(`${env}: public key signing/verification`, () => {
           'string', {keys: decryptionKeys, suite: {sign_verify: 'openpgp'}, mode: ['verify']}
         );
         const decryptionResult = await cascade.verify({ message, signature: encryptionResult.signature, keys: decryptionKeyImported });
-        expect(decryptionResult.every((s) => s.valid)).to.be.true;
+        expect(decryptionResult.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
   });
@@ -103,7 +103,7 @@ describe(`${env}: public key signing/verification`, () => {
           'string', {keys: decryptionKeys, suite: {sign_verify: 'jscu'}, mode: ['verify']}
         );
         const decryptionResult = await cascade.verify({ message, signature: encryptionResult.signature, keys: decryptionKeyImported });
-        expect(decryptionResult.every((s) => (s.valid || s.valid === undefined))).to.be.true;
+        expect(decryptionResult.every((s) => (s.valid || s.valid === undefined)), `failed at ${p}`).to.be.true;
       }));
     }));
   });
@@ -133,7 +133,7 @@ describe(`${env}: public key signing/verification`, () => {
           'string', {keys: decryptionKeys, suite: {sign_verify: 'openpgp'}, mode: ['verify']}
         );
         const decryptionResult = await cascade.verify({ message, signature: encryptionResult.signature, keys: decryptionKeyImported });
-        expect(decryptionResult.every((s) => (s.valid || s.valid === undefined))).to.be.true;
+        expect(decryptionResult.every((s) => (s.valid || s.valid === undefined)), `failed at ${p}`).to.be.true;
       }));
     }));
   });

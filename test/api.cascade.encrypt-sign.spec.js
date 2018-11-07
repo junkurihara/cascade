@@ -74,8 +74,8 @@ async function jscuMainRoutine(message, param, precedenceProcedure){
 
       const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted});
       const decrypted = await dProcess.decrypt();
-      expect(decrypted[0].data.toString() === message.toString()).to.be.true;
-      expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid))).to.be.true;
+      expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
+      expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
 
     }));
   }));
