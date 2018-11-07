@@ -4,8 +4,8 @@
 
 import {generateKeyObject} from './keys.js';
 import {importMessage} from './message.js';
-import {OpenPGP} from './suite_openpgp';
-import {Jscu} from './suite_jscu';
+import {OpenPGP} from './suite_openpgp.js';
+import {Jscu} from './suite_jscu.js';
 
 /**
  * Generate key (pair). This API must be called externally.

@@ -30,26 +30,25 @@ import {
   verify
 } from './core.js';
 import { importKeys } from './keys.js';
-import {createEncryptionCascade} from './cascade.js';
-import {decryptSeq, encryptSeq} from './obsolete';
+import { createEncryptionCascade, createDecryptionCascade } from './cascade.js';
 
 export default {
-  encryptSeq, decryptSeq, // will be removed
   generateKey,
   encrypt,
   decrypt,
   sign,
   verify,
   importKeys,
-  createEncryptionCascade
+  createEncryptionCascade,
+  createDecryptionCascade
 };
 export {
-  encryptSeq, decryptSeq, // will be removed
   generateKey,
   encrypt,
   decrypt,
   sign,
   verify,
   importKeys,
-  createEncryptionCascade
+  createEncryptionCascade,
+  createDecryptionCascade
 };

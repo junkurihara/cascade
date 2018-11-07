@@ -6,9 +6,8 @@ import {getOpenPgp} from './util.js';
 import {Suite} from './suite.js';
 import paramsPGP from './params_openpgp.js';
 import * as utilKeyId from './keyid.js';
-import {RawSignature, Signature} from './signature';
-import {EncryptedMessage, RawEncryptedMessage} from './message';
-import {KeyIdList} from './keyid';
+import {RawSignature, Signature} from './signature.js';
+import {EncryptedMessage, RawEncryptedMessage} from './message.js';
 
 export class OpenPGP extends Suite {
 
@@ -126,7 +125,7 @@ export class OpenPGP extends Suite {
       keys.publicKeys.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(utilKeyId.fromOpenPgpKey(k));} ) );
       const encryptionKeyId = externalKeyIds.filter( (fp) => internalHexKeyIds.indexOf(fp.toHex().slice(0, 16)) >= 0);
       const encryptedMessage = [
-        new RawEncryptedMessage(encrypted.message.packets.write(), new KeyIdList(encryptionKeyId), {})
+        new RawEncryptedMessage(encrypted.message.packets.write(), new utilKeyId.KeyIdList(encryptionKeyId), {})
       ];
       encryptedObject = {message: new EncryptedMessage('openpgp', 'public_key_encrypt', encryptedMessage, {})};
     }

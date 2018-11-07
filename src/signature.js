@@ -1,7 +1,7 @@
 /**
  * signature
  */
-import {KeyId} from './keyid';
+import {KeyId} from './keyid.js';
 import jseu from 'js-encoding-utils';
 
 const suites = ['jscu', 'openpgp'];

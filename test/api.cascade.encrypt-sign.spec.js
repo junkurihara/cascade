@@ -8,7 +8,6 @@ import chai from 'chai';
 const expect = chai.expect;
 
 import {createParam} from './params.basic.js';
-import {createEncryptionCascade} from '../src';
 
 describe(`${env}: single public key encryption/decryption with simultaneous signing/verification`, () => {
 
@@ -26,21 +25,35 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
   it('jscu: EC/RSA encryption and signing mono-step procedure test', async () => {
     await Promise.all(param.paramArray.map(async (paramObject) => {
       await Promise.all(paramObject.param.map(async (p, idx) => {
+
         const encryptionKeys = {
           publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString],
           privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}] // for Signing
         };
         const encryptionProcedure = [
           {encrypt: Object.assign({onetimeKey: {keyParams: {type: 'session', length: 32}}}, param.jscuSessionEncryptConf), sign: {required: true}},
+          {encrypt: Object.assign({onetimeKey: {keyParams: {type: 'session', length: 32}}}, param.jscuSessionEncryptConf), sign: {required: true}},
           {encrypt: param.jscuEncryptConf(paramObject, idx), sign: param.jscuSignConf(paramObject)}
         ];
-
         const encryptionKeyImported = await cascade.importKeys(
           'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['encrypt', 'sign']}
         );
 
-        const process = await createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure});
-        // console.log(process);
+        const eProcess = await cascade.createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure});
+        const encrypted = await eProcess.encrypt(message);
+
+        const decryptionKeys = {
+          privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
+          publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString], // for Signing
+        };
+        const decryptionKeyImported = await cascade.importKeys(
+          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['decrypt', 'verify']}
+        );
+
+        const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted});
+        const decrypted = await dProcess.decrypt();
+        expect(decrypted[0].data.toString() === message.toString()).to.be.true;
+        expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid))).to.be.true;
 
       }));
     }));
