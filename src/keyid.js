@@ -15,7 +15,7 @@ import {getJscu} from './util.js';
 export function fromOpenPgpKey(keyObject, len=params.publicKeyIdLEN){
   const fp = keyObject.getFingerprint();
   const buf = jseu.encoder.hexStringToArrayBuffer(fp);
-  return new KeyId(buf.slice(0, len));
+  return createKeyId(buf.slice(0, len));
 }
 
 /**
@@ -28,7 +28,7 @@ export function fromOpenPgpKey(keyObject, len=params.publicKeyIdLEN){
  */
 export async function fromJscuKey(keyObject, len=params.publicKeyIdLEN) {
   const thumbPrintBuf = await keyObject.getJwkThumbprint(params.publicKeyIdHash, 'binary');
-  return new KeyId(thumbPrintBuf.slice(0, len));
+  return createKeyId(thumbPrintBuf.slice(0, len));
 }
 
 /**
@@ -40,25 +40,32 @@ export async function fromJscuKey(keyObject, len=params.publicKeyIdLEN) {
 export async function fromRawKey(bin, len = params.sessionKeyIdLength) {
   const jscu = getJscu();
   const digest = await jscu.hash.compute(bin, params.sessionKeyIdHash);
-  return new KeyId(digest.slice(0, len));
+  return createKeyId(digest.slice(0, len));
+}
+
+
+function createKeyId(keyId){
+  if(!(keyId instanceof Uint8Array)) throw new Error('NotUint8ArrayKeyId');
+  return new KeyId(keyId);
 }
 
 export class KeyId extends Uint8Array {
+  // eslint-disable-next-line no-useless-constructor
   constructor(keyId){
-    if(!(keyId instanceof Uint8Array)) throw new Error('NotUint8ArrayKeyId');
     super(keyId);
   }
 
   toHex() { return jseu.encoder.arrayBufferToHexString(this); }
 }
 
-export class KeyIdList extends Array {
-  constructor(keyIds){
-    super();
-    this._set(keyIds);
-  }
+export function createKeyIdList (keyIds) {
+  const obj = new KeyIdList();
+  obj._init(keyIds);
+  return obj;
+}
 
-  _set(keyIds){
+export class KeyIdList extends Array {
+  _init(keyIds){
     if (!(keyIds instanceof Array)) throw new Error('InvalidKeyIdList');
     const binaryKeyIds = keyIds.map( (k) => {
       if(!(k instanceof KeyId)) throw new Error('NotKeyId');

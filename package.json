@@ -21,10 +21,10 @@
     "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
     "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.1.5",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -43,7 +43,7 @@
     "karma-webpack": "^3.0.5",
     "mocha": "^5.2.0",
     "mocha-sinon": "^2.1.0",
-    "webpack": "^4.24.0",
+    "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2",
     "webpack-common-shake": "^2.1.0",
     "webpack-merge": "^4.1.4"
@@ -51,10 +51,11 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@babel/runtime": "^7.1.2",
+    "@babel/runtime": "^7.1.5",
     "js-crypto-utils": "^0.12.3",
     "js-encoding-utils": "^0.2.7",
-    "openpgp": "^4.1.2"
+    "lodash": "^4.17.11",
+    "openpgp": "^4.2.1"
   },
   "browser": {
     "openpgp": false,

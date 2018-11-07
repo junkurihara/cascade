@@ -103,7 +103,7 @@ export async function decrypt({data, keys}){
   if (keys.suite.encrypt_decrypt !== data.message.suite) throw new Error('UnmatchedKeyTypeToEncryptionSuite');
   const decrypted = await decryptBase({
     encrypted: data, keys, options: data.message.options
-  }).catch( (e) => { throw new Error(`DecryptionFailed: ${e.message}`); });
+  }).catch( (e) => { console.error(e); throw new Error(`DecryptionFailed: ${e.message}`); });
 
   // do verification
   let verified = {};

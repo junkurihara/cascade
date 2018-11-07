@@ -23,7 +23,7 @@ export default {
     aead_mode: 'eax'
   },
 
-  DEFAULT_USER : '<securityhub@zettant.com>',
+  DEFAULT_USER : '<example@example.com>',
 
   /**
    * openpgp.worker.js must be located in the place where api_openpgp.js and js-file bundling core-file.

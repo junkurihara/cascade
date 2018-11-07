@@ -6,8 +6,8 @@ import {getOpenPgp} from './util.js';
 import {Suite} from './suite.js';
 import paramsPGP from './params_openpgp.js';
 import * as utilKeyId from './keyid.js';
-import {RawSignature, Signature} from './signature.js';
-import {EncryptedMessage, RawEncryptedMessage} from './message.js';
+import {createRawSignature, createSignature, RawSignature} from './signature.js';
+import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
 
 export class OpenPGP extends Suite {
 
@@ -125,9 +125,9 @@ export class OpenPGP extends Suite {
       keys.publicKeys.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(utilKeyId.fromOpenPgpKey(k));} ) );
       const encryptionKeyId = externalKeyIds.filter( (fp) => internalHexKeyIds.indexOf(fp.toHex().slice(0, 16)) >= 0);
       const encryptedMessage = [
-        new RawEncryptedMessage(encrypted.message.packets.write(), new utilKeyId.KeyIdList(encryptionKeyId), {})
+        createRawEncryptedMessage(encrypted.message.packets.write(), utilKeyId.createKeyIdList(encryptionKeyId), {})
       ];
-      encryptedObject = {message: new EncryptedMessage('openpgp', 'public_key_encrypt', encryptedMessage, {})};
+      encryptedObject = {message: createEncryptedMessage('openpgp', 'public_key_encrypt', encryptedMessage, {})};
     }
     else if (keys.sessionKey) { // symmetric key encryption
       const opt = {
@@ -140,9 +140,9 @@ export class OpenPGP extends Suite {
 
       // construct an encrypted message object
       const encryptedMessage = [
-        new RawEncryptedMessage(encrypted.message.packets.write(), await utilKeyId.fromRawKey(keys.sessionKey), {})
+        createRawEncryptedMessage(encrypted.message.packets.write(), await utilKeyId.fromRawKey(keys.sessionKey), {})
       ];
-      encryptedObject = {message: new EncryptedMessage(
+      encryptedObject = {message: createEncryptedMessage(
         'openpgp', 'session_key_encrypt', encryptedMessage, {algorithm: options.algorithm}
       )};
     }
@@ -151,7 +151,7 @@ export class OpenPGP extends Suite {
     let signatureObj = {};
     if (keys.privateKeys && encrypted.signature) { // if detached is true
       const signatureObjectList = OpenPGP._listFromOpenPgpSig(encrypted.signature.packets, signingKeys);
-      signatureObj = {signature: new Signature('openpgp', 'public_key_sign', signatureObjectList, {})};
+      signatureObj = {signature: createSignature('openpgp', 'public_key_sign', signatureObjectList, {})};
     }
 
     return Object.assign(encryptedObject, signatureObj);
@@ -227,7 +227,7 @@ export class OpenPGP extends Suite {
     };
     const signature = await openpgp.sign(Object.assign(opt, options));
     const signatureObjectList = OpenPGP._listFromOpenPgpSig(signature.signature.packets, keys.privateKeys);
-    return {signature: new Signature('openpgp', 'public_key_sign', signatureObjectList, {})};
+    return {signature: createSignature('openpgp', 'public_key_sign', signatureObjectList, {})};
   }
 
   /**
@@ -266,7 +266,7 @@ export class OpenPGP extends Suite {
     externalKeyIds.map( (fp) => {
       const correspondingSig = signatures.filter( (sig) => sig.issuerKeyId.toHex() === fp.toHex().slice(0,16));
       correspondingSig.map((sig) => {
-        signatureObjects.push(new RawSignature(sig.write(), fp));
+        signatureObjects.push(createRawSignature(sig.write(), fp));
       });
     });
 

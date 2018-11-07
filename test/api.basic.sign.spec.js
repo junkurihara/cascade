@@ -7,7 +7,7 @@ import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-import {createParam} from './params.basic.js';
+import {createParam} from './params-basic.js';
 
 describe(`${env}: public key signing/verification`, () => {
 
@@ -105,7 +105,8 @@ describe(`${env}: public key signing/verification`, () => {
     }));
   });
 
-  it('openpgp: RSA/EC signing test with multiple secret keys', async () => {
+  it('openpgp: RSA/EC signing test with multiple secret keys', async function () {
+    this.timeout(5000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const subidx = (idx===0) ? idx+1 : 0;

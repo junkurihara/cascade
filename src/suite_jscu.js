@@ -6,8 +6,8 @@ import {Suite} from './suite.js';
 import {getJscu} from './util.js';
 import * as utilKeyId from './keyid.js';
 import paramsJscu from './params_jscu.js';
-import {EncryptedMessage, RawEncryptedMessage} from './message.js';
-import {Signature, RawSignature} from './signature.js';
+import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
+import {createSignature, createRawSignature} from './signature.js';
 
 export class Jscu extends Suite {
   /**
@@ -105,7 +105,7 @@ export class Jscu extends Suite {
         const data = await jscu.pkc.encrypt(message.binary, publicJwk, options);
         const fed = new Uint8Array(data.data);
         delete data.data;
-        return new RawEncryptedMessage(fed, await utilKeyId.fromJscuKey(publicKeyObj), data);
+        return createRawEncryptedMessage(fed, await utilKeyId.fromJscuKey(publicKeyObj), data);
       }));
 
       // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
@@ -115,18 +115,18 @@ export class Jscu extends Suite {
         delete options.privateKey;
       }
 
-      encryptedObject = {message: new EncryptedMessage('jscu', 'public_key_encrypt', encrypted, options)};
+      encryptedObject = {message: createEncryptedMessage('jscu', 'public_key_encrypt', encrypted, options)};
     }
     else if (keys.sessionKey) { // symmetric key encryption
       if(options.name === 'AES-GCM') {  // TODO: other iv-required algorithms
         const iv = await jscu.random.getRandomBytes(paramsJscu.RECOMMENDED_IV_LENGTH);
         const data = await jscu.aes.encrypt(message.binary, keys.sessionKey, {name: options.name, iv});
         const keyId = await utilKeyId.fromRawKey(keys.sessionKey);
-        const obj = new RawEncryptedMessage(data, keyId, {iv});
+        const obj = createRawEncryptedMessage(data, keyId, {iv});
         encrypted = [obj]; // TODO, should be an Array?
       }
       else throw new Error('JscuInvalidEncryptionAlgorithm');
-      encryptedObject = {message: new EncryptedMessage('jscu', 'session_key_encrypt', encrypted, options)};
+      encryptedObject = {message: createEncryptedMessage('jscu', 'session_key_encrypt', encrypted, options)};
     }
     else throw new Error('JscuInvalidEncryptionKey');
 
@@ -175,7 +175,6 @@ export class Jscu extends Suite {
         msgKeySet.push(...filtered.map((m) => ({message: m, privateKey: pk}) ));
       }));
       if (msgKeySet.length === 0) throw new Error('UnableToDecryptWithGivenPrivateKey');
-
       // decrypt
       let errMsg = '';
       const decryptedArray = await Promise.all(msgKeySet.map( async (set) => {
@@ -229,10 +228,10 @@ export class Jscu extends Suite {
       const signature = await jscu.pkc.sign(message.binary, privateJwk, options.hash, Object.assign({format: 'raw'}, options));
       const keyId = await utilKeyId.fromJscuKey(privKey);
 
-      return new RawSignature(signature, keyId);
+      return createRawSignature(signature, keyId);
     }));
 
-    return {signature: new Signature('jscu', 'public_key_sign', signatures, options) };
+    return {signature: createSignature('jscu', 'public_key_sign', signatures, options) };
   }
 
   /**

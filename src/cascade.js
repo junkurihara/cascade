@@ -7,18 +7,25 @@ import {Jscu} from './suite_jscu.js';
 import {generateKeyObject, importKeys, Keys} from './keys.js';
 import {Signature} from './signature.js';
 import * as core from './core.js';
-
+import cloneDeep from 'lodash/cloneDeep';
 
 
 export async function createEncryptionCascade({keys, procedure}){
-  const cascade = new Cascade({mode: 'encrypt', keys, procedure});
+  const localKeys = cloneDeep(keys);
+  const localProcedure = procedure.map( (x) => cloneDeep(x));
+
+  const cascade = new Cascade();
+  cascade._init({mode: 'encrypt', keys: localKeys, procedure: localProcedure});
   await cascade._initEncryptionProcedure();
 
   return cascade;
 }
 
 export function createDecryptionCascade({keys, encrypted}){
-  const cascade = new Cascade({mode: 'decrypt', keys, encrypted});
+  const localKeys = cloneDeep(keys);
+
+  const cascade = new Cascade();
+  cascade._init({mode: 'decrypt', keys: localKeys, encrypted});
   cascade._initDecryptionProcedure();
 
   return cascade;
@@ -27,9 +34,7 @@ export function createDecryptionCascade({keys, encrypted}){
 ////////////////////
 const modes = ['encrypt', 'decrypt'];
 class Cascade extends Array {
-
-  constructor({mode, keys, procedure, encrypted}){
-    super();
+  _init({mode, keys, procedure, encrypted}){
     // assertions
     if (modes.indexOf(mode) < 0) throw new Error('InvalidMode');
     if (!(keys instanceof Keys)) throw new Error('NotKeyObject');

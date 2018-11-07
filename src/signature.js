@@ -7,21 +7,22 @@ import jseu from 'js-encoding-utils';
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];
 
+export function createSignature(suite, keyType, signatures, options = {}){
+  // assertion
+  if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
+  if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
+  if(suite === 'jscu' && typeof options.hash === 'undefined') throw new Error('HashMustBeSpecified');
+  if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
+
+  return new Signature(suite, keyType, signatures, options);
+}
+
 export class Signature {
   constructor(suite, keyType, signatures, options = {}){
-    // assertion
-    if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
-    if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
-    if(suite === 'jscu' && typeof options.hash === 'undefined') throw new Error('HashMustBeSpecified');
-
     this._suite = suite;
     this._keyType = keyType;
-    this._setSignatures(signatures);
-    this._options = options;
-  }
-
-  _setSignatures(signatures){
     this._signatures = new SignatureList(signatures);
+    this._options = options;
   }
 
   get suite () { return this._suite; }
@@ -34,11 +35,6 @@ export class Signature {
 class SignatureList extends Array {
   constructor(signatures){
     super();
-    this._set(signatures);
-  }
-
-  _set(signatures){
-    if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
     const binarySignatures = signatures.map( (sig) => {
       if(!(sig instanceof RawSignature)) throw new Error('NotRawSignatureObject');
       return sig;
@@ -47,10 +43,16 @@ class SignatureList extends Array {
   }
 }
 
+export function createRawSignature(sig, keyId){
+  // assertion
+  if(!(sig instanceof Uint8Array)) throw new Error('NonUint8ArraySignature');
+  if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');
+
+  return new RawSignature(sig, keyId);
+}
+
 export class RawSignature extends Uint8Array {
   constructor(sig, keyId){
-    if(!(sig instanceof Uint8Array)) throw new Error('NonUint8ArraySignature');
-    if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');
     super(sig);
     this._keyId = keyId;
   }

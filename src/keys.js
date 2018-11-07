@@ -2,6 +2,7 @@
  * keys.js
  */
 
+import cloneDeep from 'lodash/cloneDeep';
 import {Jscu} from './suite_jscu.js';
 import {OpenPGP} from './suite_openpgp.js';
 
@@ -67,8 +68,13 @@ export class Keys {
  * @return {Promise<Keys>}
  */
 export async function importKeys(format='string', {keys, suite, mode}){
+  const localFormat = cloneDeep(format);
+  const localKeys = cloneDeep(keys);
+  const localSuite = cloneDeep(suite);
+  const localMode = cloneDeep(mode);
+
   const keyObj = new Keys();
-  await keyObj.from(format, {keys, suite, mode});
+  await keyObj.from(localFormat, {keys: localKeys, suite: localSuite, mode: localMode});
   return keyObj;
 }
 
@@ -141,23 +147,24 @@ async function importKeyObjects({keys, suite, mode}){
  * @return {Promise<*>}
  */
 export async function generateKeyObject(keyParams) {
+  const localKeyParams = cloneDeep(keyParams);
   let returnKey;
-  if (keyParams.suite === 'openpgp') { /** OpenPGP **/
+  if (localKeyParams.suite === 'openpgp') { /** OpenPGP **/
     returnKey = await OpenPGP.generateKey({
-      userIds: keyParams.userIds,
-      passphrase: keyParams.passphrase,
-      params: keyParams.keyParams
+      userIds: localKeyParams.userIds,
+      passphrase: localKeyParams.passphrase,
+      params: localKeyParams.keyParams
     })
       .catch((e) => {
         throw new Error(`GPGKeyGenerationFailed: ${e.message}`);
       });
 
   }
-  else if (keyParams.suite === 'jscu') { /** js-crypto-utils **/
+  else if (localKeyParams.suite === 'jscu') { /** js-crypto-utils **/
     returnKey = await Jscu.generateKey({
-      passphrase: keyParams.passphrase,
-      params: keyParams.keyParams,
-      encryptOptions: keyParams.encryptOptions
+      passphrase: localKeyParams.passphrase,
+      params: localKeyParams.keyParams,
+      encryptOptions: localKeyParams.encryptOptions
     })
       .catch((e) => {
         throw new Error(`JscuKeyGenerationFailed: ${e.message}`);

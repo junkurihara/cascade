@@ -1,13 +1,13 @@
 /**
- * params.basic.js
+ * params-basic.js
  */
 
-import jscu from 'js-crypto-utils';
+
 import * as cascade from '../src/index.js';
 
 // Encryption and Signing Parameters
 const curves = [ 'P-256', 'P-384', 'P-521' ];
-const modulusLength = [ 1024, 2048 ];
+const modulusLength = [ 2048, 2048 ];
 const userIds = [ 'test@example.com' ];
 const paramArray = [{name: 'ec', param: curves}, {name: 'rsa', param: modulusLength}];
 
@@ -16,6 +16,8 @@ const openpgpSignConf = {required: true, suite: 'openpgp', options: {}};
 
 const jscuSessionEncryptConf = {suite: 'jscu', options: {name: 'AES-GCM'}};
 const openpgpgSessionEncryptConf = {suite: 'openpgp', options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }};
+
+const jscuOnetimeSessionEncryptConf = {onetimeKey: {keyParams: {type: 'session', length: 32}}, suite: 'jscu', options: {name: 'AES-GCM'}};
 
 
 export async function createParam() {
@@ -44,6 +46,16 @@ class ParamsBasic{
       modulusLength.map (
         (ml) => cascade.generateKey({suite: 'openpgp', userIds, keyParams: {type: 'rsa', keyExpirationTime: 0, modulusLength: ml}}))
     );
+
+    let jscu;
+    if (typeof window !== 'undefined' && typeof window.jscu !== 'undefined') jscu = window.jscu;
+    else {
+      try {
+        jscu = require('js-crypto-utils');
+      } catch(e) {
+        throw new Error(`FailedToLoadJSCU: ${e.message}`);
+      } // work around
+    }
     this.Keys.sessionKey = await jscu.random.getRandomBytes(32);
   }
 
@@ -72,4 +84,5 @@ class ParamsBasic{
   get openpgpSignConf () { return openpgpSignConf; }
   get jscuSessionEncryptConf () { return jscuSessionEncryptConf; }
   get openpgpgSessionEncryptConf () { return openpgpgSessionEncryptConf; }
+  get jscuOnetimeSessionEncryptConf () { return jscuOnetimeSessionEncryptConf; }
 }

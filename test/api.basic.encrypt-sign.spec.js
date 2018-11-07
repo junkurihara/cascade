@@ -7,7 +7,7 @@ import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-import {createParam} from './params.basic.js';
+import {createParam} from './params-basic.js';
 
 describe(`${env}: single public key encryption/decryption with simultaneous signing/verification`, () => {
 

@@ -3,6 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
+import cloneDeep from 'lodash/cloneDeep';
 import {KeyId, KeyIdList} from './keyid.js';
 
 /**
@@ -11,16 +12,14 @@ import {KeyId, KeyIdList} from './keyid.js';
  * @return {Message}
  */
 export function importMessage(msg){
-  const obj = new Message(msg);
+  const localMessage = cloneDeep(msg);
+  const obj = new Message();
+  obj._init(localMessage);
   return obj;
 }
 
 class Message {
-  constructor(msg){
-    this._setMessage(msg);
-  }
-
-  _setMessage (msg) {
+  _init(msg){
     if(msg instanceof Uint8Array){
       this._message = msg;
       this._messageType = 'binary';
@@ -50,12 +49,23 @@ class Message {
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
 
+export function createEncryptedMessage(suite, keyType, message, options = {}){
+  // assertion
+  if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
+  if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
 
-export class EncryptedMessage {
+  return new EncryptedMessage(suite, keyType, message, options);
+}
+
+export function createRawEncryptedMessage (data, keyId, params) {
+  if(!(data instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
+  if(!(keyId instanceof KeyId) && !(keyId instanceof KeyIdList)) throw new Error('NonKeyIdOrKeyIdListObject');
+
+  return new RawEncryptedMessage(data, keyId, params);
+}
+
+class EncryptedMessage {
   constructor(suite, keyType, message, options = {}){
-    // assertion
-    if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
-    if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
 
     this._suite = suite;
     this._keyType = keyType;
@@ -75,16 +85,16 @@ export class EncryptedMessage {
 
 export class RawEncryptedMessage extends Uint8Array {
   constructor(data, keyId, params = {}){
-    if(!(data instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
-    if(!(keyId instanceof KeyId) && !(keyId instanceof KeyIdList)) throw new Error('NonKeyIdOrKeyIdListObject');
-
     super(data);
     this._keyId = keyId;
     this._params = params;
   }
 
   toBase64 () { return jseu.encoder.encodeBase64(this); }
-  toBuffer () { return new Uint8Array(this); }
+  toBuffer () {
+    const buf = new Uint8Array(this);
+    return new Uint8Array(buf);
+  }
 
   get keyId () { return this._keyId; }
   get params () { return this._params; }
