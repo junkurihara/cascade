@@ -22,7 +22,8 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
     param = await createParam();
   });
 
-  it('jscu: EC/RSA encryption and signing test', async () => {
+  it('jscu: EC/RSA encryption and signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -49,7 +50,8 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
     }));
   });
   
-  it('openpgp: RSA/EC encryption and signing test', async () => {
+  it('openpgp: RSA/EC encryption and signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -77,7 +79,8 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
   });
 
 
-  it('mix1 (encrypt: openpgp, sign: jscu): RSA/EC encryption and signing test', async () => {
+  it('mix1 (encrypt: openpgp, sign: jscu): RSA/EC encryption and signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -105,7 +108,8 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
   });
 
 
-  it('mix2 (encrypt: jscu, sign: openpgp): RSA/EC encryption and sining test', async () => {
+  it('mix2 (encrypt: jscu, sign: openpgp): RSA/EC encryption and sining test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {

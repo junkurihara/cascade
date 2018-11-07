@@ -22,7 +22,8 @@ describe(`${env}: public key encryption/decryption`, () => {
     param = await createParam();
   });
 
-  it('jscu: EC/RSA encryption test', async () => {
+  it('jscu: EC/RSA encryption test', async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -47,7 +48,8 @@ describe(`${env}: public key encryption/decryption`, () => {
     }));
   });
   
-  it('openpgp: RSA/EC encryption test', async () => {
+  it('openpgp: RSA/EC encryption test', async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -72,7 +74,8 @@ describe(`${env}: public key encryption/decryption`, () => {
     }));
   });
 
-  it('jscu: EC/RSA encryption test with multiple public keys', async () => {
+  it('jscu: EC/RSA encryption test with multiple public keys', async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {

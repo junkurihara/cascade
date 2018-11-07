@@ -22,7 +22,8 @@ describe(`${env}: public key signing/verification`, () => {
     param = await createParam();
   });
 
-  it('jscu: EC/RSA signing test', async () => {
+  it('jscu: EC/RSA signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -47,7 +48,8 @@ describe(`${env}: public key signing/verification`, () => {
     }));
   });
   
-  it('openpgp: RSA/EC signing test', async () => {
+  it('openpgp: RSA/EC signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -73,7 +75,8 @@ describe(`${env}: public key signing/verification`, () => {
   });
 
 
-  it('jscu: EC/RSA signing test with multiple secret keys', async () => {
+  it('jscu: EC/RSA signing test with multiple secret keys',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const subidx = (idx===0) ? idx+1 : 0;
@@ -106,7 +109,7 @@ describe(`${env}: public key signing/verification`, () => {
   });
 
   it('openpgp: RSA/EC signing test with multiple secret keys', async function () {
-    this.timeout(5000);
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const subidx = (idx===0) ? idx+1 : 0;

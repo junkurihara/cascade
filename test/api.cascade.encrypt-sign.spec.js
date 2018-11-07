@@ -22,17 +22,20 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
     param = await createParam();
   });
 
-  it('jscu: EC/RSA encryption and signing mono-step procedure test', async () => {
+  it('jscu: EC/RSA encryption and signing mono-step procedure test',  async function () {
+    this.timeout(50000);
     await jscuMainRoutine(message, param, []);
   });
 
-  it('jscu: EC/RSA encryption and signing hybrid-step procedure test via session key encrypt', async () => {
+  it('jscu: EC/RSA encryption and signing hybrid-step procedure test via session key encrypt',  async function () {
+    this.timeout(50000);
     await jscuMainRoutine(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
   });
 
-  it('jscu: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt', async () => {
+  it('jscu: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt',  async function () {
+    this.timeout(50000);
     await jscuMainRoutine(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },

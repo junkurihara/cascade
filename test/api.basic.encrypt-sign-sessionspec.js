@@ -22,7 +22,8 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
     param = await createParam();
   });
 
-  it('jscu: symmetric key encryption and public key signing test', async () => {
+  it('jscu: symmetric key encryption and public key signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -49,7 +50,8 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
     }));
   });
   
-  it('openpgp: symmetric key encryption and public key signing test', async () => {
+  it('openpgp: symmetric key encryption and public key signing test',  async function () {
+    this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
