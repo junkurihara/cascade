@@ -100,6 +100,15 @@ export class Jscu extends Suite {
         delete options.privateKeyPass;
       }
 
+      // for ecdh ephemeral keys
+      if(!options.privateKey) {
+        const jwk = await keys.publicKeys[0].export('jwk');
+        if (jwk.kty === 'EC'){
+          const ephemeral = await jscu.pkc.generateKey('EC', {namedCurve: jwk.crv});
+          options.privateKey = ephemeral.privateKey;
+        }
+      }
+
       encrypted = await Promise.all(keys.publicKeys.map( async (publicKeyObj) => {
         const publicJwk = await publicKeyObj.export('jwk');
         const data = await jscu.pkc.encrypt(message.binary, publicJwk, options);

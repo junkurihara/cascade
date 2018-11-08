@@ -28,6 +28,9 @@ const openpgpOnetimeSessionEncryptConf = {
   options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }
 };
 
+const jscuOnetimePublicEncryptConf = {
+
+};
 
 export async function createParam() {
   const param = new ParamsBasic();
@@ -80,6 +83,13 @@ class ParamsBasic{
     };
   }
 
+  jscuEncryptConfEphemeral (paramObject) {
+    return {
+      suite: 'jscu',
+      options: (paramObject.name === 'ec') ? { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' } : {hash: 'SHA-256'},
+    };
+  }
+
   jscuSignConf (paramObject) {
     return {
       required: true,
@@ -95,6 +105,7 @@ class ParamsBasic{
   get openpgpgSessionEncryptConf () { return openpgpgSessionEncryptConf; }
   get jscuOnetimeSessionEncryptConf () { return jscuOnetimeSessionEncryptConf; }
   get openpgpOnetimeSessionEncryptConf () { return openpgpOnetimeSessionEncryptConf; }
+  get jscuOnetimePublicEncryptConf () { return jscuOnetimePublicEncryptConf; }
 }
 
 //   defaultEncryptConfig: {
