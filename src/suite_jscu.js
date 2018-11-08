@@ -5,7 +5,7 @@
 import {Suite} from './suite.js';
 import {getJscu} from './util.js';
 import * as utilKeyId from './keyid.js';
-import paramsJscu from './params_jscu.js';
+import params from './params.js';
 import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
 import {createSignature, createRawSignature} from './signature.js';
 
@@ -119,7 +119,7 @@ export class Jscu extends Suite {
     }
     else if (keys.sessionKey) { // symmetric key encryption
       if(options.name === 'AES-GCM') {  // TODO: other iv-required algorithms
-        const iv = await jscu.random.getRandomBytes(paramsJscu.RECOMMENDED_IV_LENGTH);
+        const iv = await jscu.random.getRandomBytes(params.jscu.ivLengthAesGcm);
         const data = await jscu.aes.encrypt(message.binary, keys.sessionKey, {name: options.name, iv});
         const keyId = await utilKeyId.fromRawKey(keys.sessionKey);
         const obj = createRawEncryptedMessage(data, keyId, {iv});

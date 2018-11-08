@@ -4,7 +4,7 @@
 import jseu from 'js-encoding-utils';
 import {getOpenPgp} from './util.js';
 import {Suite} from './suite.js';
-import paramsPGP from './params_openpgp.js';
+import commonParams from './params.js';
 import * as utilKeyId from './keyid.js';
 import {createRawSignature, createSignature, RawSignature} from './signature.js';
 import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
@@ -18,7 +18,7 @@ export class OpenPGP extends Suite {
    * @param params {Object}
    * @return {Promise<*>}
    */
-  static async generateKey({userIds=paramsPGP.DEFAULT_USER, passphrase=null, params}) {
+  static async generateKey({userIds=commonParams.openpgp.defaultUser, passphrase=null, params}) {
     const openpgp = getOpenPgp();
 
     let options;
@@ -34,7 +34,7 @@ export class OpenPGP extends Suite {
     case 'ec':
       options = {
         userIds,       // multiple user IDs
-        curve: paramsPGP.CURVE_LIST[params.curve].name,  // applied the naming rule of jscu
+        curve: commonParams.openpgp.curveList[params.curve].name,  // applied the naming rule of jscu
         passphrase,  // protects the private key
         keyExpirationTime: params.keyExpirationTime
       };

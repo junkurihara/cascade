@@ -2,8 +2,6 @@
  * params.js
  */
 
-import openpgpParams from './params_openpgp.js';
-
 export default {
   ////////////////////////////////////////////////////////////
   publicKeyIdLEN: 32,
@@ -14,58 +12,30 @@ export default {
   sessionKeyIdHash: 'SHA-256', // for hash digest of session key
 
   ////////////////////////////////////////////////////////////
-  defaultEncryptConfig: {
-    encrypt: {
-      suite: 'openpgp',  // 'jscu'
-      options: {
-        detached: true,
-        compression: 'zlib'
-      },
-    },
-    sign: {
-      required: true,
-      suite: 'openpgp', // 'jscu'
-      options: { },
-    }
-  },
+  // Suite-specific parameters below
   ////////////////////////////////////////////////////////////
-  defaultProcedure: [
-    // keyParams is set for steps that involves automatic key generation.
+  // jscu
+  jscu: {
+    // iv length for AES-GCM
+    ivLengthAesGcm: 12,
+  },
 
-    // first step that encrypts the given data
-    // non-last step generates key automatically on site.
-    {
-      encrypt: {
-        suite: 'openpgp',// 'jscu'
-        keyParams: openpgpParams.SYMMETRIC_AES256_AEAD_EAX, // default algorithms like ecc, 2: this key encrypts step 1 key
-        options: {
-          detached: false,
-          compression: 'zlib'
-        },
-      },
-      sign: {
-        required: true,
-        options: {},
-      }
-    }, // -> output "encrypted data" "key id"
+  ////////////////////////////////////////////////////////////
+  // OpenPGP
+  openpgp : {
+    defaultUser : '<example@example.com>',
 
+    // openpgp.worker.js must be located in the place where api_openpgp.js and js-file bundling core-file.
+    // Namely in this project, they are located in 'dist' and it will be './' from the viewpoint of bundled file.
+    workerPathWeb: './openpgp.worker.min.js',
 
-    // final step that encrypts the key used in the previous step under the given original key.
-    // last step feeds the given key.
-    {
-      encrypt: {
-        suite: 'openpgp',  // 'jscu'
-        options: {
-          detached: false, // for signing simultaneously with encryption
-          compression: 'zlib'
-        },
-      },
-      sign: {
-        required: true,
-        suite: 'openpgp', // 'jscu'
-        options: { },
-      }
-      // keyParams is unnecessary to be set. key params will be ignored at last step.
-    } // -> output "encrypted decryption key for 1", "key id for 1"
-  ],
+    workerPathNode: '../node_modules/openpgp/dist/openpgp.worker.min.js',
+
+    // mapping names of curve
+    curveList: {
+      'P-256': {name: 'p256'},
+      'P-384': {name: 'p384'},
+      'P-521': {name: 'p521'}
+    }
+  }
 };

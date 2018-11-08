@@ -52,8 +52,8 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-utils": "^0.12.4",
-    "js-encoding-utils": "^0.2.7",
+    "js-crypto-utils": "^0.12.5",
+    "js-encoding-utils": "^0.2.8",
     "lodash": "^4.17.11",
     "openpgp": "^4.2.1"
   },
