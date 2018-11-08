@@ -5,6 +5,7 @@
 import jseu from 'js-encoding-utils';
 import params from './params.js';
 import {getJscu} from './util.js';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Calculate key id from openpgp key object
@@ -46,7 +47,8 @@ export async function fromRawKey(bin, len = params.sessionKeyIdLength) {
 
 export function createKeyId(keyId){
   if(!(keyId instanceof Uint8Array)) throw new Error('NotUint8ArrayKeyId');
-  return new KeyId(keyId);
+  const localKeyId = cloneDeep(keyId);
+  return new KeyId(localKeyId);
 }
 
 export class KeyId extends Uint8Array {

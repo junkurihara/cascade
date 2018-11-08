@@ -2,7 +2,7 @@
  * keys.js
  */
 
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 import {Jscu} from './suite_jscu.js';
 import {OpenPGP} from './suite_openpgp.js';
 

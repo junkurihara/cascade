@@ -7,7 +7,7 @@ import {Jscu} from './suite_jscu.js';
 import {generateKeyObject, importKeys, Keys} from './keys.js';
 import {Signature} from './signature.js';
 import * as core from './core.js';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 
 
 export async function createEncryptionCascade({keys, procedure}){

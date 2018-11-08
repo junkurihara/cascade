@@ -3,7 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 import {KeyId, KeyIdList} from './keyid.js';
 
 /**
