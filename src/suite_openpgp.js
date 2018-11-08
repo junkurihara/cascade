@@ -159,7 +159,7 @@ export class OpenPGP extends Suite {
 
 
   /**
-   * Decrypt Openpgp encrypted message
+   * Decrypt OpenPGP encrypted message
    * @param encrypted
    * @param keys
    * @param options
@@ -196,7 +196,7 @@ export class OpenPGP extends Suite {
         const long = sig.signature.packets.map( (s) => new Uint8Array(s.issuerFingerprint));
         const filtered = long.filter((l) => short === jseu.encoder.arrayBufferToHexString(l).slice(0, 16) );
         if (filtered.length === 0) throw new Error('SomethingWrongInOpenPGPSignature');
-        return {keyId: filtered[0], valid: sig.valid};
+        return {keyId: utilKeyId.createKeyId(filtered[0]), valid: sig.valid};
       });
     }
 
@@ -299,7 +299,7 @@ export class OpenPGP extends Suite {
     const idArray = signatureObjects.map( (x) => x.openpgpSignature.issuerKeyId.toHex());
     openpgpObjects.map( (sig) => {
       if(idArray.indexOf(sig.openpgpSignature.issuerKeyId.toHex().slice(0,16)) < 0){
-        unverified.push({keyId: sig.openpgpSignature.issuerFingerprint, valid: undefined});
+        unverified.push({keyId: utilKeyId.createKeyId(sig.openpgpSignature.issuerFingerprint), valid: undefined});
       }
     });
 

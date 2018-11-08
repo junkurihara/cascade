@@ -44,7 +44,7 @@ export async function fromRawKey(bin, len = params.sessionKeyIdLength) {
 }
 
 
-function createKeyId(keyId){
+export function createKeyId(keyId){
   if(!(keyId instanceof Uint8Array)) throw new Error('NotUint8ArrayKeyId');
   return new KeyId(keyId);
 }

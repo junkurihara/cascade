@@ -29,7 +29,15 @@ const openpgpOnetimeSessionEncryptConf = {
 };
 
 const jscuOnetimePublicEncryptConf = {
+  suite: 'jscu',
+  onetimeKey: {keyParams: {type: 'ec', curve: 'P-256'} },
+  options: { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' }
+};
 
+const openpgpOnetimePublicEncryptConf = {
+  suite: 'openpgp',
+  onetimeKey: {userIds: ['user@example.com'], keyParams: {type: 'ec', keyExpirationTime: 0, curve: 'P-256'}},
+  options: { detached: true, compression: 'zlib' }
 };
 
 export async function createParam() {
@@ -106,6 +114,7 @@ class ParamsBasic{
   get jscuOnetimeSessionEncryptConf () { return jscuOnetimeSessionEncryptConf; }
   get openpgpOnetimeSessionEncryptConf () { return openpgpOnetimeSessionEncryptConf; }
   get jscuOnetimePublicEncryptConf () { return jscuOnetimePublicEncryptConf; }
+  get openpgpOnetimePublicEncryptConf () { return openpgpOnetimePublicEncryptConf; }
 }
 
 //   defaultEncryptConfig: {

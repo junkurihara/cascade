@@ -69,25 +69,39 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
 
   it('openpgp: EC/RSA encryption and signing hybrid-step procedure test via session key encrypt',  async function () {
     this.timeout(50000);
-    await jscuMainRoutine(message, param, [
+    await openpgpMainRoutine(message, param, [
       { encrypt: param.openpgpOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
   });
 
   it('openpgp: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt',  async function () {
     this.timeout(50000);
-    await jscuMainRoutine(message, param, [
+    await openpgpMainRoutine(message, param, [
       { encrypt: param.openpgpOnetimeSessionEncryptConf, sign: {required: true} },
       { encrypt: param.openpgpOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
   });
 
-  // it('jscu: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt',  async function () {
-  //   this.timeout(50000);
-  //   await jscuMainRoutine(message, param, [
-  //     { encrypt: param.jscuOnetimePublicEncryptConf, sign: {required: true} },
-  //   ]);
-  // });
+  it('jscu: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt',  async function () {
+    this.timeout(50000);
+    await jscuMainRoutine(message, param, [
+      { encrypt: param.jscuOnetimePublicEncryptConf, sign: {required: true} },
+    ]);
+  });
+
+  it('jscu: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt with ephemeralKeys',  async function () {
+    this.timeout(50000);
+    await jscuMainRoutineEphemeral(message, param, [
+      { encrypt: param.jscuOnetimePublicEncryptConf, sign: {required: true} },
+    ]);
+  });
+
+  it('openpgp: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt',  async function () {
+    this.timeout(50000);
+    await openpgpMainRoutine(message, param, [
+      { encrypt: param.openpgpOnetimePublicEncryptConf, sign: {required: true} },
+    ]);
+  });
 
 });
 

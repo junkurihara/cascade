@@ -89,7 +89,7 @@ class Cascade extends Array {
       let nextStepMessage;
       if (keyParams.keyParams.type === 'session') nextStepMessage = onetimeKey.key;
       else {
-        if (keyParams.suite === 'jscu') nextStepMessage = onetimeKey.privateKey.export('der');
+        if (keyParams.suite === 'jscu') nextStepMessage = await onetimeKey.privateKey.export('der');
         else if (keyParams.suite === 'openpgp') nextStepMessage = onetimeKey.privateKey.toPacketlist().write();
         else throw new Error('UnknownSuite');
       }
@@ -144,18 +144,26 @@ class Cascade extends Array {
         if (this[idx-1].data.message.keyType === 'session_key_encrypt') nextDecryptionKeyObject = {sessionKey: decrypted[idx].data};
         else {
           if (this[idx-1].data.message.suite === 'jscu'){
-            nextDecryptionKeyObject = {privateKeys: Jscu.importKey('der', decrypted[idx].data)};
+            nextDecryptionKeyObject = {privateKeys: [await Jscu.importKey('der', decrypted[idx].data)]};
           }
           else if (this[idx-1].data.message.suite === 'openpgp'){
-            nextDecryptionKeyObject = {privateKeys: OpenPGP.importKey('der', decrypted[idx].data)};
+            nextDecryptionKeyObject = {privateKeys: [await OpenPGP.importKey('der', decrypted[idx].data)]};
           }
           else throw new Error('UnknownSuite');
         }
 
         // updated config and key object for signing and key import
-        if (this[idx-1].data.signature instanceof Signature){
+        if (this[idx-1].data.signature instanceof Signature && typeof verificationKeys !== 'undefined'){
           nextDecryptionKeyObject.publicKeys = verificationKeys;
           suiteObject.sign_verify = this[idx-1].data.signature.suite;
+          modeArray.push('verify');
+        }
+        // WA for embedded signature
+        else if (typeof this[idx-1].data.message !== 'undefined'
+          && this[idx-1].data.message.suite === 'openpgp'
+          && typeof verificationKeys !== 'undefined' ) {
+          nextDecryptionKeyObject.publicKeys = verificationKeys;
+          suiteObject.sign_verify = 'openpgp';
           modeArray.push('verify');
         }
 
