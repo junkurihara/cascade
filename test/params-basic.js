@@ -17,7 +17,16 @@ const openpgpSignConf = {required: true, suite: 'openpgp', options: {}};
 const jscuSessionEncryptConf = {suite: 'jscu', options: {name: 'AES-GCM'}};
 const openpgpgSessionEncryptConf = {suite: 'openpgp', options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }};
 
-const jscuOnetimeSessionEncryptConf = {onetimeKey: {keyParams: {type: 'session', length: 32}}, suite: 'jscu', options: {name: 'AES-GCM'}};
+const jscuOnetimeSessionEncryptConf = {
+  onetimeKey: {keyParams: {type: 'session', length: 32}},
+  suite: 'jscu',
+  options: {name: 'AES-GCM'}
+};
+const openpgpOnetimeSessionEncryptConf = {
+  onetimeKey: {keyParams: {type: 'session', length: 32}},
+  suite: 'openpgp',
+  options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }
+};
 
 
 export async function createParam() {
@@ -85,6 +94,7 @@ class ParamsBasic{
   get jscuSessionEncryptConf () { return jscuSessionEncryptConf; }
   get openpgpgSessionEncryptConf () { return openpgpgSessionEncryptConf; }
   get jscuOnetimeSessionEncryptConf () { return jscuOnetimeSessionEncryptConf; }
+  get openpgpOnetimeSessionEncryptConf () { return openpgpOnetimeSessionEncryptConf; }
 }
 
 //   defaultEncryptConfig: {
