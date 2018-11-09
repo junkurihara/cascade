@@ -3,6 +3,8 @@
  */
 import {KeyId} from './keyid.js';
 import jseu from 'js-encoding-utils';
+import cloneDeep from 'lodash.clonedeep';
+import msgpack from 'msgpack-lite';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];
@@ -30,6 +32,14 @@ export class Signature {
   get signatures () { return this._signatures; }
   get options () { return this._options; }
 
+  serialize () {
+    return msgpack.encode({
+      suite: this._suite,
+      keyType: this._keyType,
+      signatures: Array.from(this._signatures).map( (s) => s.toJsObject() ),
+      options: this._options
+    });
+  }
 }
 
 class SignatureList extends Array {
@@ -58,7 +68,18 @@ export class RawSignature extends Uint8Array {
   }
 
   toBase64 () { return jseu.encoder.encodeBase64(this); }
-  toBuffer () { return new Uint8Array(this); }
+  toBuffer () { const buf = new Uint8Array(this);
+    return cloneDeep(buf);
+  }
+  toJsObject () {
+    return {
+      data: this.toBuffer(),
+      keyId: this._keyId,
+    };
+  }
+  serialize () {
+    return msgpack.encode(this.toJsObject());
+  }
 
   get keyId () { return this._keyId; }
 }

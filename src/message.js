@@ -6,6 +6,8 @@ import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 import {KeyId, KeyIdList} from './keyid.js';
 
+import msgpack from 'msgpack-lite';
+
 /**
  * import message and translate it to message object.
  * @param msg
@@ -81,6 +83,15 @@ class EncryptedMessage {
   get keyType () { return this._keyType; }
   get message () { return this._message; }
   get options () { return this._options; }
+
+  serialize() {
+    return msgpack.encode({
+      suite: this._suite,
+      keyType: this._keyType,
+      message: Array.from(this._message).map( (raw) => raw.toJsObject()),
+      options: this._options
+    });
+  }
 }
 
 export class RawEncryptedMessage extends Uint8Array {
@@ -93,7 +104,17 @@ export class RawEncryptedMessage extends Uint8Array {
   toBase64 () { return jseu.encoder.encodeBase64(this); }
   toBuffer () {
     const buf = new Uint8Array(this);
-    return new Uint8Array(buf);
+    return cloneDeep(buf);
+  }
+  toJsObject () {
+    return {
+      data: this.toBuffer(),
+      keyId: this._keyId,
+      params: this._params
+    };
+  }
+  serialize () {
+    return msgpack.encode(this.toJsObject());
   }
 
   get keyId () { return this._keyId; }

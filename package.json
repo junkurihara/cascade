@@ -55,6 +55,7 @@
     "js-crypto-utils": "^0.12.5",
     "js-encoding-utils": "^0.2.8",
     "lodash.clonedeep": "^4.5.0",
+    "msgpack-lite": "^0.1.26",
     "openpgp": "^4.2.1"
   },
   "browser": {

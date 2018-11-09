@@ -9,7 +9,7 @@ const expect = chai.expect;
 
 import {createParam} from './params-basic.js';
 
-describe(`${env}: single public key encryption/decryption with simultaneous signing/verification`, () => {
+describe(`${env}: cascaded single public key encryption/decryption with simultaneous signing/verification`, () => {
 
   let message;
   let param;
