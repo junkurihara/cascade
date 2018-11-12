@@ -54,7 +54,20 @@ export class EncryptedMessage {
   }
 
   _setMessage(message) {
-    this._message = new RawEncryptedMessageList(message);
+    this._message = new RawEncryptedMessageList();
+    this._message._set(message);
+  }
+
+  extract() {
+    const returnArray = cloneDeep(this._message);
+    this._message = new RawEncryptedMessageList();
+    this._message._set([]);
+    return returnArray.toArray();
+  }
+
+  insert(messageArray) {
+    this._message = new RawEncryptedMessageList();
+    this._message._set(messageArray);
   }
 
   get suite() { return this._suite; }
@@ -102,12 +115,7 @@ export class RawEncryptedMessage extends Uint8Array {
   get params() { return this._params; }
 }
 
-class RawEncryptedMessageList extends Array {
-  constructor(message) {
-    super();
-    this._set(message);
-  }
-
+export class RawEncryptedMessageList extends Array {
   _set(message) {
     if (!(message instanceof Array)) throw new Error('InvalidEncryptedMessageList');
     const binaryMessage = message.map((m) => {

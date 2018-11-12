@@ -3,10 +3,8 @@
  */
 
 import msgpack from 'msgpack-lite';
-import {EncryptedMessage} from './encrypted_message.js';
-import {Signature} from './signature.js';
-import {importEncryptedBuffer} from './encrypted_message';
-import {importSignatureBuffer} from './signature';
+import {importEncryptedBuffer, EncryptedMessage, RawEncryptedMessageList} from './encrypted_message.js';
+import {importSignatureBuffer, Signature} from './signature.js';
 
 export function importCascadedBuffer(serialized){
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
@@ -43,6 +41,21 @@ export class CascadedData extends Array {
   constructor(data){
     super();
     this.push(...data);
+  }
+
+  extract(idx) {
+    if (idx > this.length -1 || idx < 0) throw new Error('InvalidIndexOutOfRange');
+    if (typeof this[idx].message === 'undefined') throw new Error('MessageObjectDoesNotExist');
+
+    return this[idx].message.extract();
+  }
+
+  insert(idx, message) {
+    if (idx > this.length -1 || idx < 0) throw new Error('InvalidIndexOutOfRange');
+    if (!(message instanceof Array)) throw new Error('InvalidEncryptedMessageArray');
+    if (this[idx].message.length > 0) throw new Error('MessageAlreadyExists');
+
+    this[idx].message.insert(message);
   }
 
   serialize() {

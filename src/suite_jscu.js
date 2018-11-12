@@ -23,10 +23,10 @@ export class Jscu extends Suite {
     if (params.type === 'session') {
       if (!params.length) throw new Error('params.length must be specified');
       const rawKey = await jscu.random.getRandomBytes(params.length);
-      const keyIds = [await utilKeyId.fromRawKey(rawKey)];
+      const keyId = await utilKeyId.fromRawKey(rawKey);
       return {
         key: rawKey,
-        keyIds
+        keyId
       };
     }
     else if (params.type === 'ec' || params.type === 'rsa') {
@@ -34,7 +34,7 @@ export class Jscu extends Suite {
       const options = (params.type === 'ec') ? {namedCurve: params.curve} : {modulusLength: params.modulusLength};
 
       const jwKeys = await jscu.pkc.generateKey(keyType, options);
-      const keyIds = [await utilKeyId.fromJscuKey(new jscu.Key('jwk', jwKeys.publicKey))];
+      const keyId = await utilKeyId.fromJscuKey(new jscu.Key('jwk', jwKeys.publicKey));
 
       const publicKeyObj = new jscu.Key('jwk', jwKeys.publicKey);
       let privateKeyObj = new jscu.Key('jwk', jwKeys.privateKey);
@@ -48,7 +48,7 @@ export class Jscu extends Suite {
       return {
         publicKey: publicKeyObj,
         privateKey: privateKeyObj,
-        keyIds
+        keyId
       };
     }
     else throw new Error('JscuUnsupportedKeyType');

@@ -50,16 +50,19 @@ export class OpenPGP extends Suite {
 
     if (params.type === 'rsa' || params.type === 'ec') {
       const kp = await openpgp.generateKey(options);
+      let keyId = kp.key.getKeys().map((k) => utilKeyId.fromOpenPgpKey(k));
+      if (keyId.length === 1) keyId = keyId[0];
+
       return {
         publicKey: kp.key.toPublic(),
         privateKey: kp.key,
-        keyIds: kp.key.getKeys().map((k) => utilKeyId.fromOpenPgpKey(k)) //kp.key.getKeyIds().map( (bid) => bid.toHex())
+        keyId  //kp.key.getKeyIds().map( (bid) => bid.toHex())
       };
     }
     else if (params.type === 'session') {
       const rawKey = await openpgp.crypto.random.getRandomBytes(options.length);
-      const keyIds = [await utilKeyId.fromRawKey(rawKey)];
-      return {key: rawKey, keyIds};
+      const keyId = await utilKeyId.fromRawKey(rawKey);
+      return {key: rawKey, keyId};
     }
   }
 

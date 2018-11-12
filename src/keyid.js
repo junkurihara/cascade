@@ -64,6 +64,8 @@ export class KeyId extends Uint8Array {
   }
 }
 
+
+// NOTE: KeyIdList is used only for EncryptedMessage generated in OpenPGP.
 export function createKeyIdList (keyIds) {
   const obj = new KeyIdList();
   obj._init(keyIds);
