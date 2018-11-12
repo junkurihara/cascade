@@ -180,7 +180,7 @@ export class Jscu extends Suite {
       const msgKeySet = [];
       await Promise.all(keys.privateKeys.map( async (pk) => {
         const keyId = await utilKeyId.fromJscuKey(pk);
-        const filtered = Array.from(encrypted.message.message).filter( (m) => (m.keyId.toHex() === keyId.toHex()));
+        const filtered = encrypted.message.message.filter( (m) => (m.keyId.toHex() === keyId.toHex()));
         msgKeySet.push(...filtered.map((m) => ({message: m, privateKey: pk}) ));
       }));
       if (msgKeySet.length === 0) throw new Error('UnableToDecryptWithGivenPrivateKey');
@@ -260,7 +260,7 @@ export class Jscu extends Suite {
     const unverified = [];
     await Promise.all(keys.publicKeys.map( async (pk) => {
       const keyId = await utilKeyId.fromJscuKey(pk);
-      const filtered = Array.from(signature.signatures).filter( (s) => {
+      const filtered = signature.signatures.filter( (s) => {
         if(s.keyId.toHex() === keyId.toHex()) return true;
         else{
           unverified.push({keyId: s.keyId, valid: undefined});

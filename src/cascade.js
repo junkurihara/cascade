@@ -6,6 +6,7 @@ import {OpenPGP} from './suite_openpgp.js';
 import {Jscu} from './suite_jscu.js';
 import {generateKeyObject, importKeys, Keys} from './keys.js';
 import {Signature} from './signature.js';
+import {CascadedData, createCascadedData} from './cascaded_data.js';
 import * as core from './core.js';
 import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 
@@ -53,7 +54,7 @@ class Cascade extends Array {
     }
 
     if (mode === 'decrypt') {
-      if (!(encrypted instanceof Array)) throw new Error('NotArrayEncryptedData');
+      if (!(encrypted instanceof CascadedData)) throw new Error('NotCascadedEncryptedData');
       const initial = encrypted.map( (encryptedObject) => {
         if(typeof encryptedObject.message === 'undefined') throw new Error('InvalidEncryptedMessage');
         return {data: encryptedObject};
@@ -69,7 +70,7 @@ class Cascade extends Array {
     // export signingKey for precedence
     const signingKeys = this._orgKeys.keys.privateKeys;
 
-    const precedence = Array.from(this).slice(0, this.length -1);
+    const precedence = this.slice(0, this.length -1);
     await Promise.all(precedence.map( async (proc, idx) => {
       if (typeof proc.config.encrypt.onetimeKey === 'undefined') throw new Error('NoKeyParamsGiven');
 
@@ -118,7 +119,8 @@ class Cascade extends Array {
     // set given message as the first step message
     this[0].message = message;
 
-    return await Promise.all(Array.from(this).map( (proc) => core.encrypt(proc)));
+    const data = await Promise.all(this.map( (proc) => core.encrypt(proc)));
+    return createCascadedData(data);
   }
 
   async decrypt(){
@@ -177,6 +179,11 @@ class Cascade extends Array {
   get mode () { return this._cascadeMode; }
   get keys () { return this._orgKeys; }
   // get allKeys () { return null; } // TODO
+
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  slice (a, b) { return this.toArray().slice(a, b); }
 }
 
 

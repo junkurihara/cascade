@@ -5,9 +5,24 @@ import {KeyId} from './keyid.js';
 import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
+import {createKeyId} from './keyid';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];
+
+export function importSignatureBuffer(serialized){
+  if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
+  let des;
+  try {
+    des = msgpack.decode(serialized);
+  } catch (e) { throw new Error(`FailedToParseSignatureBuffer: ${e.message}`); }
+
+  if (!des.suite || !des.keyType || !des.signatures || !des.options) throw new Error('InvalidSignatureFormat');
+
+  const signatureList = des.signatures.map( (elem) => createRawSignature(elem.data, createKeyId(elem.keyId)) );
+
+  return createSignature(des.suite, des.keyType, signatureList, des.options );
+}
 
 export function createSignature(suite, keyType, signatures, options = {}){
   // assertion
@@ -36,7 +51,7 @@ export class Signature {
     return msgpack.encode({
       suite: this._suite,
       keyType: this._keyType,
-      signatures: Array.from(this._signatures).map( (s) => s.toJsObject() ),
+      signatures: this._signatures.toJsObject(),
       options: this._options
     });
   }
@@ -51,6 +66,12 @@ class SignatureList extends Array {
     });
     this.push(...binarySignatures);
   }
+
+  toJsObject() { return this.map( (s) => s.toJsObject() ); }
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  filter(callback) { return this.toArray().filter(callback); }
 }
 
 export function createRawSignature(sig, keyId){
@@ -74,11 +95,8 @@ export class RawSignature extends Uint8Array {
   toJsObject () {
     return {
       data: this.toBuffer(),
-      keyId: this._keyId,
+      keyId: this._keyId.toBuffer(),
     };
-  }
-  serialize () {
-    return msgpack.encode(this.toJsObject());
   }
 
   get keyId () { return this._keyId; }

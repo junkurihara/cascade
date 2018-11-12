@@ -58,6 +58,10 @@ export class KeyId extends Uint8Array {
   }
 
   toHex() { return jseu.encoder.arrayBufferToHexString(this); }
+  toBuffer() {
+    const buf = new Uint8Array(this);
+    return cloneDeep(buf);
+  }
 }
 
 export function createKeyIdList (keyIds) {
@@ -75,4 +79,8 @@ export class KeyIdList extends Array {
     });
     this.push(...binaryKeyIds);
   }
+  toBuffer() { return this.map( (kid) => kid.toBuffer()); }
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
 }

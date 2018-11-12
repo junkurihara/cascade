@@ -6,9 +6,29 @@ import {KeyId, KeyIdList} from './keyid.js';
 import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
+import {createKeyId, createKeyIdList} from './keyid';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
+
+export function importEncryptedBuffer(serialized){
+  if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
+  let des;
+  try {
+    des = msgpack.decode(serialized);
+  } catch (e) { throw new Error(`FailedToParseEncryptedMessageBuffer: ${e.message}`); }
+
+  if (!des.suite || !des.keyType || !des.message || !des.options) throw new Error('InvalidEncryptedMessageFormat');
+
+  const messageList = des.message.map( (elem) => {
+    let keyId;
+    if(elem.keyId instanceof Array) keyId = createKeyIdList(elem.keyId.map( (k) => createKeyId(new Uint8Array(k))));
+    else keyId = createKeyId(new Uint8Array(elem.keyId));
+    return createRawEncryptedMessage(elem.data, keyId, elem.params);
+  });
+
+  return createEncryptedMessage( des.suite, des.keyType, messageList, des.options );
+}
 
 export function createEncryptedMessage(suite, keyType, message, options = {}) {
   // assertion
@@ -25,7 +45,7 @@ export function createRawEncryptedMessage(data, keyId, params) {
   return new RawEncryptedMessage(data, keyId, params);
 }
 
-class EncryptedMessage {
+export class EncryptedMessage {
   constructor(suite, keyType, message, options = {}) {
     this._suite = suite;
     this._keyType = keyType;
@@ -38,18 +58,15 @@ class EncryptedMessage {
   }
 
   get suite() { return this._suite; }
-
   get keyType() { return this._keyType; }
-
   get message() { return this._message; }
-
   get options() { return this._options; }
 
   serialize() {
     return msgpack.encode({
       suite: this._suite,
       keyType: this._keyType,
-      message: Array.from(this._message).map((raw) => raw.toJsObject()),
+      message: this._message.toJsObject(),
       options: this._options
     });
   }
@@ -72,7 +89,7 @@ export class RawEncryptedMessage extends Uint8Array {
   toJsObject() {
     return {
       data: this.toBuffer(),
-      keyId: this._keyId,
+      keyId: this._keyId.toBuffer(),
       params: this._params
     };
   }
@@ -82,7 +99,6 @@ export class RawEncryptedMessage extends Uint8Array {
   }
 
   get keyId() { return this._keyId; }
-
   get params() { return this._params; }
 }
 
@@ -100,4 +116,10 @@ class RawEncryptedMessageList extends Array {
     });
     this.push(...binaryMessage);
   }
+
+  toJsObject() { return this.map((raw) => raw.toJsObject()); }
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  filter(callback) { return this.toArray().filter(callback); }
 }

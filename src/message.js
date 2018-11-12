@@ -40,7 +40,4 @@ class Message {
     else return null;
   }
   get messageType () { return this._messageType; }
-
-  set signature (sig) { this._signature = sig; } // will be removed
-  get signature () { return this._signature; } // will be removed
 }

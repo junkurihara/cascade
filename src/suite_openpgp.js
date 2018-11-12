@@ -242,7 +242,7 @@ export class OpenPGP extends Suite {
     const openpgp = getOpenPgp();
 
     if(!keys.publicKeys) throw new Error('VerificationKeyRequired');
-    const list = OpenPGP._ListToOpenPgpSig(Array.from(signature.signatures), keys.publicKeys);
+    const list = OpenPGP._ListToOpenPgpSig(signature.signatures, keys.publicKeys);
     const msgObj = openpgp.message.fromBinary(message.binary);
 
     const verified = await Promise.all(list.signatureObjects.map( async (sigKey) => {
