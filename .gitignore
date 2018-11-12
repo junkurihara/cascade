@@ -1,6 +1,8 @@
 .DS_Store
 node_modules/
 obsolete/
+dist/
+coverage/
 thumbs.db
 yarn-error.log
 .idea/

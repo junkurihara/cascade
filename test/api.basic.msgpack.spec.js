@@ -9,8 +9,6 @@ const expect = chai.expect;
 
 import {createParam} from './params-basic.js';
 
-import msgpack from 'msgpack-lite';
-
 describe(`${env}: message-pack test`, () => {
 
   let message;
@@ -38,8 +36,8 @@ describe(`${env}: message-pack test`, () => {
           'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
         );
         const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-        console.log( msgpack.decode(encryptionResult.message.serialize()) );
-        console.log( msgpack.decode(encryptionResult.signature.serialize()) );
+        // console.log( msgpack.decode(encryptionResult.message.serialize()) );
+        // console.log( msgpack.decode(encryptionResult.signature.serialize()) );
 
         const decryptionKeys = {
           privateKeyPassSets:[ { privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],

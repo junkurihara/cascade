@@ -7,7 +7,7 @@ import {Suite} from './suite.js';
 import commonParams from './params.js';
 import * as utilKeyId from './keyid.js';
 import {createRawSignature, createSignature, RawSignature} from './signature.js';
-import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
+import {createEncryptedMessage, createRawEncryptedMessage} from './encrypted_message.js';
 
 export class OpenPGP extends Suite {
 

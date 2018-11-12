@@ -6,7 +6,7 @@ import {Suite} from './suite.js';
 import {getJscu} from './util.js';
 import * as utilKeyId from './keyid.js';
 import params from './params.js';
-import {createEncryptedMessage, createRawEncryptedMessage} from './message.js';
+import {createEncryptedMessage, createRawEncryptedMessage} from './encrypted_message.js';
 import {createSignature, createRawSignature} from './signature.js';
 
 export class Jscu extends Suite {

@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara <kurihara@ieee.org>",
   "license": "MIT",
@@ -32,7 +32,7 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
-    "eslint": "^5.8.0",
+    "eslint": "^5.9.0",
     "jsdom": "^13.0.0",
     "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
