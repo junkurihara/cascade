@@ -60,26 +60,31 @@ async function jscuMainRoutineEphemeral(message, param, precedenceProcedure){
 
       const eProcess = await cascade.createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure});
       const encrypted = await eProcess.encrypt(message);
-      console.log(encrypted.extract(0));
-      console.log(encrypted);
 
-      // TODO test insert and reconsider the structure
+      for(let n = 0; n < encrypted.length; n++) {
+        const extracted = encrypted.extract(n);
+        expect(encrypted[n].message.message.length === 0).to.be.true;
 
-      // const serialized = encrypted.serialize();
-      // const deserialized = cascade.importCascadedBuffer(serialized);
-      //
-      // const decryptionKeys = {
-      //   privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
-      //   publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString], // for Signing
-      // };
-      // const decryptionKeyImported = await cascade.importKeys(
-      //   'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['decrypt', 'verify']}
-      // );
-      //
-      // const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted: deserialized});
-      // const decrypted = await dProcess.decrypt();
-      // expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
-      // expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
+        const serialized = encrypted.serialize();
+        const deserialized = cascade.importCascadedBuffer(serialized);
+        encrypted.insert(n, extracted); // recover original encrypted message for next loop
+
+        deserialized.insert(n, extracted);
+        expect(deserialized[n].message.message.length === extracted.length).to.be.true;
+
+        const decryptionKeys = {
+          privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
+          publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString], // for Signing
+        };
+        const decryptionKeyImported = await cascade.importKeys(
+          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['decrypt', 'verify']}
+        );
+
+        const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted: deserialized});
+        const decrypted = await dProcess.decrypt();
+        expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
+        expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
+      }
 
     }));
   }));
@@ -105,21 +110,31 @@ async function openpgpMainRoutine(message, param, precedenceProcedure){
       const eProcess = await cascade.createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure});
       const encrypted = await eProcess.encrypt(message);
 
-      const serialized = encrypted.serialize();
-      const deserialized = cascade.importCascadedBuffer(serialized);
+      for(let n = 0; n < encrypted.length; n++) {
+        const extracted = encrypted.extract(n);
+        expect(encrypted[n].message.message.length === 0).to.be.true;
 
-      const decryptionKeys = {
-        privateKeyPassSets: [{privateKey: param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
-        publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString], // for Signing
-      };
-      const decryptionKeyImported = await cascade.importKeys(
-        'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp' }, mode: ['decrypt', 'verify']}
-      );
+        const serialized = encrypted.serialize();
+        const deserialized = cascade.importCascadedBuffer(serialized);
+        encrypted.insert(n, extracted); // recover original encrypted message for next loop
 
-      const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted: deserialized});
-      const decrypted = await dProcess.decrypt();
-      expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
-      expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
+        deserialized.insert(n, extracted);
+        expect(deserialized[n].message.message.length === extracted.length).to.be.true;
+
+
+        const decryptionKeys = {
+          privateKeyPassSets: [{privateKey: param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
+          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString], // for Signing
+        };
+        const decryptionKeyImported = await cascade.importKeys(
+          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp' }, mode: ['decrypt', 'verify']}
+        );
+
+        const dProcess = await cascade.createDecryptionCascade({keys: decryptionKeyImported, encrypted: deserialized});
+        const decrypted = await dProcess.decrypt();
+        expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
+        expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
+      }
 
     }));
   }));

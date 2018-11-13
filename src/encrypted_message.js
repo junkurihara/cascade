@@ -2,14 +2,17 @@
  * encrypted_message.js
  */
 
-import {KeyId, KeyIdList} from './keyid.js';
+import {KeyId, KeyIdList, createKeyId, createKeyIdList} from './keyid.js';
+import params from './params.js';
 import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
-import {createKeyId, createKeyIdList} from './keyid';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
+
+
+// todo importRawEncryptedBuffer
 
 export function importEncryptedBuffer(serialized){
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
@@ -65,6 +68,7 @@ export class EncryptedMessage {
     return returnArray.toArray();
   }
 
+  // TODO check
   insert(messageArray) {
     this._message = new RawEncryptedMessageList();
     this._message._set(messageArray);

@@ -1,11 +1,10 @@
 /**
  * signature
  */
-import {KeyId} from './keyid.js';
+import {KeyId, createKeyId} from './keyid.js';
 import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
-import {createKeyId} from './keyid';
 
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];

@@ -3,7 +3,7 @@
  */
 
 import msgpack from 'msgpack-lite';
-import {importEncryptedBuffer, EncryptedMessage, RawEncryptedMessageList} from './encrypted_message.js';
+import {importEncryptedBuffer, EncryptedMessage} from './encrypted_message.js';
 import {importSignatureBuffer, Signature} from './signature.js';
 
 export function importCascadedBuffer(serialized){
@@ -50,6 +50,7 @@ export class CascadedData extends Array {
     return this[idx].message.extract();
   }
 
+  // todo check
   insert(idx, message) {
     if (idx > this.length -1 || idx < 0) throw new Error('InvalidIndexOutOfRange');
     if (!(message instanceof Array)) throw new Error('InvalidEncryptedMessageArray');
