@@ -3,7 +3,6 @@
  */
 
 import {KeyId, KeyIdList, createKeyId, createKeyIdList} from './keyid.js';
-import params from './params.js';
 import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
@@ -11,8 +10,6 @@ import msgpack from 'msgpack-lite';
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
 
-
-// todo importRawEncryptedBuffer
 
 export function importEncryptedBuffer(serialized){
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
@@ -32,6 +29,26 @@ export function importEncryptedBuffer(serialized){
 
   return createEncryptedMessage( des.suite, des.keyType, messageList, des.options );
 }
+
+export function importRawEncryptedBufferList(array){
+  if (!(array instanceof Array)) throw new Error('NotArrayOfSerializedData');
+  array.forEach( (ser) => {
+    if(!(ser instanceof Uint8Array)) throw new Error('NotUint8ArraySerializedData');
+  });
+  let deserializedArray;
+  try {
+    deserializedArray = array.map( (ser) => {
+      const decoded = msgpack.decode(ser);
+      let keyId;
+      if(decoded.keyId instanceof Array) keyId = createKeyIdList(decoded.keyId.map( (k) => createKeyId(new Uint8Array(k))));
+      else keyId = createKeyId(new Uint8Array(decoded.keyId));
+      return createRawEncryptedMessage(decoded.data, keyId, decoded.params);
+    });
+  } catch (e) { throw new Error(`FailedToParseRawEncryptedMessage: ${e.message}`); }
+
+  return deserializedArray;
+}
+
 
 export function createEncryptedMessage(suite, keyType, message, options = {}) {
   // assertion
@@ -68,7 +85,6 @@ export class EncryptedMessage {
     return returnArray.toArray();
   }
 
-  // TODO check
   insert(messageArray) {
     this._message = new RawEncryptedMessageList();
     this._message._set(messageArray);

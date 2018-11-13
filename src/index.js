@@ -11,7 +11,7 @@ import {
 } from './core.js';
 import { createEncryptionCascade, createDecryptionCascade } from './cascade.js';
 import { importKeys } from './keys.js';
-import { importEncryptedBuffer } from './encrypted_message.js';
+import { importEncryptedBuffer, importRawEncryptedBufferList } from './encrypted_message.js';
 import { importSignatureBuffer } from './signature.js';
 import { importCascadedBuffer} from './cascaded_data.js';
 
@@ -23,6 +23,7 @@ export default {
   verify,
   importKeys,
   importEncryptedBuffer,
+  importRawEncryptedBufferList,
   importSignatureBuffer,
   importCascadedBuffer,
   createEncryptionCascade,
@@ -36,6 +37,7 @@ export {
   verify,
   importKeys,
   importEncryptedBuffer,
+  importRawEncryptedBufferList,
   importSignatureBuffer,
   importCascadedBuffer,
   createEncryptionCascade,

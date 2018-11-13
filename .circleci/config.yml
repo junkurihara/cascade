@@ -42,7 +42,13 @@ jobs:
       # run tests!
       - run: npm run test
 
+      - run: npm run test:bundle
+
       - run: npm run karma
+
+      - run: npm run karma:bundle
+
+      - run: npm run karma:window
 
       - store_artifacts:
           path: ./coverage

@@ -66,11 +66,15 @@ async function jscuMainRoutineEphemeral(message, param, precedenceProcedure){
         expect(encrypted[n].message.message.length === 0).to.be.true;
 
         const serialized = encrypted.serialize();
+        const serializedExtracted = extracted.map( (obj) => obj.serialize() );
+
         const deserialized = cascade.importCascadedBuffer(serialized);
+        const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExtracted);
         encrypted.insert(n, extracted); // recover original encrypted message for next loop
 
-        deserialized.insert(n, extracted);
+        deserialized.insert(n, deserializedExtracted);
         expect(deserialized[n].message.message.length === extracted.length).to.be.true;
+        expect(deserializedExtracted.length === extracted.length).to.be.true;
 
         const decryptionKeys = {
           privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
@@ -115,12 +119,15 @@ async function openpgpMainRoutine(message, param, precedenceProcedure){
         expect(encrypted[n].message.message.length === 0).to.be.true;
 
         const serialized = encrypted.serialize();
+        const serializedExtracted = extracted.map( (obj) => obj.serialize() );
+
         const deserialized = cascade.importCascadedBuffer(serialized);
+        const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExtracted);
         encrypted.insert(n, extracted); // recover original encrypted message for next loop
 
-        deserialized.insert(n, extracted);
+        deserialized.insert(n, deserializedExtracted);
         expect(deserialized[n].message.message.length === extracted.length).to.be.true;
-
+        expect(deserializedExtracted.length === extracted.length).to.be.true;
 
         const decryptionKeys = {
           privateKeyPassSets: [{privateKey: param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: ''}],
