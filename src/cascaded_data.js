@@ -61,8 +61,8 @@ export class CascadedData extends Array {
   serialize() {
     const serializedCompArray = this.map( (obj) => {
       const returnObject = {};
-      if (typeof obj.message !== 'undefined') returnObject.message = obj.message.serialize();
-      if (typeof obj.signature !== 'undefined') returnObject.signature = obj.signature.serialize();
+      if (typeof obj.message !== 'undefined') returnObject.message = new Uint8Array(obj.message.serialize());
+      if (typeof obj.signature !== 'undefined') returnObject.signature = new Uint8Array(obj.signature.serialize());
       return returnObject;
     });
     const returnArray = msgpack.encode(serializedCompArray);
