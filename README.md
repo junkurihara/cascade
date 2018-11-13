@@ -9,7 +9,7 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 
 # Supported Crypto Suites
 
-This library currently supports two cryptographic suites, OpenPGP and js-crypto-utils. We adopted [openpgpjs](https://openpgpjs.org/) as an implementation of OpenPGP. On the other hand, [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js. 
+This library currently supports two cryptographic suites, OpenPGP and js-crypto-utils. We adopted [openpgpjs](https://openpgpjs.org/) as an implementation of OpenPGP. On the other hand, [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js.
 
 * Encryption and decryption:
   * OpenPGP
@@ -60,6 +60,7 @@ import cascade from 'crypto-cascade'
 ```
 
 ## Basic encryption simultaneously with signing
+
 The following example describes how to encrypt a message in `Uint8Array` (or `String`) simultaneously with sining on the plaintext given message. The API `cascade.encrypt` returns an object consisting of `message` and `signature` subobjects that are able to be serialized with `serialize()`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained. By feeding those de-serialized objects with imported decryption keys, the API `cascade.decrypt` returns a decrypted data and the result of signature verification.
 
 ```javascript
@@ -124,4 +125,12 @@ const decryptionResult = await cascade.decrypt({
 
 ```javascript
 
+```
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
 ```
