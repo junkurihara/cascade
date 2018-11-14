@@ -13,28 +13,28 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 This library currently supports two cryptographic suites, OpenPGP and js-crypto-utils. We adopted [openpgpjs](https://openpgpjs.org/) as an implementation of OpenPGP. On the other hand, [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js.
 
 * Encryption and decryption:
-  * OpenPGP
-    * Public key encryption (Elliptic curve cryptography)
-    * Public key encryption (RSA)
-    * Session key encryption (AES-EAX)
   * js-crypto-utils
     * Public key encryption (ECDH, HKDF and AES256-GCM combination)
     * Public key encryption (RSA-OAEP)
     * Session key encryption (AES-GCM)
-* Signing and verification:
   * OpenPGP
-    * RSA signature
-    * ECDSA signature
+    * Public key encryption (Elliptic curve cryptography)
+    * Public key encryption (RSA)
+    * Session key encryption (AES-EAX)
+* Signing and verification:
   * js-crypto-utils
     * RSA-PSS signature (May not work in IE11 and Edge.)
     * RSASSA-PKCS1-v1_5 signature
     * ECDSA signature
-* Key generation:
   * OpenPGP
-    * Public and private key pair generation w/ and w/o passphrase in OpenPGP armored format (ECC and RSA)
-    * Session key generation
+    * RSA signature
+    * ECDSA signature
+* Key generation:
   * js-crypto-utils
     * Public and private key pair generation w/ and w/o passphrase in PEM armored format (ECC and RSA)
+    * Session key generation
+  * OpenPGP
+    * Public and private key pair generation w/ and w/o passphrase in OpenPGP armored format (ECC and RSA)
     * Session key generation
 
 # Installation and Setup
@@ -58,7 +58,7 @@ Of cource, you can also directly import the source code by cloning this Github r
 
 ## Finishing up the setup
 
-The `Cascade` library doesn't internally import cryptographic suites, i.e., `openpgpjs` and `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `openpgpjs` (`openpgp.js`/`openpgp.min.js`) and `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists.
+The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` and `openpgpjs` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `js-crypto-utils` (`jscu.bundle.js`) and `openpgpjs` (`openpgp.js`/`openpgp.min.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists.
 
 # Usage
 
@@ -73,12 +73,12 @@ const keyParam = {
   suite: 'jscu', // use 'js-crypto-utils'
   keyParams: { type: 'ec', curve: 'P-256' }
 };
-const keyPair = await cascade.generateKey(keyParam);
+const keyPair = await cascade.generateKey(keyParam);
 const publicKeyPEM = keyPair.publicKey.keyString; // EC public key in PEM format
 const privateKeyPEM = keyPair.privateKey.keyString; // EC private key in PEM format
 ```
 
-Here we should note that for the key generation using `js-crypto-utils`, the generated public key is encoded as `SubjectPublicKeyInfo` specified as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). On the other hand, the generated private key is encoded as `PrivateKeyInfo`/`OneAsymmetricKey` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). Hence the private key can be encrypted with a passphrase just by passing API the passphrase string as given below.
+Here we should note that for the key generation using `js-crypto-utils`, the generated public key is encoded as `SubjectPublicKeyInfo` specified as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). On the other hand, the generated private key is encoded as `PrivateKeyInfo`/`OneAsymmetricKey` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). Hence the private key can be encrypted with a passphrase just by passing API the passphrase string as given below.
 
 ```javascript
 const keyParam = {
@@ -86,7 +86,7 @@ const keyParam = {
   keyParams: { type: 'ec', curve: 'P-256' },
   passphrase: 'secret passphrase'
 };
-const keyPair = await cascade.generateKey(keyParam);
+const keyPair = await cascade.generateKey(keyParam);
 ```
 
 Then, the protected private key is encoded as `EncryptedPrivateKeyInfo`.
