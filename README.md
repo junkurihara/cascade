@@ -51,6 +51,8 @@ Then the package is imported as follows.
 import cascade from 'crypto-cascade'
 ```
 
+The `Cascade` library doesn't internally import cryptographic suites, i.e., `openpgpjs` and `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `openpgpjs` (`openpgp.js`/`openpgp.min.js`) and `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists.
+
 # Usage
 
 ## Key generation
@@ -129,8 +131,13 @@ const decryptionResult = await cascade.decrypt({
 
 ```mermaid
 graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+    PT-->SKE1;
+    SK1-->SKE1;
+    SKE1-->CT_BODY;
+    SK1-->SKE2;
+    SK2-->SKE2;
+    SKE2-->CT_KEY1;
+    SK2-->PKE;
+    PK-->PKE;
+    PKE-->CT_KEY2;
 ```
