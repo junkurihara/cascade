@@ -15,3 +15,4 @@ webpack.common.js
 .gitignore
 .circleci/
 .vscode/
+.nyc_output/
