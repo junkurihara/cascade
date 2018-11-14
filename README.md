@@ -1,8 +1,9 @@
 Cascade - Encryption and signing library for x-brid encryption via several cryptographic suites.
 --
+[![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
 [![CircleCI](https://circleci.com/gh/junkurihara/cascade.svg?style=svg)](https://circleci.com/gh/junkurihara/cascade)
 [![Coverage Status](https://coveralls.io/repos/github/junkurihara/cascade/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/cascade?branch=develop)
-[![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ebead374220cd81a02b9/maintainability)](https://codeclimate.com/github/junkurihara/cascade/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
