@@ -2,6 +2,7 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 --
 [![CircleCI](https://circleci.com/gh/junkurihara/cascade.svg?style=svg)](https://circleci.com/gh/junkurihara/cascade)
 [![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
@@ -38,28 +39,59 @@ This library currently supports two cryptographic suites, OpenPGP and js-crypto-
 
 # Installation and Setup
 
-At your project directory, do either one of the following.
+## Installation
+
+At your project directory, first do either one of the following.
 
 ```shell
 $ npm install --save crypto-cascade # from npm
 $ yarn add crypto-cascade # from yarn
 ```
 
-Then the package is imported as follows.
+Then import the `Cascade` library as follows.
 
 ```javascript
 import cascade from 'crypto-cascade'
 ```
 
+Of cource, you can also directly import the source code by cloning this Github repo.
+
+## Finishing up the setup
+
 The `Cascade` library doesn't internally import cryptographic suites, i.e., `openpgpjs` and `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `openpgpjs` (`openpgp.js`/`openpgp.min.js`) and `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists.
 
 # Usage
 
+Here we give some basic example of usecases of `Cascade`.
+
 ## Key generation
 
-```javascript
+`Cascade` provides a basic function to generate PEM-formatted and OpenPGP-armored public private key pairs. The following example describes an example to generate PEM-formatted public and private keys of elliptic curve cryptography using `js-crypto-utils`.
 
+```javascript
+const keyParam = {
+  suite: 'jscu', // use 'js-crypto-utils'
+  keyParams: { type: 'ec', curve: 'P-256' }
+};
+const keyPair = await cascade.generateKey(keyParam);
+const publicKeyPEM = keyPair.publicKey.keyString; // EC public key in PEM format
+const privateKeyPEM = keyPair.privateKey.keyString; // EC private key in PEM format
 ```
+
+Here we should note that for the key generation using `js-crypto-utils`, the generated public key is encoded as `SubjectPublicKeyInfo` specified as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). On the other hand, the generated private key is encoded as `PrivateKeyInfo`/`OneAsymmetricKey` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). Hence the private key can be encrypted with a passphrase just by passing API the passphrase string as given below.
+
+```javascript
+const keyParam = {
+  suite: 'jscu',
+  keyParams: { type: 'ec', curve: 'P-256' },
+  passphrase: 'secret passphrase'
+};
+const keyPair = await cascade.generateKey(keyParam);
+```
+
+Then, the protected private key is encoded as `EncryptedPrivateKeyInfo`.
+
+Note that in addition to `jscu` as `keyParam.suite`, `openpgp` is also available. The key generation API can generate not only EC public and private key strings but also RSA ones and session keys, where generated session keys are just random bytes given in `Uint8Array`.
 
 ## Basic encryption simultaneously with signing
 

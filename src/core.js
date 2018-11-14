@@ -31,9 +31,9 @@ export async function generateKey (keyParams) {
   else {
     if(keyParams.suite === 'openpgp') { /** OpenPGP **/
       return {
-        publicKey: { keyString: keyObj.publicKey.armor(), keyIds: keyObj.keyIds },
+        publicKey: { keyString: keyObj.publicKey.armor(), keyId: keyObj.keyId },
         privateKey: Object.assign(
-          { keyString: keyObj.privateKey.armor(), keyIds: keyObj.keyIds },
+          { keyString: keyObj.privateKey.armor(), keyId: keyObj.keyId },
           (keyParams.passphrase) ? {passphrase: keyParams.passphrase} : {})
       };
     }
@@ -41,10 +41,10 @@ export async function generateKey (keyParams) {
       return {
         publicKey: {
           keyString: await keyObj.publicKey.export('pem', {outputPublic: true}),
-          keyIds: keyObj.keyIds
+          keyId: keyObj.keyId
         },
         privateKey: Object.assign(
-          { keyString: await keyObj.privateKey.export('pem'), keyIds: keyObj.keyIds },
+          { keyString: await keyObj.privateKey.export('pem'), keyId: keyObj.keyId },
           (keyParams.passphrase) ? {passphrase: keyParams.passphrase} : {} )
       };
     }
