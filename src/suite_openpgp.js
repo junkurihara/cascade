@@ -172,25 +172,17 @@ export class OpenPGP extends Suite {
     const openpgp = getOpenPgp();
 
     const message = await openpgp.message.read(encrypted.message.message[0].toBuffer(), false);
+    const params = Object.assign({ message, publicKeys: keys.publicKeys, format: 'binary' }, options);
 
-    let decrypted;
     if(encrypted.message.keyType === 'public_key_encrypt'){
-      decrypted = await openpgp.decrypt(Object.assign({
-        message,
-        privateKeys: keys.privateKeys,
-        publicKeys: keys.publicKeys,
-        format: 'binary'
-      }, options));
+      Object.assign(params, {privateKeys: keys.privateKeys});
     }
     else if (encrypted.message.keyType === 'session_key_encrypt'){
-      decrypted = await openpgp.decrypt(Object.assign({
-        message,
-        sessionKeys: [ {data: keys.sessionKey, algorithm: options.algorithm} ],
-        publicKeys: keys.publicKeys,
-        format: 'binary'
-      }, options));
+      Object.assign(params, {sessionKeys: [ {data: keys.sessionKey, algorithm: options.algorithm} ]});
     }
+    else throw new Error('UnknownKeyType');
 
+    const decrypted = await openpgp.decrypt(params);
     decrypted.data = new Uint8Array(decrypted.data);
 
     if (decrypted.signatures instanceof Array){
