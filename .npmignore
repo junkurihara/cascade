@@ -16,3 +16,4 @@ webpack.common.js
 .circleci/
 .vscode/
 .nyc_output/
+.nycrc
