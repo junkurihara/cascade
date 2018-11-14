@@ -24,10 +24,7 @@ export class Jscu extends Suite {
       if (!params.length) throw new Error('params.length must be specified');
       const rawKey = await jscu.random.getRandomBytes(params.length);
       const keyId = await utilKeyId.fromRawKey(rawKey);
-      return {
-        key: rawKey,
-        keyId
-      };
+      return { key: rawKey, keyId };
     }
     else if (params.type === 'ec' || params.type === 'rsa') {
       const keyType = (params.type === 'ec') ? 'EC' : 'RSA';
@@ -45,11 +42,7 @@ export class Jscu extends Suite {
         privateKeyObj = new jscu.Key('der', encryptedDer);
       }
 
-      return {
-        publicKey: publicKeyObj,
-        privateKey: privateKeyObj,
-        keyId
-      };
+      return { publicKey: publicKeyObj, privateKey: privateKeyObj, keyId };
     }
     else throw new Error('JscuUnsupportedKeyType');
   }
@@ -149,16 +142,14 @@ export class Jscu extends Suite {
    * @param options
    * @return {Promise<{data: *}>}
    */
-  static async  decrypt({encrypted, keys, options}) {
+  static async decrypt({encrypted, keys, options}) {
     if (typeof encrypted.message === 'undefined') throw new Error('InvalidEncryptedMessage'); // TODO, change according to the class
     if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
     const jscu = getJscu();
 
-    const keyType = encrypted.message.keyType;
-
     let decrypted;
     ////////////////////////////////////////////////////////////////////
-    if (keyType === 'public_key_encrypt'){
+    if (encrypted.message.keyType === 'public_key_encrypt'){
       // public key decryption
       if (!keys.privateKeys) throw new Error('JscuPrivateKeyRequired');
       if (options.publicKey){
@@ -198,7 +189,7 @@ export class Jscu extends Suite {
 
     }
     ////////////////////////////////////////////////////////////////////
-    else if (keyType === 'session_key_encrypt'){
+    else if (encrypted.message.keyType === 'session_key_encrypt'){
       // session key decryption
       if (!keys.sessionKey) throw new Error('JscuSessionKeyRequired');
       if (!(encrypted.message.message instanceof Array)) throw new Error('NonArrayMessage');
