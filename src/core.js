@@ -107,10 +107,15 @@ export async function decrypt({data, keys}){
 
   // do verification
   let verified = {};
-  if(typeof data.signature !== 'undefined' && keys.keys.publicKeys) {
-    verified = await verifyBase({
-      message: importMessage(decrypted.data), signature: data.signature, keys, options: data.signature.options
-    }).catch((e) => { throw new Error(`VerificationFailed: ${e.message}`); });
+  if(typeof data.signature !== 'undefined' && keys.keys.publicKeys && keys.canVerify()) {
+    verified = await cryptoSuite(keys.suite.sign_verify).verify({
+      message: importMessage(decrypted.data),
+      signature: data.signature,
+      keys: keys.keys,
+      options: data.signature.options
+    }).catch((e) => {
+      throw new Error(`VerificationFailed: ${e.message}`);
+    });
   }
   else if (typeof decrypted.signatures !== 'undefined') verified = decrypted.signatures;
 
@@ -144,24 +149,37 @@ export async function sign({message, keys, config}){
   return signed;
 }
 
+/**
+ * Returns verification result
+ * @param message
+ * @param signature
+ * @param keys
+ * @return {Promise<*>}
+ */
 export async function verify({message, signature, keys}){
   // assertion
   if (typeof signature === 'undefined') throw new Error('InvalidObjectForSignature');
+  if (!keys.canVerify()) throw new Error('UnsupportedKeyForVerification');
 
   const msgObj = importMessage(message);
 
   // do verification
-  let verified = {};
   if(typeof signature !== 'undefined' && keys.keys.publicKeys) {
-    verified = await verifyBase({
-      message: msgObj, signature, keys, options: signature.options
+    return await cryptoSuite(keys.suite.sign_verify).verify({
+      message: msgObj, signature, keys: keys.keys, options: signature.options
     }).catch((e) => {
       throw new Error(`VerificationFailed: ${e.message}`);
     });
   } else throw new Error('InvalidSignatureOrInvalidPublicKey');
-
-  return verified;
 }
+
+const cryptoSuite = (suiteName) => {
+  let suiteObj;
+  if (suiteName === 'jscu') suiteObj = Jscu;
+  else if (suiteName === 'openpgp') suiteObj = OpenPGP;
+  else throw new Error('UnknownSuite');
+  return suiteObj;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 // base functions
@@ -187,14 +205,6 @@ const signBase = async ({message, keys, options}) => {
   const suiteObj = getSuiteObj(keys.suite.sign_verify);
 
   return suiteObj.sign({ message, keys: keys.keys, options });
-};
-
-const verifyBase = async ({message, signature, keys, options}) => {
-  if(!keys.canVerify()) throw new Error('UnsupportedKeyForVerification');
-
-  const suiteObj = getSuiteObj(keys.suite.sign_verify);
-
-  return suiteObj.verify({ message, signature, keys: keys.keys, options});
 };
 
 const getSuiteObj = (suiteName) => {
