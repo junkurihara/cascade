@@ -62,6 +62,7 @@ export async function generateKey (keyParams) {
 export async function encrypt({message, keys, config}){
   // assertion
   if (typeof config.encrypt === 'undefined') throw new Error('InvalidConfigForEncryption');
+  if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
 
   // compose objects
   const msgObj = importMessage(message);
@@ -83,9 +84,12 @@ export async function encrypt({message, keys, config}){
 
   // do encryption.
   if (keys.suite.encrypt_decrypt !== config.encrypt.suite) throw new Error('UnmatchedKeyTypeToEncryptionSuite');
-  const encrypted = await encryptBase({
-    message: msgObj, keys, options: config.encrypt.options
+  const encrypted = await cryptoSuite(keys.suite.encrypt_decrypt).encrypt({
+    message: msgObj, keys: keys.keys, options: config.encrypt.options
   }).catch( (e) => { throw new Error(`EncryptionFailed: ${e.message}`); });
+  // const encrypted = await encryptBase({
+  //   message: msgObj, keys, options: config.encrypt.options
+  // }).catch( (e) => { throw new Error(`EncryptionFailed: ${e.message}`); });
 
   return Object.assign(encrypted, signed);
 }
@@ -98,12 +102,16 @@ export async function encrypt({message, keys, config}){
  */
 export async function decrypt({data, keys}){
   if(typeof data.message === 'undefined') throw new Error('InvalidEncryptedDataFormat');
+  if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
 
   // do decryption
   if (keys.suite.encrypt_decrypt !== data.message.suite) throw new Error('UnmatchedKeyTypeToEncryptionSuite');
-  const decrypted = await decryptBase({
-    encrypted: data, keys, options: data.message.options
+  const decrypted = await cryptoSuite(keys.suite.encrypt_decrypt).decrypt({
+    encrypted: data, keys: keys.keys, options: data.message.options
   }).catch( (e) => { console.error(e); throw new Error(`DecryptionFailed: ${e.message}`); });
+  // const decrypted = await decryptBase({
+  //   encrypted: data, keys, options: data.message.options
+  // }).catch( (e) => { console.error(e); throw new Error(`DecryptionFailed: ${e.message}`); });
 
   // do verification
   let verified = {};
@@ -181,18 +189,18 @@ const cryptoSuite = (suiteName) => {
 
 ////////////////////////////////////////////////////////////////////////////
 // base functions
-const encryptBase = async ({message, keys, options}) => {
-  if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
+// const encryptBase = async ({message, keys, options}) => {
+//   if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
+//
+//   const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
+//
+//   return suiteObj.encrypt({ message, keys: keys.keys, options });
+// };
 
-  const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
-
-  return suiteObj.encrypt({ message, keys: keys.keys, options });
-};
-
-const decryptBase = async ({encrypted, keys, options}) => {
-  if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
-
-  const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
-
-  return suiteObj.decrypt({ encrypted, keys: keys.keys, options });
-};
+// const decryptBase = async ({encrypted, keys, options}) => {
+//   if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
+//
+//   const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
+//
+//   return suiteObj.decrypt({ encrypted, keys: keys.keys, options });
+// };
