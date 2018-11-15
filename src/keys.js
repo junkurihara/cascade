@@ -8,9 +8,14 @@ import {OpenPGP} from './suite_openpgp.js';
 
 export class Keys {
   async from(format, {keys, suite, mode}){
+    // assertion
+    if((mode.indexOf('encrypt') >= 0 && mode.indexOf('verify') >= 0)
+      || (mode.indexOf('encrypt') >= 0 && mode.indexOf('decrypt') >= 0)
+      || (mode.indexOf('decrypt') >= 0 && mode.indexOf('sign') >= 0)
+      || (mode.indexOf('sign') >= 0 && mode.indexOf('verify') >= 0)
+    ) throw new Error('InvalidMode');
 
     if(mode.indexOf('encrypt') >= 0) {
-      if(mode.indexOf('verify') >= 0 || mode.indexOf('decrypt') >= 0) throw new Error('InvalidMode');
       if (typeof keys.publicKeys !== 'undefined'){
         if (typeof keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPublicKeyAreExclusive');
       } else {
@@ -19,7 +24,6 @@ export class Keys {
     }
 
     if(mode.indexOf('decrypt') >= 0) {
-      if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
       if (typeof keys.privateKeyPassSets !== 'undefined' || typeof keys.privateKeys !== 'undefined'){
         if (typeof keys.sessionKey !== 'undefined') throw new Error('SessionKeyAndPrivateKeyAreExclusive');
       } else {
@@ -27,13 +31,11 @@ export class Keys {
       }
     }
 
-    if(mode.indexOf('sign') >= 0){
-      if(mode.indexOf('verify') >= 0 || mode.indexOf('decrypt') >= 0) throw new Error('InvalidMode');
-      if(typeof keys.privateKeyPassSets === 'undefined' &&  typeof keys.privateKeys === 'undefined') throw new Error('NoPrivateKey');
+    if(mode.indexOf('sign') >= 0 && typeof keys.privateKeyPassSets === 'undefined' &&  typeof keys.privateKeys === 'undefined'){
+      throw new Error('NoPrivateKey');
     }
-    if(mode.indexOf('verify') >= 0){
-      if(mode.indexOf('sign') >= 0 || mode.indexOf('encrypt') >= 0) throw new Error('InvalidMode');
-      if(typeof keys.publicKeys === 'undefined') throw new Error('NoPublicKey');
+    if(mode.indexOf('verify') >= 0 && typeof keys.publicKeys === 'undefined'){
+      throw new Error('NoPublicKey');
     }
 
     let obj;
