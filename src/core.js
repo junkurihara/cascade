@@ -73,19 +73,19 @@ export async function encrypt({message, keys, config}){
     (typeof config.encrypt !== 'undefined' && !(config.encrypt.suite === 'openpgp' && config.sign.suite === 'openpgp')))
   ){
     if (keys.suite.sign_verify !== config.sign.suite) throw new Error('UnmatchedKeyTypeToSigningSuite');
-    signed = await signBase({
-      message: msgObj, keys, options: config.sign.options
-    }).catch((e) => { throw new Error(`SigningFailed: ${e.message}`); });
+    if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
+    signed = await cryptoSuite(keys.suite.sign_verify).sign({
+      message: msgObj, keys: keys.keys, options: config.sign.options
+    }).catch((e) => {
+      throw new Error(`SigningFailed: ${e.message}`);
+    });
   }
-  // console.log(signed);
 
   // do encryption.
   if (keys.suite.encrypt_decrypt !== config.encrypt.suite) throw new Error('UnmatchedKeyTypeToEncryptionSuite');
   const encrypted = await encryptBase({
     message: msgObj, keys, options: config.encrypt.options
   }).catch( (e) => { throw new Error(`EncryptionFailed: ${e.message}`); });
-
-  // console.log(encrypted);
 
   return Object.assign(encrypted, signed);
 }
@@ -132,21 +132,19 @@ export async function decrypt({data, keys}){
 export async function sign({message, keys, config}){
   // assertion
   if (typeof config.sign === 'undefined') throw new Error('InvalidConfigForSigning');
+  if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
 
   // compose objects
   const msgObj = importMessage(message);
 
   // do signing
-  let signed;
   if(keys.keys.privateKeys) {
-    signed = await signBase({
-      message: msgObj, keys, options: config.sign.options, output: {sign: config.sign.output}
+    return await cryptoSuite(keys.suite.sign_verify).sign({
+      message: msgObj, keys: keys.keys, options: config.sign.options
     }).catch((e) => {
       throw new Error(`SigningFailed: ${e.message}`);
     });
   } else throw new Error('InvalidPrivateKeys');
-
-  return signed;
 }
 
 /**
@@ -186,7 +184,7 @@ const cryptoSuite = (suiteName) => {
 const encryptBase = async ({message, keys, options}) => {
   if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
 
-  const suiteObj = getSuiteObj(keys.suite.encrypt_decrypt);
+  const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
 
   return suiteObj.encrypt({ message, keys: keys.keys, options });
 };
@@ -194,23 +192,7 @@ const encryptBase = async ({message, keys, options}) => {
 const decryptBase = async ({encrypted, keys, options}) => {
   if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
 
-  const suiteObj = getSuiteObj(keys.suite.encrypt_decrypt);
+  const suiteObj = cryptoSuite(keys.suite.encrypt_decrypt);
 
   return suiteObj.decrypt({ encrypted, keys: keys.keys, options });
-};
-
-const signBase = async ({message, keys, options}) => {
-  if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
-
-  const suiteObj = getSuiteObj(keys.suite.sign_verify);
-
-  return suiteObj.sign({ message, keys: keys.keys, options });
-};
-
-const getSuiteObj = (suiteName) => {
-  let suiteObj;
-  if (suiteName === 'jscu') suiteObj = Jscu;
-  else if (suiteName === 'openpgp') suiteObj = OpenPGP;
-  else throw new Error('UnknownSuite');
-  return suiteObj;
 };
