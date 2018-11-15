@@ -93,11 +93,13 @@ const keyPair = await cascade.generateKey(keyParam);
 
 Then, the protected private key is encoded as `EncryptedPrivateKeyInfo`.
 
-Note that in addition to `jscu` as `keyParam.suite`, `openpgp` is also available. The key generation API can generate not only EC public and private key strings but also RSA ones and session keys, where generated session keys are just random bytes given in `Uint8Array`.
+Note that in addition to `jscu` as `keyParam.suite`, `openpgp` is also available. The key generation API can generate not only EC public and private key strings but also RSA ones and session keys, where generated session keys are just random bytes given in `Uint8Array` unlike formatted strings of public and private keys.
 
 ## Basic encryption simultaneously with signing
 
-The following example describes how to encrypt a message in `Uint8Array` (or `String`) simultaneously with sining on the plaintext given message. The API `cascade.encrypt` returns an object consisting of `message` and `signature` subobjects that are able to be serialized with `serialize()`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained. By feeding those de-serialized objects with imported decryption keys, the API `cascade.decrypt` returns a decrypted data and the result of signature verification.
+The following example describes how to simply encrypt a message in `Uint8Array` (`String` is also accepted) simultaneously with signing on the given plaintext message in `Cascade`. Since the cascaded encryption, i.e., x-brid encryption, will be employed by chaining this basic encryption and decryption function, we shall firstly explain this basic function and its usage.
+
+First of all, we need to import keys to be used, and obtain `Keys` object that will be used to encrypt and decrypt in `Cascade`.
 
 ```javascript
 const encryptionKeys = {
@@ -105,6 +107,16 @@ const encryptionKeys = {
   privateKeyPassSets:[ { privateKey: keys.privateKey.keyString, passphrase: '' } ] // for Signing
 };
 
+// import encryption key strings
+const encryptionKeyImported = await cascade.importKeys(
+  'string',
+  {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
+);
+```
+
+The API `cascade.encrypt` returns an object consisting of `message` and `signature` sub-objects that are able to be respectively serialized with their instance method `serialize()`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained. By putting those de-serialized objects with imported decryption keys, the API `cascade.decrypt` returns a decrypted data and the result of signature verification.
+
+```javascript
 const encryptionConfig = {
   encrypt: {
     suite: 'jscu',
@@ -116,12 +128,6 @@ const encryptionConfig = {
     options: { hash: 'SHA-256' }
   }
 };
-
-// import encryption key strings
-const encryptionKeyImported = await cascade.importKeys(
-  'string',
-  {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
-);
 
 // encrypt
 const encryptionResult = await cascade.encrypt({
