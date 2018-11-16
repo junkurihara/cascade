@@ -17,3 +17,4 @@ webpack.common.js
 .vscode/
 .nyc_output/
 .nycrc
+renovate.json

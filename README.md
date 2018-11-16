@@ -5,6 +5,7 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 [![Coverage Status](https://coveralls.io/repos/github/junkurihara/cascade/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/cascade?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ebead374220cd81a02b9/maintainability)](https://codeclimate.com/github/junkurihara/cascade/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Dependencies](https://david-dm.org/junkurihara/cascade.svg)]
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
