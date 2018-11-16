@@ -3,9 +3,9 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 [![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
 [![CircleCI](https://circleci.com/gh/junkurihara/cascade.svg?style=svg)](https://circleci.com/gh/junkurihara/cascade)
 [![Coverage Status](https://coveralls.io/repos/github/junkurihara/cascade/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/cascade?branch=develop)
+[![Dependencies](https://david-dm.org/junkurihara/cascade.svg)](https://david-dm.org/junkurihara/cascade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ebead374220cd81a02b9/maintainability)](https://codeclimate.com/github/junkurihara/cascade/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Dependencies](https://david-dm.org/junkurihara/cascade.svg)]
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
@@ -98,7 +98,7 @@ Note that in addition to `jscu` as `keyParam.suite`, `openpgp` is also available
 
 ## Basic encryption simultaneously with signing
 
-The following example describes how to simply encrypt a message in `Uint8Array` (`String` is also accepted) simultaneously with signing on the given plaintext message in `Cascade`. Since the cascaded encryption, i.e., x-brid encryption, will be employed by chaining this basic encryption and decryption function, we shall firstly explain this basic function and its usage.
+The following example describes how to simply encrypt a message in `Uint8Array` (`String` is also accepted) simultaneously with signing on the given plaintext message in `Cascade`. Since the cascaded encryption, i.e., x-brid encryption, will be employed by chaining this basic encryption and decryption function, we shall firstly explain this basic function and its usage in a step-by-step manner.
 
 First of all, we need to import keys to be used, and obtain `Keys` object that will be used to encrypt and decrypt in `Cascade`.
 
@@ -115,24 +115,39 @@ const encryptionKeyImported = await cascade.importKeys(
 );
 ```
 
-The API `cascade.encrypt` returns an object consisting of `message` and `signature` sub-objects that are able to be respectively serialized with their instance method `serialize()`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained. By putting those de-serialized objects with imported decryption keys, the API `cascade.decrypt` returns a decrypted data and the result of signature verification.
+The configuration object for encryption is also required like the following form that must be matched with the type of given encryption and signing keys imported. The following is an example for the case where the given public and private keys are PEM-formatted EC keys, i.e., ECDH+HKDF public key encryption and ECDSA signing, via `js-crypto-utils` (as referred to as `jscu` in the code block).
 
 ```javascript
+// Encryption and signing configuration
 const encryptionConfig = {
   encrypt: {
     suite: 'jscu',
-    options: { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' }
+    options: {
+      // HKDF with SHA-256 is employed on the master secret derived from ECDH.
+      hash: 'SHA-256',
+      info: '',
+      keyLength: 32,
+      // The session key HKDF derives is used to encrypt the message via AES-GCM.
+      encrypt: 'AES-GCM'
+    }
   },
   sign: {
-    required: true,
     suite: 'jscu',
-    options: { hash: 'SHA-256' }
+    // Signature is required and computed simultaneously with encryption.
+    required: true,
+    options: {
+      hash: 'SHA-256'
+    }
   }
 };
+```
 
+With the imported encryption/signing keys and encryption config, the encryption API `cascade.encrypt` employs a single-phase encryption with signing, and it returns an object consisting of `message` and `signature` sub-objects. Those sub-objects are able to be respectively serialized with their instance method `serialize()`.
+
+```javascript
 // encrypt
 const encryptionResult = await cascade.encrypt({
-  message: messageSomeHowInUint8Array,
+  message: messageSomeHow, // in Uint8Array or String
   keys: encryptionKeyImported,
   config: encryptionConfig
 });
@@ -140,11 +155,19 @@ const encryptionResult = await cascade.encrypt({
 // serialize
 const serializedEncrypted = encryptionResult.message.serialized();
 const serializedSignature = encryptionResult.signature.serialize();
+```
 
+Serialized objects must be de-serialized, i.e., ones in object forms, for decryption in `Cascade`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained.
+
+```javascript
 // deserialize
 const deserializedEncrypted = cascade.importEncryptedBuffer(serializedEncrypted);
 const deserializedSignature = cascade.importSignatureBuffer(serializedSignature);
+```
 
+ Much like basic encryption, the decryption and verification key strings must be imported and the `Keys` object is required to decrypt de-serialized message objects.
+
+```javascript
 const decryptionKeys = {
   privateKeyPassSets:[ { privateKey: keys.privateKey.keyString, passphrase: '' } ],
   publicKeys: [ keys.publicKey.keyString ] // for verification
@@ -155,7 +178,11 @@ const decryptionKeyImported = await cascade.importKeys(
   'string',
   {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
 );
+```
 
+ By putting de-serialized message and signature objects with imported decryption keys as given above, the `Cascade` API `cascade.decrypt` returns a decrypted data and the result of signature verification.
+
+```javascript
 // decrypt and verify
 const decryptionResult = await cascade.decrypt({
   data: { message: deserializedEncrypted, signature: deserializedSignature },
@@ -163,6 +190,7 @@ const decryptionResult = await cascade.decrypt({
 });
 ```
 
+That's all the *basic* encryption and decryption steps, and the cascaded encryption/decryption in `Cascade` are composed of multiple basic ones that chained sequentially. Next section will briefly explain this step with some exemplary operations.
 
 ## Cascaded x-brid encryption and signing
 
