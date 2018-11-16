@@ -192,10 +192,27 @@ const decryptionResult = await cascade.decrypt({
 
 That's all the *basic* encryption and decryption steps, and the cascaded encryption/decryption in `Cascade` are composed of multiple basic ones that chained sequentially. Next section will briefly explain this step with some exemplary operations.
 
-## Cascaded x-brid encryption and signing
+## Cascaded x-brid encryption with signing
+
+Here we describe how to employ cascaded x-brid encryption simultaneously with signing by giving an simple example.
+
+All we need to prepare for the cascaded x-brid encryption/decryption is exactly similar to the basic encryption described in the previous section. One main difference from basic ones is that we have to define an **encryption procedure** given as an array of encryption configuration objects. The following is an sample encryption procedure that will be used in this section.
 
 ```javascript
-
+const encryptionProcedure = [
+  {
+    encrypt: { suite: 'jscu', onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'} },
+    sign: { required: true }
+  },
+  {
+    encrypt: { suite: 'jscu', onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'} },
+    sign: { required: true }
+  },
+  {
+    encrypt: { suite: 'jscu', options: { hash: 'SHA-256', info: '', keyLength: 32, encrypt: 'AES-GCM' } },
+    sign: { suite: 'jscu', required: true, options: { hash: 'SHA-256' } }
+  }
+];
 ```
 
 ```mermaid
