@@ -2,7 +2,7 @@
  * utils.js
  */
 
-import params from './params.js';
+import params from './config.js';
 
 export function getJscu() {
   let jscu;

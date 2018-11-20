@@ -1,5 +1,5 @@
 /**
- * params.js
+ * config.js
  */
 
 export default {
@@ -30,12 +30,5 @@ export default {
     workerPathWeb: './openpgp.worker.min.js',
 
     workerPathNode: '../node_modules/openpgp/dist/openpgp.worker.min.js',
-
-    // mapping names of curve
-    curveList: {
-      'P-256': {name: 'p256'},
-      'P-384': {name: 'p384'},
-      'P-521': {name: 'p521'}
-    }
   }
 };

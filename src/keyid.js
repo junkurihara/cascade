@@ -3,7 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
-import params from './params.js';
+import config from './config.js';
 import {getJscu} from './util.js';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -13,7 +13,7 @@ import cloneDeep from 'lodash.clonedeep';
  * @param len
  * @return {KeyId}
  */
-export function fromOpenPgpKey(keyObject, len=params.publicKeyIdLEN){
+export function fromOpenPgpKey(keyObject, len=config.publicKeyIdLEN){
   const fp = keyObject.getFingerprint();
   const buf = jseu.encoder.hexStringToArrayBuffer(fp);
   return createKeyId(buf.slice(0, len));
@@ -27,8 +27,8 @@ export function fromOpenPgpKey(keyObject, len=params.publicKeyIdLEN){
  * @param len
  * @return {Promise<KeyId>}
  */
-export async function fromJscuKey(keyObject, len=params.publicKeyIdLEN) {
-  const thumbPrintBuf = await keyObject.getJwkThumbprint(params.publicKeyIdHash, 'binary');
+export async function fromJscuKey(keyObject, len=config.publicKeyIdLEN) {
+  const thumbPrintBuf = await keyObject.getJwkThumbprint(config.publicKeyIdHash, 'binary');
   return createKeyId(thumbPrintBuf.slice(0, len));
 }
 
@@ -38,9 +38,9 @@ export async function fromJscuKey(keyObject, len=params.publicKeyIdLEN) {
  * @param len
  * @return {Promise<KeyId>}
  */
-export async function fromRawKey(bin, len = params.sessionKeyIdLength) {
+export async function fromRawKey(bin, len = config.sessionKeyIdLength) {
   const jscu = getJscu();
-  const digest = await jscu.hash.compute(bin, params.sessionKeyIdHash);
+  const digest = await jscu.hash.compute(bin, config.sessionKeyIdHash);
   return createKeyId(digest.slice(0, len));
 }
 
