@@ -61,7 +61,12 @@ Of cource, you can also directly import the source code by cloning this Github r
 
 ## Finishing up the setup
 
-The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` and `openpgpjs` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `js-crypto-utils` (`jscu.bundle.js`) and `openpgpjs` (`openpgp.js`/`openpgp.min.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists.
+The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` and `openpgpjs` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `js-crypto-utils` (`jscu.bundle.js`) and `openpgpjs` (`openpgp.js`/`openpgp.min.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists. For browsers, the default path to `openpgp.worker.js`/`openpgp.worker.min.js` is the root of your url path, and you can change it by directly specifying the location as follows.
+
+```javascript
+import cascade from 'crypto-cascade';
+cascade.config.openpgp.workerPathWeb = 'path/to/openpgp.worker.min.js';
+```
 
 # Usage
 
