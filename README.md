@@ -178,7 +178,7 @@ const serializedSignature = encryptionResult.signature.serialize();
 Serialized objects must be de-serialized, i.e., ones in object forms, for decryption in `Cascade`. Serialized encrypted message objects and signature objects can be de-serialized with `cascade.importEncryptedBuffer` and `cascade.importSignatureBuffer` functions and encrypted message and signature objects are obtained.
 
 ```javascript
-// deserialize
+// de-serialize
 const deserializedEncrypted = cascade.importEncryptedBuffer(serializedEncrypted);
 const deserializedSignature = cascade.importSignatureBuffer(serializedSignature);
 ```
@@ -323,5 +323,5 @@ const deserialized = cascade.importCascadedBuffer(serialized);
 const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExtracted);
 
 // recover original EncryptedMessage object]
-deserialized.insert(n, deserializedExtracted);
+deserialized.insert(idx, deserializedExtracted);
 ```
