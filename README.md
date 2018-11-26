@@ -11,6 +11,19 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 
 # Introduction and Overview
 
+```mermaid
+graph LR;
+    PT-->SKE1;
+    SK1-->SKE1;
+    SKE1-->CT_BODY;
+    SK1-->SKE2;
+    SK2-->SKE2;
+    SKE2-->CT_KEY1;
+    SK2-->PKE;
+    PK-->PKE;
+    PKE-->CT_KEY2;
+```
+
 # Supported Crypto Suites
 
 This library currently supports two cryptographic suites, OpenPGP and js-crypto-utils. We adopted [openpgpjs](https://openpgpjs.org/) as an implementation of OpenPGP. On the other hand, [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js.
@@ -311,19 +324,4 @@ const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExt
 
 // recover original EncryptedMessage object]
 deserialized.insert(n, deserializedExtracted);
-```
-
-
-
-```mermaid
-graph TD;
-    PT-->SKE1;
-    SK1-->SKE1;
-    SKE1-->CT_BODY;
-    SK1-->SKE2;
-    SK2-->SKE2;
-    SKE2-->CT_KEY1;
-    SK2-->PKE;
-    PK-->PKE;
-    PKE-->CT_KEY2;
 ```
