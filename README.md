@@ -199,26 +199,29 @@ That's all the *basic* encryption and decryption steps, and the cascaded encrypt
 
 ## Cascaded x-brid encryption with signing
 
-Here we describe how to employ cascaded x-brid encryption simultaneously with signing by giving an simple example.
+Here we describe how to employ cascaded x-brid encryption simultaneously with signing by showing a simple example.
 
 All we need to prepare for the cascaded x-brid encryption/decryption is exactly similar to the basic encryption described in the previous section. One main difference from basic ones is that we have to define an **encryption procedure** given as an array of encryption configuration objects. The following is an sample encryption procedure that will be used in this section.
 
 ```javascript
 const encryptionProcedure = [
-  {
-    encrypt: { suite: 'jscu', onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'} },
+  { // step 1
+    encrypt: {
+      suite: 'jscu',
+      onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'}
+    },
     sign: { required: true }
   },
-  {
-    encrypt: { suite: 'jscu', onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'} },
-    sign: { required: true }
-  },
-  {
-    encrypt: { suite: 'jscu', options: { hash: 'SHA-256', info: '', keyLength: 32, encrypt: 'AES-GCM' } },
+  { // step 2
+    encrypt: {
+      suite: 'jscu', options: { hash: 'SHA-256', info: '', keyLength: 32, encrypt: 'AES-GCM' }
+    },
     sign: { suite: 'jscu', required: true, options: { hash: 'SHA-256' } }
   }
 ];
 ```
+
+The above example describes a procedure of **hybrid encryption** where the given message is first encrypted under a one-time session key generated internally at `Cascade` (step 1), and the session key is then encrypted under the externally given public key (step 2). We can see that the `encrypt.onetimeKey` specifies the key parameters generated at the step 1, and that the step 2 does not require the entry since public key(s) are given externally. In terms of signatures, the signing parameters and keys given the final step, i.e., step 2, will be applied all the other steps if `sign.required = true`.
 
 ```mermaid
 graph TD;
