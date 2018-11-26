@@ -158,7 +158,7 @@ const encryptionResult = await cascade.encrypt({
 });
 
 // serialize
-const serializedEncrypted = encryptionResult.message.serialized();
+const serializedEncrypted = encryptionResult.message.serialize();
 const serializedSignature = encryptionResult.signature.serialize();
 ```
 
@@ -204,7 +204,7 @@ Here we describe how to employ cascaded x-brid encryption simultaneously with si
 All we need to prepare for the cascaded x-brid encryption/decryption is exactly similar to the basic encryption described in the previous section. One main difference from basic ones is that we have to define an **encryption procedure** given as an array of encryption configuration objects. The following is an sample encryption procedure that will be used in this section.
 
 ```javascript
-const encryptionProcedure = [
+const encryptionProcedure = [
   { // step 1
     encrypt: {
       suite: 'jscu',
@@ -222,6 +222,98 @@ const encryptionProcedure = [
 ```
 
 The above example describes a procedure of **hybrid encryption** where the given message is first encrypted under a one-time session key generated internally at `Cascade` (step 1), and the session key is then encrypted under the externally given public key (step 2). We can see that the `encrypt.onetimeKey` specifies the key parameters generated at the step 1, and that the step 2 does not require the entry since public key(s) are given externally. In terms of signatures, the signing parameters and keys given the final step, i.e., step 2, will be applied all the other steps if `sign.required = true`.
+
+After setting up an encryption procedure, we then obtain a `Keys` object by importing key strings in an exactly same manner as the basic encryption given above. This `Keys` object must be matched the parameters of the final step in the given encryption procedure. We then instantiate a `Cascade` object with the `Keys` object and the given encryption procedure.
+
+```javascript
+const encryptionKeys = {
+  publicKeys: [ keys.publicKey.keyString ], // for encryption
+  privateKeyPassSets: [ { privateKey: keys.privateKey.keyString, passphrase: '' } ] // for Signing
+};
+
+// import encryption keys
+const encryptionKeyImported = await cascade.importKeys(
+  'string',
+  {
+    keys: encryptionKeys,
+    suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'},
+    mode: ['encrypt', 'sign']
+  }
+);
+
+// instantiate encryption process
+const eProcess = await cascade.createEncryptionCascade({
+  keys: encryptionKeyImported,
+  procedure: encryptionProcedure
+});
+```
+
+Now all the encryption setup has done and we can encrypt a message in `Uint8Array` (or `string`) via `encrypt` method of the `Cascade` object. The ciphertext is given as an `EncryptedMessage` object, and the object can be viewed as an array in which each element exactly corresponds to each step of the encryption procedure. Its serialized data can be obtained through `serialize` method, and conversely, we can de-serialize the serialized data through `importCascadeBuffer` function.
+
+```javascript
+// encrypt
+const encrypted = await eProcess.encrypt(message);
+
+// serialize
+const serialized = encrypted.serialize();
+
+// de-serialize
+const deserialized = cascade.importCascadedBuffer(serialized);
+```
+
+Decryption operation is exactly inverse of the above encryption operation. First we must obtain a `Keys` object by importing decryption and verification keys, and instantiate the decryption `Cascade` object to setup the decryption process by the obtained `EncryptedMessage` object. Then, the plaintext message is finally obtained through `decrypt` method.
+
+```javascript
+const decryptionKeys = {
+  privateKeyPassSets:[ { privateKey: keys.privateKey.keyString, passphrase: '' } ], // for decryption
+  publicKeys: [ keys.publicKey.keyString ] // for verification
+};
+
+// import decryption keys
+const decryptionKeyImported = await cascade.importKeys(
+  'string',
+  {
+    keys: decryptionKeys,
+    suite: { encrypt_decrypt: 'jscu', sign_verify: 'jscu' },
+    mode: ['decrypt', 'verify']
+  }
+);
+
+// instantiate decryption process
+const dProcess = await cascade.createDecryptionCascade({
+  keys: decryptionKeyImported,
+  encrypted: deserialized
+});
+
+// decrypt
+const decrypted = await dProcess.decrypt();
+```
+
+## Drop and extract a part of ciphertext
+
+We can also **drop and extract** a part of ciphertext, namely some elements of the array `EncryptedMessage`. This enables us to control access rights of users who received the ciphertext by giving them the extracted part separately.
+
+```javascript
+const idx = 0; // 0 to length-1 of encryption procedure
+const extracted = encrypted.extract(idx); // drop and extract the indicated part from EncryptedMessage object
+
+// still serializable after extraction
+const serialized = encrypted.serialize();
+
+// extracted part is an array where each element is serializable as well
+const serializedExtracted = extracted.map( (obj) => obj.serialize() );
+
+// de-serialize
+const deserialized = cascade.importCascadedBuffer(serialized);
+
+// de-serialize each extracted part.
+const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExtracted);
+
+// recover original EncryptedMessage object]
+deserialized.insert(n, deserializedExtracted);
+```
+
+
 
 ```mermaid
 graph TD;
