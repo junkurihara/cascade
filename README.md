@@ -11,18 +11,48 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 
 # Introduction and Overview
 
+Considering existing cryptographic libraries and native APIs for JavaScript, as far as we know, fundamental implementations of primitives have been developed separately in multiple environments such as Node.js and various browsers. In order to fill gaps among those different environments, there exist several nice *universal* cryptographic suites that flawlessly work in most of modern JavaScript environments. Here we have defined 'suites' as ones providing encryption, singing and other supplemental functions like OpenPGP library.
+
+However, they are still too primitive to realize a bit more modern cryptographic services in JavaScript. In other words, we see that simple encryption and signing provided by those primitives are insufficient to directly satisfy more complex demands, e.g., *revocation of decryption rights* after encryption of data. Considering such situation, the aim of this project called `Cascade` is to provide a flexible cryptographic application library in JavaScript that realizes the **x-brid encryption** and signing by utilizing multiple cryptographic suites. This enables us to, for instance, realize complex structures of access rights to encrypted data, e.g., revocation after encryption as mentioned above.
+
+## X-brid Encryption
+
+Here we shall explain the detailed mechanism of x-brid encryption by illustrating the simplest example instance of **hybrid** encryption, i.e., `x = 2`, which is a well-known cryptosystem in the current security technology. The following is a schematic block diagram of the hybrid encryption.
+
 ```mermaid
-graph LR;
-    PT-->SKE1;
-    SK1-->SKE1;
-    SKE1-->CT_BODY;
-    SK1-->SKE2;
-    SK2-->SKE2;
-    SKE2-->CT_KEY1;
-    SK2-->PKE;
-    PK-->PKE;
-    PKE-->CT_KEY2;
+graph TB;
+  SK-->|Message Input|PKE[Public Key Encryption];
+  PK["Public Key(s)"]-->|Key Input|PKE;
+
+  subgraph step 2
+    PKE-->|Output|CTSK("Ciphertext(s) of Session Key");
+  end
+
+  M[Plaintext Message]-->|Message Input|SKE[Symmetric Key Encryption];
+  SK[Session Key]-->|Key Input|SKE;
+
+  subgraph step 1
+    SKE-->|Output| CTM(Ciphertext of Message);
+  end
 ```
+
+As we see, this hybrid procedure consists of two steps where the step 1 encrypts the given plaintext message under (one-time) session key in a certain symmetric key encryption, and the step 2 encrypts the previously-used session key under a given public key(s) as a plaintext in a public key encryption. Although this looks somewhat redundant and waste of computing resource, **it has a great advantage in terms of storage usage in the case where we have multiple receivers**, i.e., multiple public keys. Namely, the encrypted message body that is likely big would be common and recycled to all the receivers, and only encrypted session key that should be small is 'personalized' to each receivers.
+
+Moreover, this cryptosystem could yield another merit, which is the revocation after encryption of data. Assume that we first provide receivers the encrypted message body, and recall that at this point, no one can decrypt it. This implies that you can provide 'personalized' encrypted session keys to only authorized person later and freely discard the encrypted session keys, i.e., granting and revoking decryption rights and access rights to the data. We may know that this is a very basic and fundamental concept of *encryption-based access control* that is likely to be a part of well-known digital rights management (DRM).
+
+`Cascade` project can instantiate the above mentioned hybrid encryption by its nature, and it also generalizes this basic 2-step cryptosystem to `x`-step one (`x > 0`), namely, x-brid encryption.
+
+## Cryptographic Functions Employed in X-brid Encryption and ToDos
+
+We briefly explained our concept of x-brid encryption by providing a fairly simple hybrid instance as above.
+
+Potentially the concept and current implementation can accept more interesting and modern cryptographic primitive functions as a step of x-brid encryption. For instance:
+
+- Broadcast encryption
+- Attribute-based encryption
+- Secret sharing (e.g., split our session key at the final step!)
+
+Writing writing....
 
 # Supported Crypto Suites
 
