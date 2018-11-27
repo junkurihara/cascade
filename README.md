@@ -19,22 +19,7 @@ However, they are still too primitive to realize a bit more modern cryptographic
 
 Here we shall explain the detailed mechanism of x-brid encryption by illustrating the simplest example instance of **hybrid** encryption, i.e., `x = 2`, which is a well-known cryptosystem in the current security technology. The following is a schematic block diagram of the hybrid encryption.
 
-```mermaid
-graph TB;
-  SK-->|Message Input|PKE[Public Key Encryption];
-  PK["Public Key(s)"]-->|Key Input|PKE;
-
-  subgraph step 2
-    PKE-->|Output|CTSK("Ciphertext(s) of Session Key");
-  end
-
-  M[Plaintext Message]-->|Message Input|SKE[Symmetric Key Encryption];
-  SK[Session Key]-->|Key Input|SKE;
-
-  subgraph step 1
-    SKE-->|Output| CTM(Ciphertext of Message);
-  end
-```
+![Schematic Diagram of Hybrid Encryption](./docs/img/hybrid.svg)
 
 As we see, this hybrid procedure consists of two steps where the step 1 encrypts the given plaintext message under (one-time) session key in a certain symmetric key encryption, and the step 2 encrypts the previously-used session key under a given public key(s) as a plaintext in a public key encryption. Although this looks somewhat redundant and waste of computing resource, **it has a great advantage in terms of storage usage in the case where we have multiple receivers**, i.e., multiple public keys. Namely, the encrypted message body that is likely big would be common and recycled to all the receivers, and only encrypted session key that should be small is 'personalized' to each receivers.
 
