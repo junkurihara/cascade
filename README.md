@@ -42,17 +42,19 @@ Moreover, this cryptosystem could yield another merit, which is the revocation a
 
 `Cascade` project can instantiate the above mentioned hybrid encryption by its nature, and it also generalizes this basic 2-step cryptosystem to `x`-step one (`x > 0`), namely, x-brid encryption.
 
-## Cryptographic Functions Employed in X-brid Encryption and ToDos
+## Cryptographic Functions Employed in X-brid Encryption and Future Extension
 
-We briefly explained our concept of x-brid encryption by providing a fairly simple hybrid instance as above.
+We briefly explained our concept of x-brid encryption by providing a fairly simple hybrid instance as above. As a natural consequence of the generalization by `Cascade`, we can simply increase the value `x` and compose, say, *tri-brid* (`x = 3`) or *tetra-brid* (`x = 4`) encryption by cascading symmetric encryption steps. (We are honestly unsure this technically sounds at this point, but such structures may fit a certain type of application like the relationship of hybrid encryption and DRM.)
 
-Potentially the concept and current implementation can accept more interesting and modern cryptographic primitive functions as a step of x-brid encryption. For instance:
+On the other hand, there is another room to generalize the cryptosystem from the viewpoint of *encryption function* at each step of x-brid encryption. The current implementation of `Cascade` can utilize encryption functions of a couple of cryptographic suites, and they supports only basic public key encryption (RSA and elliptic curve cryptosystems) and symmetric key encryption (AES). We mean that as additions to the public/private key pair based cryptosystem, we should plan to supports other types of modern cryptography as suites. In fact, the concept and current implementation can accept more interesting and modern cryptographic primitive functions as a step of x-brid encryption. For instance:
 
 - Broadcast encryption
 - Attribute-based encryption
 - Secret sharing (e.g., split our session key at the final step!)
 
-Writing writing....
+We can see that by employing those functions at some steps, new types of cryptographic application could be realized.
+
+We also mention that a classical broadcast encryption based on tree can be possibly instantiated in the context of x-brid encryption. This is from the following observation. First consider to attach public key encryption to all steps, and assume that the plaintext message at each step is the private key used in the previous step. This composes a tree of multiple layers of private key encapsulation that is the core of tree-based broadcast encryption.
 
 # Supported Crypto Suites
 
@@ -113,7 +115,7 @@ cascade.config.openpgp.workerPathWeb = 'path/to/openpgp.worker.min.js';
 
 # Usage
 
-Here we give some basic example of usecases of `Cascade`.
+Here we give some basic example of usecases of `Cascade`. This section is organized as follows. First, we explain how to generate keys in `Cascade`. Then as a function employed at each step of x-brid encryption, we describe a very basic *single* encryption and signing operations in `Cascade`. This can be also viewed as the case where `x = 1`. After these warmp-ups, we finally show how to employ the x-brid encryption in `Cascade`. We should really note that this is just an example and the source/test codes and JSDoc is useful to understand the detailed mechanism and usage of `Cascade`.
 
 ## Key generation
 
