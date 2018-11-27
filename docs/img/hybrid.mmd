@@ -1,0 +1,14 @@
+graph TB;
+  SK-->|Message Input|PKE[Public Key Encryption];
+  PK["Public Key(s)"]-->|Key Input|PKE;
+
+  subgraph step 2
+    PKE-->|Output|CTSK("Ciphertext(s) of Session Key");
+  end
+
+  M[Plaintext Message]-->|Message Input|SKE[Symmetric Key Encryption];
+  SK[Session Key]-->|Key Input|SKE;
+
+  subgraph step 1
+    SKE-->|Output| CTM(Ciphertext of Message);
+  end

@@ -18,3 +18,4 @@ webpack.common.js
 .nyc_output/
 .nycrc
 renovate.json
+docs/
