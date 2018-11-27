@@ -342,3 +342,11 @@ const deserializedExtracted = cascade.importRawEncryptedBufferList(serializedExt
 // recover original EncryptedMessage object]
 deserialized.insert(idx, deserializedExtracted);
 ```
+
+# Note
+
+At this point, limitations of `Cascade` are basically from those of [js-crypto-utils](https://github.com/junkurihara/jscu) and [openpgpjs](https://openpgpjs.org/). Please refer to their documents first.
+
+# Lisence
+
+Licensed under the MIT license, see `LICENSE` file.
