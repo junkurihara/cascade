@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara <kurihara@ieee.org>",
   "license": "MIT",
@@ -57,7 +57,7 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-utils": "^0.13.0",
+    "js-crypto-utils": "^0.14.0",
     "js-encoding-utils": "^0.3.0",
     "lodash.clonedeep": "^4.5.0",
     "msgpack-lite": "^0.1.26",
