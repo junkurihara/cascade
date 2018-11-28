@@ -30,19 +30,17 @@ export class Jscu extends Suite {
       const keyType = (params.type === 'ec') ? 'EC' : 'RSA';
       const options = (params.type === 'ec') ? {namedCurve: params.curve} : {modulusLength: params.modulusLength};
 
-      const jwKeys = await jscu.pkc.generateKey(keyType, options);
-      const keyId = await utilKeyId.fromJscuKey(new jscu.Key('jwk', jwKeys.publicKey));
+      const keyObject = await jscu.pkc.generateKey(keyType, options);
 
-      const publicKeyObj = new jscu.Key('jwk', jwKeys.publicKey);
-      let privateKeyObj = new jscu.Key('jwk', jwKeys.privateKey);
+      const keyId = await utilKeyId.fromJscuKey(keyObject.publicKey);
 
       // for encrypted keys
       if (passphrase) {
-        const encryptedDer = await privateKeyObj.export('der', {encryptParams: Object.assign({passphrase}, encryptOptions)});
-        privateKeyObj = new jscu.Key('der', encryptedDer);
+        const encryptedDer = await keyObject.privateKey.export('der', {encryptParams: Object.assign({passphrase}, encryptOptions)});
+        keyObject.privateKey  = new jscu.Key('der', encryptedDer);
       }
 
-      return { publicKey: publicKeyObj, privateKey: privateKeyObj, keyId };
+      return { publicKey: keyObject.publicKey, privateKey: keyObject.privateKey, keyId };
     }
     else throw new Error('JscuUnsupportedKeyType');
   }
@@ -89,13 +87,12 @@ export class Jscu extends Suite {
 
       if(options.privateKeyPass){ // for ECDH TODO: Reconsider if the pem formatted key could be assumed.
         options.privateKey = await Jscu.importKey('pem', options.privateKeyPass.privateKey, options.privateKeyPass.passphrase);
-        options.privateKey = await options.privateKey.export('jwk');
         delete options.privateKeyPass;
       }
 
       // for ecdh ephemeral keys
       if(!options.privateKey) {
-        const jwk = await keys.publicKeys[0].export('jwk');
+        const jwk = await keys.publicKeys[0].export('jwk'); // TODO KeyType and curves should be retrieved directly from the object?
         if (jwk.kty === 'EC'){
           const ephemeral = await jscu.pkc.generateKey('EC', {namedCurve: jwk.crv});
           options.privateKey = ephemeral.privateKey;
@@ -103,8 +100,7 @@ export class Jscu extends Suite {
       }
 
       encrypted = await Promise.all(keys.publicKeys.map( async (publicKeyObj) => {
-        const publicJwk = await publicKeyObj.export('jwk');
-        const data = await jscu.pkc.encrypt(message.binary, publicJwk, options);
+        const data = await jscu.pkc.encrypt(message.binary, publicKeyObj, options);
         const fed = new Uint8Array(data.data);
         delete data.data;
         return createRawEncryptedMessage(fed, await utilKeyId.fromJscuKey(publicKeyObj), data);
@@ -112,8 +108,7 @@ export class Jscu extends Suite {
 
       // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
       if(typeof options.privateKey !== 'undefined'){
-        const publicKey = new jscu.Key('jwk', options.privateKey);
-        options.publicKey = await publicKey.export('der', {outputPublic: true}); // export public key from private key
+        options.publicKey = await options.privateKey.export('der', {outputPublic: true}); // export public key from private key
         delete options.privateKey;
       }
 
@@ -154,7 +149,6 @@ export class Jscu extends Suite {
       if (!keys.privateKeys) throw new Error('JscuPrivateKeyRequired');
       if (options.publicKey){
         options.publicKey = await Jscu.importKey('der', options.publicKey);
-        options.publicKey = await options.publicKey.export('jwk');
       }
 
       // function definition
@@ -162,9 +156,8 @@ export class Jscu extends Suite {
         const data = msgObject.toBuffer();
         const salt = (typeof msgObject.params.salt !== 'undefined') ? msgObject.params.salt : undefined;
         const iv = (typeof msgObject.params.iv !== 'undefined') ? msgObject.params.iv : undefined;
-        const privateJwk = await privateKeyObject.export('jwk');
         const decOptions = Object.assign({ salt, iv }, options);
-        return await jscu.pkc.decrypt(data, privateJwk, decOptions);
+        return await jscu.pkc.decrypt(data, privateKeyObject, decOptions);
       };
 
       // filter by keyId
@@ -224,8 +217,7 @@ export class Jscu extends Suite {
     const jscu = getJscu();
 
     const signatures = await Promise.all(keys.privateKeys.map( async (privKey) => {
-      const privateJwk = await privKey.export('jwk');
-      const signature = await jscu.pkc.sign(message.binary, privateJwk, options.hash, Object.assign({format: 'raw'}, options));
+      const signature = await jscu.pkc.sign(message.binary, privKey, options.hash, Object.assign({format: 'raw'}, options));
       const keyId = await utilKeyId.fromJscuKey(privKey);
 
       return createRawSignature(signature, keyId);
@@ -265,7 +257,7 @@ export class Jscu extends Suite {
       const valid = await jscu.pkc.verify(
         message.binary,
         sigKey.signature.toBuffer(),
-        await sigKey.publicKey.export('jwk'),
+        sigKey.publicKey,
         options.hash,
         Object.assign({format: 'raw'}, options)
       );

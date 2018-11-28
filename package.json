@@ -57,7 +57,7 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-utils": "^0.13.0",
+    "js-crypto-utils": "^0.14.0",
     "js-encoding-utils": "^0.3.0",
     "lodash.clonedeep": "^4.5.0",
     "msgpack-lite": "^0.1.26",
