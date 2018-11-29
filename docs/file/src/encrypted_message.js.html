@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/encrypted_message.js | Cascade</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Cryptographic Library"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Cascade"><meta property="twitter:description" content="Cryptographic Library"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/junkurihara/cascade"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/cascaded_data.js~CascadedData.html">CascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~EncryptedMessage.html">EncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessage.html">RawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessageList.html">RawEncryptedMessageList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyId.html">KeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyIdList.html">KeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keys.js~Keys.html">Keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~RawSignature.html">RawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite.js~Suite.html">Suite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_jscu.js~Jscu.html">Jscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_openpgp.js~OpenPGP.html">OpenPGP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDecryptionCascade">createDecryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptionCascade">createEncryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCascadedData">createCascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importCascadedBuffer">importCascadedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decrypt">decrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encrypt">encrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKey">generateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sign">sign</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-verify">verify</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptedMessage">createEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawEncryptedMessage">createRawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importEncryptedBuffer">importEncryptedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importRawEncryptedBufferList">importRawEncryptedBufferList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyId">createKeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyIdList">createKeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromJscuKey">fromJscuKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromOpenPgpKey">fromOpenPgpKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromRawKey">fromRawKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKeyObject">generateKeyObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importKeys">importKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importMessage">importMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawSignature">createRawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSignature">createSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importSignatureBuffer">importSignatureBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJscu">getJscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getOpenPgp">getOpenPgp</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/encrypted_message.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * encrypted_message.js
+ */
+
+import {KeyId, KeyIdList, createKeyId, createKeyIdList} from &apos;./keyid.js&apos;;
+import jseu from &apos;js-encoding-utils&apos;;
+import cloneDeep from &apos;lodash.clonedeep&apos;;
+import msgpack from &apos;msgpack-lite&apos;;
+
+const suites = [&apos;jscu&apos;, &apos;openpgp&apos;];
+const keyTypes = [&apos;public_key_encrypt&apos;, &apos;session_key_encrypt&apos;];
+
+
+export function importEncryptedBuffer(serialized){
+  if (!(serialized instanceof Uint8Array)) throw new Error(&apos;NonUint8ArraySerializedData&apos;);
+  let des;
+  try {
+    des = msgpack.decode(serialized);
+  } catch (e) { throw new Error(`FailedToParseEncryptedMessageBuffer: ${e.message}`); }
+
+  if (!des.suite || !des.keyType || !des.message || !des.options) throw new Error(&apos;InvalidEncryptedMessageFormat&apos;);
+
+  const messageList = des.message.map( (elem) =&gt; {
+    let keyId;
+    if(elem.keyId instanceof Array) keyId = createKeyIdList(elem.keyId.map( (k) =&gt; createKeyId(new Uint8Array(k))));
+    else keyId = createKeyId(new Uint8Array(elem.keyId));
+    return createRawEncryptedMessage(elem.data, keyId, elem.params);
+  });
+
+  return createEncryptedMessage( des.suite, des.keyType, messageList, des.options );
+}
+
+export function importRawEncryptedBufferList(array){
+  if (!(array instanceof Array)) throw new Error(&apos;NotArrayOfSerializedData&apos;);
+  array.forEach( (ser) =&gt; {
+    if(!(ser instanceof Uint8Array)) throw new Error(&apos;NotUint8ArraySerializedData&apos;);
+  });
+  let deserializedArray;
+  try {
+    deserializedArray = array.map( (ser) =&gt; {
+      const decoded = msgpack.decode(ser);
+      let keyId;
+      if(decoded.keyId instanceof Array) keyId = createKeyIdList(decoded.keyId.map( (k) =&gt; createKeyId(new Uint8Array(k))));
+      else keyId = createKeyId(new Uint8Array(decoded.keyId));
+      return createRawEncryptedMessage(decoded.data, keyId, decoded.params);
+    });
+  } catch (e) { throw new Error(`FailedToParseRawEncryptedMessage: ${e.message}`); }
+
+  return deserializedArray;
+}
+
+
+export function createEncryptedMessage(suite, keyType, message, options = {}) {
+  // assertion
+  if (suites.indexOf(suite) &lt; 0) throw new Error(&apos;UnsupportedSuite&apos;);
+  if (keyTypes.indexOf(keyType) &lt; 0) throw new Error(&apos;UnsupportedKeyType&apos;);
+
+  return new EncryptedMessage(suite, keyType, message, options);
+}
+
+export function createRawEncryptedMessage(data, keyId, params) {
+  if (!(data instanceof Uint8Array)) throw new Error(&apos;NonUint8ArrayData&apos;);
+  if (!(keyId instanceof KeyId) &amp;&amp; !(keyId instanceof KeyIdList)) throw new Error(&apos;NonKeyIdOrKeyIdListObject&apos;);
+
+  return new RawEncryptedMessage(data, keyId, params);
+}
+
+export class EncryptedMessage {
+  constructor(suite, keyType, message, options = {}) {
+    this._suite = suite;
+    this._keyType = keyType;
+    this._setMessage(message);
+    this._options = options;
+  }
+
+  _setMessage(message) {
+    this._message = new RawEncryptedMessageList();
+    this._message._set(message);
+  }
+
+  extract() {
+    const returnArray = cloneDeep(this._message);
+    this._message = new RawEncryptedMessageList();
+    this._message._set([]);
+    return returnArray.toArray();
+  }
+
+  insert(messageArray) {
+    this._message = new RawEncryptedMessageList();
+    this._message._set(messageArray);
+  }
+
+  get suite() { return this._suite; }
+  get keyType() { return this._keyType; }
+  get message() { return this._message; }
+  get options() { return this._options; }
+
+  serialize() {
+    return msgpack.encode({
+      suite: this._suite,
+      keyType: this._keyType,
+      message: this._message.toJsObject(),
+      options: this._options
+    });
+  }
+}
+
+export class RawEncryptedMessage extends Uint8Array {
+  constructor(data, keyId, params = {}) {
+    super(data);
+    this._keyId = keyId;
+    this._params = params;
+  }
+
+  toBase64() { return jseu.encoder.encodeBase64(this); }
+
+  toBuffer() {
+    const buf = new Uint8Array(this);
+    return cloneDeep(buf);
+  }
+
+  toJsObject() {
+    return {
+      data: this.toBuffer(),
+      keyId: this._keyId.toBuffer(),
+      params: this._params
+    };
+  }
+
+  serialize() {
+    return msgpack.encode(this.toJsObject());
+  }
+
+  get keyId() { return this._keyId; }
+  get params() { return this._params; }
+}
+
+export class RawEncryptedMessageList extends Array {
+  _set(message) {
+    if (!(message instanceof Array)) throw new Error(&apos;InvalidEncryptedMessageList&apos;);
+    const binaryMessage = message.map((m) =&gt; {
+      if (!(m instanceof RawEncryptedMessage)) throw new Error(&apos;NotEncryptedMessage&apos;);
+      return m;
+    });
+    this.push(...binaryMessage);
+  }
+
+  toJsObject() { return this.map((raw) =&gt; raw.toJsObject()); }
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  filter(callback) { return this.toArray().filter(callback); }
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

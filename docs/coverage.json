@@ -1,0 +1,209 @@
+{
+  "coverage": "16.12%",
+  "expectCount": 155,
+  "actualCount": 25,
+  "files": {
+    "src/cascade.js": {
+      "expectCount": 16,
+      "actualCount": 0,
+      "undocumentLines": [
+        14,
+        25,
+        36,
+        37,
+        38,
+        44,
+        45,
+        69,
+        111,
+        115,
+        126,
+        179,
+        180,
+        183,
+        185,
+        186
+      ]
+    },
+    "src/cascaded_data.js": {
+      "expectCount": 9,
+      "actualCount": 0,
+      "undocumentLines": [
+        9,
+        28,
+        40,
+        41,
+        46,
+        53,
+        61,
+        72,
+        74
+      ]
+    },
+    "src/core.js": {
+      "expectCount": 6,
+      "actualCount": 5,
+      "undocumentLines": [
+        176
+      ]
+    },
+    "src/encrypted_message.js": {
+      "expectCount": 36,
+      "actualCount": 0,
+      "undocumentLines": [
+        10,
+        11,
+        14,
+        33,
+        53,
+        61,
+        68,
+        69,
+        70,
+        71,
+        73,
+        76,
+        77,
+        81,
+        88,
+        93,
+        94,
+        95,
+        96,
+        98,
+        108,
+        109,
+        111,
+        112,
+        115,
+        117,
+        122,
+        130,
+        134,
+        135,
+        138,
+        139,
+        148,
+        149,
+        151,
+        152
+      ]
+    },
+    "src/keyid.js": {
+      "expectCount": 14,
+      "actualCount": 3,
+      "undocumentLines": [
+        48,
+        54,
+        56,
+        60,
+        61,
+        69,
+        75,
+        76,
+        84,
+        85,
+        87
+      ]
+    },
+    "src/keys.js": {
+      "expectCount": 16,
+      "actualCount": 4,
+      "undocumentLines": [
+        9,
+        10,
+        46,
+        47,
+        48,
+        53,
+        54,
+        55,
+        57,
+        58,
+        59,
+        60
+      ]
+    },
+    "src/message.js": {
+      "expectCount": 8,
+      "actualCount": 1,
+      "undocumentLines": [
+        20,
+        21,
+        23,
+        24,
+        33,
+        37,
+        42
+      ]
+    },
+    "src/signature.js": {
+      "expectCount": 29,
+      "actualCount": 0,
+      "undocumentLines": [
+        9,
+        10,
+        12,
+        26,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        44,
+        45,
+        46,
+        47,
+        49,
+        59,
+        60,
+        69,
+        70,
+        72,
+        73,
+        76,
+        84,
+        85,
+        87,
+        90,
+        91,
+        94,
+        101
+      ]
+    },
+    "src/suite.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "src/suite_jscu.js": {
+      "expectCount": 7,
+      "actualCount": 6,
+      "undocumentLines": [
+        12
+      ]
+    },
+    "src/suite_openpgp.js": {
+      "expectCount": 10,
+      "actualCount": 5,
+      "undocumentLines": [
+        14,
+        20,
+        77,
+        262,
+        279
+      ]
+    },
+    "src/util.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        7,
+        22
+      ]
+    }
+  }
+}

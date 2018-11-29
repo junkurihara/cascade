@@ -1,0 +1,809 @@
+[
+  {
+    "name": "encrypt",
+    "filePath": "src/core.js",
+    "lines": [
+      {
+        "lineNumber": 54,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 55,
+        "line": " * Basic encryption API that enables signing simultaneously with encrypting message."
+      },
+      {
+        "lineNumber": 56,
+        "line": " * @param message"
+      },
+      {
+        "lineNumber": 57,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 58,
+        "line": " * @param config"
+      },
+      {
+        "lineNumber": 59,
+        "line": " * @return {Promise<{success: boolean, status: string, data: any}>}"
+      },
+      {
+        "lineNumber": 60,
+        "line": " */"
+      },
+      {
+        "lineNumber": 61,
+        "line": "export async function encrypt({message, keys, config}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "config"
+    ]
+  },
+  {
+    "name": "decrypt",
+    "filePath": "src/core.js",
+    "lines": [
+      {
+        "lineNumber": 93,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 94,
+        "line": " * Decrypt given message and additionally verify attached signatures simultaneously."
+      },
+      {
+        "lineNumber": 95,
+        "line": " * @param data"
+      },
+      {
+        "lineNumber": 96,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 97,
+        "line": " * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 98,
+        "line": " */"
+      },
+      {
+        "lineNumber": 99,
+        "line": "export async function decrypt({data, keys}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "data",
+      "keys"
+    ]
+  },
+  {
+    "name": "sign",
+    "filePath": "src/core.js",
+    "lines": [
+      {
+        "lineNumber": 126,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 127,
+        "line": " * Returns the signature objects."
+      },
+      {
+        "lineNumber": 128,
+        "line": " * @param message"
+      },
+      {
+        "lineNumber": 129,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 130,
+        "line": " * @param config"
+      },
+      {
+        "lineNumber": 131,
+        "line": " * @return {Promise<{success: boolean, status: string, data}>}"
+      },
+      {
+        "lineNumber": 132,
+        "line": " */"
+      },
+      {
+        "lineNumber": 133,
+        "line": "export async function sign({message, keys, config}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "config"
+    ]
+  },
+  {
+    "name": "verify",
+    "filePath": "src/core.js",
+    "lines": [
+      {
+        "lineNumber": 151,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 152,
+        "line": " * Returns verification result"
+      },
+      {
+        "lineNumber": 153,
+        "line": " * @param message"
+      },
+      {
+        "lineNumber": 154,
+        "line": " * @param signature"
+      },
+      {
+        "lineNumber": 155,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 156,
+        "line": " * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 157,
+        "line": " */"
+      },
+      {
+        "lineNumber": 158,
+        "line": "export async function verify({message, signature, keys}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "signature",
+      "keys"
+    ]
+  },
+  {
+    "name": "importKeys",
+    "filePath": "src/keys.js",
+    "lines": [
+      {
+        "lineNumber": 63,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 64,
+        "line": " * Functions to import keys and translate them to suite-specific key objects."
+      },
+      {
+        "lineNumber": 65,
+        "line": " * @param format"
+      },
+      {
+        "lineNumber": 66,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 67,
+        "line": " * @param suite"
+      },
+      {
+        "lineNumber": 68,
+        "line": " * @param mode"
+      },
+      {
+        "lineNumber": 69,
+        "line": " * @return {Promise<Keys>}"
+      },
+      {
+        "lineNumber": 70,
+        "line": " */"
+      },
+      {
+        "lineNumber": 71,
+        "line": "export async function importKeys(format='string', {keys, suite, mode}){"
+      }
+    ],
+    "codeParams": [
+      "format",
+      "*"
+    ],
+    "docParams": [
+      "format",
+      "keys",
+      "suite",
+      "mode"
+    ]
+  },
+  {
+    "name": "importKeyStrings",
+    "filePath": "src/keys.js",
+    "lines": [
+      {
+        "lineNumber": 83,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 84,
+        "line": " * import from keystring, i.e., pem"
+      },
+      {
+        "lineNumber": 85,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 86,
+        "line": " * @param suite"
+      },
+      {
+        "lineNumber": 87,
+        "line": " * @param mode"
+      },
+      {
+        "lineNumber": 88,
+        "line": " * @return {Promise<{keys, suite: *, mode: *}>}"
+      },
+      {
+        "lineNumber": 89,
+        "line": " */"
+      },
+      {
+        "lineNumber": 90,
+        "line": "async function importKeyStrings({keys, suite, mode}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "keys",
+      "suite",
+      "mode"
+    ]
+  },
+  {
+    "name": "importKeyObjects",
+    "filePath": "src/keys.js",
+    "lines": [
+      {
+        "lineNumber": 125,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 126,
+        "line": " * just import from key object"
+      },
+      {
+        "lineNumber": 127,
+        "line": " * @param keys"
+      },
+      {
+        "lineNumber": 128,
+        "line": " * @param suite"
+      },
+      {
+        "lineNumber": 129,
+        "line": " * @param mode"
+      },
+      {
+        "lineNumber": 130,
+        "line": " * @return {Promise<{keys, suite: *, mode: *}>}"
+      },
+      {
+        "lineNumber": 131,
+        "line": " */"
+      },
+      {
+        "lineNumber": 132,
+        "line": "async function importKeyObjects({keys, suite, mode}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "keys",
+      "suite",
+      "mode"
+    ]
+  },
+  {
+    "name": "Jscu.generateKey",
+    "filePath": "src/suite_jscu.js",
+    "lines": [
+      {
+        "lineNumber": 12,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 13,
+        "line": "   * Generate publicKeyPair or sessionKeyObject with js-crypto-utils."
+      },
+      {
+        "lineNumber": 14,
+        "line": "   * @param params {Object}"
+      },
+      {
+        "lineNumber": 15,
+        "line": "   * @param passphrase {string}"
+      },
+      {
+        "lineNumber": 16,
+        "line": "   * @param encryptOptions {Object}"
+      },
+      {
+        "lineNumber": 17,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 18,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 19,
+        "line": "  static async generateKey({params, passphrase=null, encryptOptions={}}) {"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "params",
+      "passphrase",
+      "encryptOptions"
+    ]
+  },
+  {
+    "name": "Jscu.encrypt",
+    "filePath": "src/suite_jscu.js",
+    "lines": [
+      {
+        "lineNumber": 69,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 70,
+        "line": "   * Encrypt plaintext object with given keys."
+      },
+      {
+        "lineNumber": 71,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 72,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 73,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 74,
+        "line": "   * @return {Promise<{message: EncryptedMessage}>}"
+      },
+      {
+        "lineNumber": 75,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 76,
+        "line": "  static async encrypt({message, keys, options}) {"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "options"
+    ]
+  },
+  {
+    "name": "Jscu.decrypt",
+    "filePath": "src/suite_jscu.js",
+    "lines": [
+      {
+        "lineNumber": 132,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 133,
+        "line": "   * Decrypt encrypted object with given keys."
+      },
+      {
+        "lineNumber": 134,
+        "line": "   * @param encrypted"
+      },
+      {
+        "lineNumber": 135,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 136,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 137,
+        "line": "   * @return {Promise<{data: *}>}"
+      },
+      {
+        "lineNumber": 138,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 139,
+        "line": "  static async decrypt({encrypted, keys, options}) {"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "encrypted",
+      "keys",
+      "options"
+    ]
+  },
+  {
+    "name": "Jscu.sign",
+    "filePath": "src/suite_jscu.js",
+    "lines": [
+      {
+        "lineNumber": 206,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 207,
+        "line": "   * Signing on a message with given private key's'"
+      },
+      {
+        "lineNumber": 208,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 209,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 210,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 211,
+        "line": "   * @return {Promise<{signature: Signature}>}"
+      },
+      {
+        "lineNumber": 212,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 213,
+        "line": "  static async sign({message, keys, options}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "options"
+    ]
+  },
+  {
+    "name": "Jscu.verify",
+    "filePath": "src/suite_jscu.js",
+    "lines": [
+      {
+        "lineNumber": 228,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 229,
+        "line": "   * Verify signature here"
+      },
+      {
+        "lineNumber": 230,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 231,
+        "line": "   * @param signature"
+      },
+      {
+        "lineNumber": 232,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 233,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 234,
+        "line": "   * @return {Promise<{keyId: *, valid: *}[]>}"
+      },
+      {
+        "lineNumber": 235,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 236,
+        "line": "  static async verify({message, signature, keys, options}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "signature",
+      "keys",
+      "options"
+    ]
+  },
+  {
+    "name": "OpenPGP.generateKey",
+    "filePath": "src/suite_openpgp.js",
+    "lines": [
+      {
+        "lineNumber": 21,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 22,
+        "line": "   * Generated OpenPGP Key Object with given key params."
+      },
+      {
+        "lineNumber": 23,
+        "line": "   * @param userIds {Array}"
+      },
+      {
+        "lineNumber": 24,
+        "line": "   * @param passphrase {string}"
+      },
+      {
+        "lineNumber": 25,
+        "line": "   * @param params {Object}"
+      },
+      {
+        "lineNumber": 26,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 27,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 28,
+        "line": "  static async generateKey({userIds=config.openpgp.defaultUser, passphrase=null, params}) {"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "userIds",
+      "passphrase",
+      "params"
+    ]
+  },
+  {
+    "name": "OpenPGP.encrypt",
+    "filePath": "src/suite_openpgp.js",
+    "lines": [
+      {
+        "lineNumber": 95,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 96,
+        "line": "   * returns {message: { Message, suite }, signature: { Signature, suite }}"
+      },
+      {
+        "lineNumber": 97,
+        "line": "   * if encryption is done simultaneously with signing, no signature id is given because of privacy reason (issuer hiding)"
+      },
+      {
+        "lineNumber": 98,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 99,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 100,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 101,
+        "line": "   * @param output"
+      },
+      {
+        "lineNumber": 102,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 103,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 104,
+        "line": "  static async encrypt({message, keys, options={}}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "options",
+      "output"
+    ]
+  },
+  {
+    "name": "OpenPGP.decrypt",
+    "filePath": "src/suite_openpgp.js",
+    "lines": [
+      {
+        "lineNumber": 171,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 172,
+        "line": "   * Decrypt OpenPGP encrypted message"
+      },
+      {
+        "lineNumber": 173,
+        "line": "   * @param encrypted"
+      },
+      {
+        "lineNumber": 174,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 175,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 176,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 177,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 178,
+        "line": "  static async decrypt({ encrypted, keys, options = {} }){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "encrypted",
+      "keys",
+      "options"
+    ]
+  },
+  {
+    "name": "OpenPGP.sign",
+    "filePath": "src/suite_openpgp.js",
+    "lines": [
+      {
+        "lineNumber": 208,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 209,
+        "line": "   * Returns detached signature"
+      },
+      {
+        "lineNumber": 210,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 211,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 212,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 213,
+        "line": "   * @param output"
+      },
+      {
+        "lineNumber": 214,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 215,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 216,
+        "line": "  static async sign({message, keys, options={}}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "keys",
+      "options",
+      "output"
+    ]
+  },
+  {
+    "name": "OpenPGP.verify",
+    "filePath": "src/suite_openpgp.js",
+    "lines": [
+      {
+        "lineNumber": 235,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 236,
+        "line": "   * Returns detached signature with verification result"
+      },
+      {
+        "lineNumber": 237,
+        "line": "   * @param message"
+      },
+      {
+        "lineNumber": 238,
+        "line": "   * @param signature"
+      },
+      {
+        "lineNumber": 239,
+        "line": "   * @param keys"
+      },
+      {
+        "lineNumber": 240,
+        "line": "   * @param options"
+      },
+      {
+        "lineNumber": 241,
+        "line": "   * @return {Promise<*>}"
+      },
+      {
+        "lineNumber": 242,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 243,
+        "line": "  static async verify({message, signature, keys, options}){"
+      }
+    ],
+    "codeParams": [
+      "*"
+    ],
+    "docParams": [
+      "message",
+      "signature",
+      "keys",
+      "options"
+    ]
+  }
+]

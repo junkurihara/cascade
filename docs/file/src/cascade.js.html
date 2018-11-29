@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/cascade.js | Cascade</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Cryptographic Library"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Cascade"><meta property="twitter:description" content="Cryptographic Library"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/junkurihara/cascade"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/cascaded_data.js~CascadedData.html">CascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~EncryptedMessage.html">EncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessage.html">RawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessageList.html">RawEncryptedMessageList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyId.html">KeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyIdList.html">KeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keys.js~Keys.html">Keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~RawSignature.html">RawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite.js~Suite.html">Suite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_jscu.js~Jscu.html">Jscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_openpgp.js~OpenPGP.html">OpenPGP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDecryptionCascade">createDecryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptionCascade">createEncryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCascadedData">createCascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importCascadedBuffer">importCascadedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decrypt">decrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encrypt">encrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKey">generateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sign">sign</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-verify">verify</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptedMessage">createEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawEncryptedMessage">createRawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importEncryptedBuffer">importEncryptedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importRawEncryptedBufferList">importRawEncryptedBufferList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyId">createKeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyIdList">createKeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromJscuKey">fromJscuKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromOpenPgpKey">fromOpenPgpKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromRawKey">fromRawKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKeyObject">generateKeyObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importKeys">importKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importMessage">importMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawSignature">createRawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSignature">createSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importSignatureBuffer">importSignatureBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJscu">getJscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getOpenPgp">getOpenPgp</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/cascade.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * cascade.js
+ */
+
+import {OpenPGP} from &apos;./suite_openpgp.js&apos;;
+import {Jscu} from &apos;./suite_jscu.js&apos;;
+import {generateKeyObject, importKeys, Keys} from &apos;./keys.js&apos;;
+import {Signature} from &apos;./signature.js&apos;;
+import {CascadedData, createCascadedData} from &apos;./cascaded_data.js&apos;;
+import * as core from &apos;./core.js&apos;;
+import cloneDeep from &apos;lodash.clonedeep&apos;;//&apos;lodash/cloneDeep&apos;;
+
+
+export async function createEncryptionCascade({keys, procedure}){
+  const localKeys = cloneDeep(keys);
+  const localProcedure = procedure.map( (x) =&gt; cloneDeep(x));
+
+  const cascade = new Cascade();
+  cascade._init({mode: &apos;encrypt&apos;, keys: localKeys, procedure: localProcedure});
+  await cascade._initEncryptionProcedure();
+
+  return cascade;
+}
+
+export function createDecryptionCascade({keys, encrypted}){
+  const localKeys = cloneDeep(keys);
+
+  const cascade = new Cascade();
+  cascade._init({mode: &apos;decrypt&apos;, keys: localKeys, encrypted});
+  cascade._initDecryptionProcedure();
+
+  return cascade;
+}
+
+////////////////////
+const modes = [&apos;encrypt&apos;, &apos;decrypt&apos;];
+class Cascade extends Array {
+  _init({mode, keys, procedure, encrypted}){
+    // assertions
+    if (modes.indexOf(mode) &lt; 0) throw new Error(&apos;InvalidMode&apos;);
+    if (!(keys instanceof Keys)) throw new Error(&apos;NotKeyObject&apos;);
+    if (keys.mode.indexOf(mode) &lt; 0) throw new Error(&apos;UnmatchedKeyMode&apos;);
+
+    this._cascadeMode = mode;
+    this._orgKeys = keys;
+
+    if (mode === &apos;encrypt&apos;) {
+      if (!(procedure instanceof Array)) throw new Error(&apos;NotArrayProcedure&apos;);
+      const initial = procedure.map( (config) =&gt; {
+        if(typeof config.encrypt === &apos;undefined&apos;) throw new Error(&apos;InvalidProcedure&apos;);
+        return {config};
+      });
+      this.push(...initial);
+    }
+
+    if (mode === &apos;decrypt&apos;) {
+      if (!(encrypted instanceof CascadedData)) throw new Error(&apos;NotCascadedEncryptedData&apos;);
+      const initial = encrypted.map( (encryptedObject) =&gt; {
+        if(typeof encryptedObject.message === &apos;undefined&apos;) throw new Error(&apos;InvalidEncryptedMessage&apos;);
+        return {data: encryptedObject};
+      });
+      this.push(...initial);
+    }
+
+    // set original key to the final step in the procedure
+    this[this.length - 1].keys = this._orgKeys;
+  }
+
+  async _initEncryptionProcedure(){
+    // export signingKey for precedence
+    const signingKeys = this._orgKeys.keys.privateKeys;
+
+    const precedence = this.slice(0, this.length -1);
+    await Promise.all(precedence.map( async (proc, idx) =&gt; {
+      if (typeof proc.config.encrypt.onetimeKey === &apos;undefined&apos;) throw new Error(&apos;NoKeyParamsGiven&apos;);
+
+      const suiteObject = {encrypt_decrypt: proc.config.encrypt.suite};
+      const modeArray = [&apos;encrypt&apos;];
+
+      // key generation for encryption at this step
+      const keyParams = Object.assign({ suite: proc.config.encrypt.suite}, proc.config.encrypt.onetimeKey);
+      delete proc.config.encrypt.onetimeKey;
+      const onetimeKey = await generateKeyObject(keyParams); // generate keys
+      const onetimeKeyObject = (keyParams.keyParams.type === &apos;session&apos;)
+        ? {sessionKey: onetimeKey.key}
+        : {publicKeys: [onetimeKey.publicKey]};
+
+      // message for encryption at next step.
+      // [NOTE] message for the first step is directly given message to be encrypted, otherwise, previous private/session keys;
+      let nextStepMessage;
+      if (keyParams.keyParams.type === &apos;session&apos;) nextStepMessage = onetimeKey.key;
+      else {
+        if (keyParams.suite === &apos;jscu&apos;) nextStepMessage = await onetimeKey.privateKey.export(&apos;der&apos;);
+        else if (keyParams.suite === &apos;openpgp&apos;) nextStepMessage = onetimeKey.privateKey.toPacketlist().write();
+        else throw new Error(&apos;UnknownSuite&apos;);
+      }
+      this[idx+1].message = nextStepMessage;
+
+      // updated config and key object for signing and key import
+      if (typeof proc.config.sign !== &apos;undefined&apos; &amp;&amp; proc.config.sign.required){
+        proc.config.sign = Object.assign(proc.config.sign, this[this.length-1].config.sign);
+        onetimeKeyObject.privateKeys = signingKeys;
+        suiteObject.sign_verify = proc.config.sign.suite;
+        modeArray.push(&apos;sign&apos;);
+      }
+
+      this[idx].keys = await importKeys(&apos;object&apos;, {keys:onetimeKeyObject, suite: suiteObject, mode: modeArray});
+    }));
+  }
+
+  _initDecryptionProcedure(){
+    // do nothing at this point
+  }
+
+  async encrypt(message){
+    if(this._cascadeMode !== &apos;encrypt&apos;) throw new Error(&apos;NotEncryptionCascade&apos;);
+    if(!(message instanceof Uint8Array)) throw new Error(&apos;NotUint8ArrayMessage&apos;);
+
+    // set given message as the first step message
+    this[0].message = message;
+
+    const data = await Promise.all(this.map( (proc) =&gt; core.encrypt(proc)));
+    return createCascadedData(data);
+  }
+
+  async decrypt(){
+    if(this._cascadeMode !== &apos;decrypt&apos;) throw new Error(&apos;NotDecryptionCascade&apos;);
+
+    // export verificationKey for precedence
+    const verificationKeys = this._orgKeys.keys.publicKeys;
+
+    // serialized decryption
+    const decrypted = new Array(this.length);
+    for(let idx = this.length-1; idx &gt;= 0; idx--) {
+      if (!(this[idx].keys instanceof Keys)) throw new Error(&apos;InvalidKeysObject&apos;);
+      if (typeof this[idx].data === &apos;undefined&apos;) throw new Error(&apos;InvalidDataObject&apos;);
+
+      decrypted[idx] = await core.decrypt(this[idx]);
+
+      // assign decrypted message as previous step decryption key
+      if(idx &gt; 0){
+        const suiteObject = {encrypt_decrypt: this[idx-1].data.message.suite};
+        const modeArray = [&apos;decrypt&apos;];
+
+        let nextDecryptionKeyObject;
+        if (this[idx-1].data.message.keyType === &apos;session_key_encrypt&apos;) nextDecryptionKeyObject = {sessionKey: decrypted[idx].data};
+        else {
+          if (this[idx-1].data.message.suite === &apos;jscu&apos;){
+            nextDecryptionKeyObject = {privateKeys: [await Jscu.importKey(&apos;der&apos;, decrypted[idx].data)]};
+          }
+          else if (this[idx-1].data.message.suite === &apos;openpgp&apos;){
+            nextDecryptionKeyObject = {privateKeys: [await OpenPGP.importKey(&apos;der&apos;, decrypted[idx].data)]};
+          }
+          else throw new Error(&apos;UnknownSuite&apos;);
+        }
+
+        // updated config and key object for signing and key import
+        if (this[idx-1].data.signature instanceof Signature &amp;&amp; typeof verificationKeys !== &apos;undefined&apos;){
+          nextDecryptionKeyObject.publicKeys = verificationKeys;
+          suiteObject.sign_verify = this[idx-1].data.signature.suite;
+          modeArray.push(&apos;verify&apos;);
+        }
+        // WA for embedded signature
+        else if (typeof this[idx-1].data.message !== &apos;undefined&apos;
+          &amp;&amp; this[idx-1].data.message.suite === &apos;openpgp&apos;
+          &amp;&amp; typeof verificationKeys !== &apos;undefined&apos; ) {
+          nextDecryptionKeyObject.publicKeys = verificationKeys;
+          suiteObject.sign_verify = &apos;openpgp&apos;;
+          modeArray.push(&apos;verify&apos;);
+        }
+
+        this[idx-1].keys = await importKeys(&apos;object&apos;, { keys: nextDecryptionKeyObject, suite: suiteObject, mode: modeArray });
+      }
+    }
+    return decrypted;
+
+  }
+
+  get mode () { return this._cascadeMode; }
+  get keys () { return this._orgKeys; }
+  // get allKeys () { return null; } // TODO
+
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  slice (a, b) { return this.toArray().slice(a, b); }
+}
+
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

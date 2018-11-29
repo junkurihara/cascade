@@ -18,5 +18,5 @@ webpack.common.js
 .nyc_output/
 .nycrc
 renovate.json
-esdoc/
 docs/
+assets
