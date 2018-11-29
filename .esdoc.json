@@ -1,6 +1,6 @@
 {
   "source": "./src",
-  "destination": "./esdoc",
+  "destination": "./docs",
   "package": "./package.json",
   "index": "./README.md",
   "plugins": [

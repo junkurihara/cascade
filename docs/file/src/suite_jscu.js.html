@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/suite_jscu.js | Cascade</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Cryptographic Library"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Cascade"><meta property="twitter:description" content="Cryptographic Library"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/junkurihara/cascade"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/cascaded_data.js~CascadedData.html">CascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~EncryptedMessage.html">EncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessage.html">RawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessageList.html">RawEncryptedMessageList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyId.html">KeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyIdList.html">KeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keys.js~Keys.html">Keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~RawSignature.html">RawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite.js~Suite.html">Suite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_jscu.js~Jscu.html">Jscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_openpgp.js~OpenPGP.html">OpenPGP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDecryptionCascade">createDecryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptionCascade">createEncryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCascadedData">createCascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importCascadedBuffer">importCascadedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decrypt">decrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encrypt">encrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKey">generateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sign">sign</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-verify">verify</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptedMessage">createEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawEncryptedMessage">createRawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importEncryptedBuffer">importEncryptedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importRawEncryptedBufferList">importRawEncryptedBufferList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyId">createKeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyIdList">createKeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromJscuKey">fromJscuKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromOpenPgpKey">fromOpenPgpKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromRawKey">fromRawKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKeyObject">generateKeyObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importKeys">importKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importMessage">importMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawSignature">createRawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSignature">createSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importSignatureBuffer">importSignatureBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJscu">getJscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getOpenPgp">getOpenPgp</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/suite_jscu.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * suite_jscu.js
+ */
+
+import {Suite} from &apos;./suite.js&apos;;
+import {getJscu} from &apos;./util.js&apos;;
+import * as utilKeyId from &apos;./keyid.js&apos;;
+import config from &apos;./config.js&apos;;
+import {createEncryptedMessage, createRawEncryptedMessage} from &apos;./encrypted_message.js&apos;;
+import {createSignature, createRawSignature} from &apos;./signature.js&apos;;
+
+export class Jscu extends Suite {
+  /**
+   * Generate publicKeyPair or sessionKeyObject with js-crypto-utils.
+   * @param params {Object}
+   * @param passphrase {string}
+   * @param encryptOptions {Object}
+   * @return {Promise&lt;*&gt;}
+   */
+  static async generateKey({params, passphrase=null, encryptOptions={}}) {
+    const jscu = getJscu();
+
+    if (params.type === &apos;session&apos;) {
+      if (!params.length) throw new Error(&apos;params.length must be specified&apos;);
+      const rawKey = await jscu.random.getRandomBytes(params.length);
+      const keyId = await utilKeyId.fromRawKey(rawKey);
+      return { key: rawKey, keyId };
+    }
+    else if (params.type === &apos;ec&apos; || params.type === &apos;rsa&apos;) {
+      const keyType = (params.type === &apos;ec&apos;) ? &apos;EC&apos; : &apos;RSA&apos;;
+      const options = (params.type === &apos;ec&apos;) ? {namedCurve: params.curve} : {modulusLength: params.modulusLength};
+
+      const keyObject = await jscu.pkc.generateKey(keyType, options);
+
+      const keyId = await utilKeyId.fromJscuKey(keyObject.publicKey);
+
+      // for encrypted keys
+      if (passphrase) {
+        const encryptedDer = await keyObject.privateKey.export(&apos;der&apos;, {encryptParams: Object.assign({passphrase}, encryptOptions)});
+        keyObject.privateKey  = new jscu.Key(&apos;der&apos;, encryptedDer);
+      }
+
+      return { publicKey: keyObject.publicKey, privateKey: keyObject.privateKey, keyId };
+    }
+    else throw new Error(&apos;JscuUnsupportedKeyType&apos;);
+  }
+
+  /**
+   * Import jscu key object
+   * @param type
+   * @param key
+   * @param passphrase
+   * @return {Promise&lt;jscu.Key&gt;}
+   */
+  static async importKey(type, key, passphrase){
+    const jscu = getJscu();
+
+    const keyObj = new jscu.Key(type, key);
+
+    if(keyObj.isPrivate &amp;&amp; keyObj.isEncrypted){
+      if(!passphrase) throw new Error(&apos;PassphraseRequired&apos;);
+      await keyObj.decrypt(passphrase).catch( (e) =&gt; {
+        throw new Error(`FailedToDecryptPrivateKey: ${e.message}`);
+      });
+    }
+
+    return keyObj;
+  }
+
+  /**
+   * Encrypt plaintext object with given keys.
+   * @param message
+   * @param keys
+   * @param options
+   * @return {Promise&lt;{message: EncryptedMessage}&gt;}
+   */
+  static async encrypt({message, keys, options}) {
+    const jscu = getJscu();
+
+    // check options
+    if(typeof options === &apos;undefined&apos;) options = {};
+
+    // encryption
+    let encrypted;
+    let encryptedObject;
+    if (keys.publicKeys) { // public key encryption
+
+      if(options.privateKeyPass){ // for ECDH TODO: Reconsider if the pem formatted key could be assumed.
+        options.privateKey = await Jscu.importKey(&apos;pem&apos;, options.privateKeyPass.privateKey, options.privateKeyPass.passphrase);
+        delete options.privateKeyPass;
+      }
+
+      // for ecdh ephemeral keys
+      if(!options.privateKey) {
+        const jwk = await keys.publicKeys[0].export(&apos;jwk&apos;); // TODO KeyType and curves should be retrieved directly from the object?
+        if (jwk.kty === &apos;EC&apos;){
+          const ephemeral = await jscu.pkc.generateKey(&apos;EC&apos;, {namedCurve: jwk.crv});
+          options.privateKey = ephemeral.privateKey;
+        }
+      }
+
+      encrypted = await Promise.all(keys.publicKeys.map( async (publicKeyObj) =&gt; {
+        const data = await jscu.pkc.encrypt(message.binary, publicKeyObj, options);
+        const fed = new Uint8Array(data.data);
+        delete data.data;
+        return createRawEncryptedMessage(fed, await utilKeyId.fromJscuKey(publicKeyObj), data);
+      }));
+
+      // for ecdh, remove private key and add public key in encryption config, and add the config to the encrypted object
+      if(typeof options.privateKey !== &apos;undefined&apos;){
+        options.publicKey = await options.privateKey.export(&apos;der&apos;, {outputPublic: true}); // export public key from private key
+        delete options.privateKey;
+      }
+
+      encryptedObject = {message: createEncryptedMessage(&apos;jscu&apos;, &apos;public_key_encrypt&apos;, encrypted, options)};
+    }
+    else if (keys.sessionKey) { // symmetric key encryption
+      if(options.name === &apos;AES-GCM&apos;) {  // TODO: other iv-required algorithms
+        const iv = await jscu.random.getRandomBytes(config.jscu.ivLengthAesGcm);
+        const data = await jscu.aes.encrypt(message.binary, keys.sessionKey, {name: options.name, iv});
+        const keyId = await utilKeyId.fromRawKey(keys.sessionKey);
+        const obj = createRawEncryptedMessage(data, keyId, {iv});
+        encrypted = [obj]; // TODO, should be an Array?
+      }
+      else throw new Error(&apos;JscuInvalidEncryptionAlgorithm&apos;);
+      encryptedObject = {message: createEncryptedMessage(&apos;jscu&apos;, &apos;session_key_encrypt&apos;, encrypted, options)};
+    }
+    else throw new Error(&apos;JscuInvalidEncryptionKey&apos;);
+
+    return encryptedObject;
+  }
+
+  /**
+   * Decrypt encrypted object with given keys.
+   * @param encrypted
+   * @param keys
+   * @param options
+   * @return {Promise&lt;{data: *}&gt;}
+   */
+  static async decrypt({encrypted, keys, options}) {
+    if (typeof encrypted.message === &apos;undefined&apos;) throw new Error(&apos;InvalidEncryptedMessage&apos;); // TODO, change according to the class
+    if (!(encrypted.message.message instanceof Array)) throw new Error(&apos;NonArrayMessage&apos;);
+    const jscu = getJscu();
+
+    let decrypted;
+    ////////////////////////////////////////////////////////////////////
+    if (encrypted.message.keyType === &apos;public_key_encrypt&apos;){
+      // public key decryption
+      if (!keys.privateKeys) throw new Error(&apos;JscuPrivateKeyRequired&apos;);
+      if (options.publicKey){
+        options.publicKey = await Jscu.importKey(&apos;der&apos;, options.publicKey);
+      }
+
+      // function definition
+      const decryptMessageObject = async (msgObject, privateKeyObject) =&gt; {
+        const data = msgObject.toBuffer();
+        const salt = (typeof msgObject.params.salt !== &apos;undefined&apos;) ? msgObject.params.salt : undefined;
+        const iv = (typeof msgObject.params.iv !== &apos;undefined&apos;) ? msgObject.params.iv : undefined;
+        const decOptions = Object.assign({ salt, iv }, options);
+        return await jscu.pkc.decrypt(data, privateKeyObject, decOptions);
+      };
+
+      // filter by keyId
+      const msgKeySet = [];
+      await Promise.all(keys.privateKeys.map( async (pk) =&gt; {
+        const keyId = await utilKeyId.fromJscuKey(pk);
+        const filtered = encrypted.message.message.filter( (m) =&gt; (m.keyId.toHex() === keyId.toHex()));
+        msgKeySet.push(...filtered.map((m) =&gt; ({message: m, privateKey: pk}) ));
+      }));
+      if (msgKeySet.length === 0) throw new Error(&apos;UnableToDecryptWithGivenPrivateKey&apos;);
+      // decrypt
+      let errMsg = &apos;&apos;;
+      const decryptedArray = await Promise.all(msgKeySet.map( async (set) =&gt; {
+        const d = await decryptMessageObject(set.message, set.privateKey).catch( (e) =&gt; { errMsg = e.message; });
+        if(d) return d;
+        else return null;
+      }));
+      const returnArray = decryptedArray.filter( (d) =&gt; (d !== null));
+
+      if(returnArray.length &gt; 0) decrypted = returnArray[0];
+      else throw new Error(errMsg);
+
+    }
+    ////////////////////////////////////////////////////////////////////
+    else if (encrypted.message.keyType === &apos;session_key_encrypt&apos;){
+      // session key decryption
+      if (!keys.sessionKey) throw new Error(&apos;JscuSessionKeyRequired&apos;);
+      if (!(encrypted.message.message instanceof Array)) throw new Error(&apos;NonArrayMessage&apos;);
+
+      const message = encrypted.message.message[0]; // TODO Should be an array?
+      const iv = (typeof message.params.iv !== &apos;undefined&apos;) ? message.params.iv : null;
+
+      if(options.name === &apos;AES-GCM&apos;) {
+        decrypted = await jscu.aes.decrypt(
+          message.toBuffer(),
+          keys.sessionKey,
+          {name: keys.sessionKey.algorithm, iv}
+        );
+      }
+      else throw new Error(&apos;JscuInvalidEncryptionAlgorithm&apos;);
+    }
+    else throw new Error(&apos;JscuInvalidKeyType_NotSessionKey&apos;);
+
+    return {data: decrypted};
+  }
+
+  /**
+   * Signing on a message with given private key&apos;s&apos;
+   * @param message
+   * @param keys
+   * @param options
+   * @return {Promise&lt;{signature: Signature}&gt;}
+   */
+  static async sign({message, keys, options}){
+    if(!keys.privateKeys) throw new Error(&apos;JscuInvalidSigningKeys&apos;);
+
+    const jscu = getJscu();
+
+    const signatures = await Promise.all(keys.privateKeys.map( async (privKey) =&gt; {
+      const signature = await jscu.pkc.sign(message.binary, privKey, options.hash, Object.assign({format: &apos;raw&apos;}, options));
+      const keyId = await utilKeyId.fromJscuKey(privKey);
+
+      return createRawSignature(signature, keyId);
+    }));
+
+    return {signature: createSignature(&apos;jscu&apos;, &apos;public_key_sign&apos;, signatures, options) };
+  }
+
+  /**
+   * Verify signature here
+   * @param message
+   * @param signature
+   * @param keys
+   * @param options
+   * @return {Promise&lt;{keyId: *, valid: *}[]&gt;}
+   */
+  static async verify({message, signature, keys, options}){
+    if(!keys.publicKeys) throw new Error(&apos;JscuInvalidVerificationKeys&apos;);
+
+    const jscu = getJscu();
+
+    const signatureKeySet = [];
+    const unverified = [];
+    await Promise.all(keys.publicKeys.map( async (pk) =&gt; {
+      const keyId = await utilKeyId.fromJscuKey(pk);
+      const filtered = signature.signatures.filter( (s) =&gt; {
+        if(s.keyId.toHex() === keyId.toHex()) return true;
+        else{
+          unverified.push({keyId: s.keyId, valid: undefined});
+          return false;
+        }
+      }); // WA
+      signatureKeySet.push(...filtered.map((s) =&gt; ({signature: s, publicKey: pk}) ));
+    }));
+
+    const verified = await Promise.all(signatureKeySet.map( async (sigKey) =&gt; {
+      const valid = await jscu.pkc.verify(
+        message.binary,
+        sigKey.signature.toBuffer(),
+        sigKey.publicKey,
+        options.hash,
+        Object.assign({format: &apos;raw&apos;}, options)
+      );
+      return {keyId: sigKey.signature.keyId, valid};
+    }));
+
+    return verified.concat(unverified);
+  }
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/signature.js | Cascade</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Cryptographic Library"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Cascade"><meta property="twitter:description" content="Cryptographic Library"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/junkurihara/cascade"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/cascaded_data.js~CascadedData.html">CascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~EncryptedMessage.html">EncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessage.html">RawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/encrypted_message.js~RawEncryptedMessageList.html">RawEncryptedMessageList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyId.html">KeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keyid.js~KeyIdList.html">KeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/keys.js~Keys.html">Keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~RawSignature.html">RawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/signature.js~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite.js~Suite.html">Suite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_jscu.js~Jscu.html">Jscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/suite_openpgp.js~OpenPGP.html">OpenPGP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDecryptionCascade">createDecryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptionCascade">createEncryptionCascade</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCascadedData">createCascadedData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importCascadedBuffer">importCascadedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decrypt">decrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encrypt">encrypt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKey">generateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sign">sign</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-verify">verify</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createEncryptedMessage">createEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawEncryptedMessage">createRawEncryptedMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importEncryptedBuffer">importEncryptedBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importRawEncryptedBufferList">importRawEncryptedBufferList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyId">createKeyId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createKeyIdList">createKeyIdList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromJscuKey">fromJscuKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromOpenPgpKey">fromOpenPgpKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fromRawKey">fromRawKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateKeyObject">generateKeyObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importKeys">importKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importMessage">importMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createRawSignature">createRawSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSignature">createSignature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-importSignatureBuffer">importSignatureBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJscu">getJscu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getOpenPgp">getOpenPgp</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/signature.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * signature
+ */
+import {KeyId, createKeyId} from &apos;./keyid.js&apos;;
+import jseu from &apos;js-encoding-utils&apos;;
+import cloneDeep from &apos;lodash.clonedeep&apos;;
+import msgpack from &apos;msgpack-lite&apos;;
+
+const suites = [&apos;jscu&apos;, &apos;openpgp&apos;];
+const keyTypes = [&apos;public_key_sign&apos;];
+
+export function importSignatureBuffer(serialized){
+  if (!(serialized instanceof Uint8Array)) throw new Error(&apos;NonUint8ArraySerializedData&apos;);
+  let des;
+  try {
+    des = msgpack.decode(serialized);
+  } catch (e) { throw new Error(`FailedToParseSignatureBuffer: ${e.message}`); }
+
+  if (!des.suite || !des.keyType || !des.signatures || !des.options) throw new Error(&apos;InvalidSignatureFormat&apos;);
+
+  const signatureList = des.signatures.map( (elem) =&gt; createRawSignature(elem.data, createKeyId(elem.keyId)) );
+
+  return createSignature(des.suite, des.keyType, signatureList, des.options );
+}
+
+export function createSignature(suite, keyType, signatures, options = {}){
+  // assertion
+  if(suites.indexOf(suite) &lt; 0) throw new Error(&apos;UnsupportedSuite&apos;);
+  if(keyTypes.indexOf(keyType) &lt; 0) throw new Error(&apos;UnsupportedKeyType&apos;);
+  if(suite === &apos;jscu&apos; &amp;&amp; typeof options.hash === &apos;undefined&apos;) throw new Error(&apos;HashMustBeSpecified&apos;);
+  if (!(signatures instanceof Array)) throw new Error(&apos;InvalidSignatureList&apos;);
+
+  return new Signature(suite, keyType, signatures, options);
+}
+
+export class Signature {
+  constructor(suite, keyType, signatures, options = {}){
+    this._suite = suite;
+    this._keyType = keyType;
+    this._signatures = new SignatureList(signatures);
+    this._options = options;
+  }
+
+  get suite () { return this._suite; }
+  get keyType () { return this._keyType; }
+  get signatures () { return this._signatures; }
+  get options () { return this._options; }
+
+  serialize () {
+    return msgpack.encode({
+      suite: this._suite,
+      keyType: this._keyType,
+      signatures: this._signatures.toJsObject(),
+      options: this._options
+    });
+  }
+}
+
+class SignatureList extends Array {
+  constructor(signatures){
+    super();
+    const binarySignatures = signatures.map( (sig) =&gt; {
+      if(!(sig instanceof RawSignature)) throw new Error(&apos;NotRawSignatureObject&apos;);
+      return sig;
+    });
+    this.push(...binarySignatures);
+  }
+
+  toJsObject() { return this.map( (s) =&gt; s.toJsObject() ); }
+  toArray() { return Array.from(this); }
+
+  map(callback) { return this.toArray().map(callback); }
+  filter(callback) { return this.toArray().filter(callback); }
+}
+
+export function createRawSignature(sig, keyId){
+  // assertion
+  if(!(sig instanceof Uint8Array)) throw new Error(&apos;NonUint8ArraySignature&apos;);
+  if(!(keyId instanceof KeyId)) throw new Error(&apos;NonKeyIdObject&apos;);
+
+  return new RawSignature(sig, keyId);
+}
+
+export class RawSignature extends Uint8Array {
+  constructor(sig, keyId){
+    super(sig);
+    this._keyId = keyId;
+  }
+
+  toBase64 () { return jseu.encoder.encodeBase64(this); }
+  toBuffer () { const buf = new Uint8Array(this);
+    return cloneDeep(buf);
+  }
+  toJsObject () {
+    return {
+      data: this.toBuffer(),
+      keyId: this._keyId.toBuffer(),
+    };
+  }
+
+  get keyId () { return this._keyId; }
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
