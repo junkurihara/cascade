@@ -19,3 +19,4 @@ webpack.common.js
 .nycrc
 renovate.json
 esdoc/
+docs/
