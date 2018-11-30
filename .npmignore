@@ -20,3 +20,4 @@ webpack.common.js
 renovate.json
 docs/
 assets
+esdocs/

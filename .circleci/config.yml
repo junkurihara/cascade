@@ -71,6 +71,13 @@ jobs:
         name: Publish package
         command: npm publish
 
+    - run:
+        name: Build API documentation webpage
+        command: npm run docs
+    - run:
+        name: Publish webpage
+        command: mkdir -p ~/cascade-webpage && cd ~/cascade-webpage && git clone https://github.com/junkurihara/cascade-webpage.git . && git config user.email "junkurihara@users.noreply.github.com" && git config user.name "Circle CI" && rm -rf docs && mv ~/repo/esdocs docs && git add . && git commit -am 'Updated via CircleCI' && git push -q https://${GITHUB_PERSONAL_TOKEN}@github.com/junkurihara/cascade-webpage.git master
+
 
 workflows:
   version: 2
