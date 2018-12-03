@@ -38,9 +38,9 @@
     "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
   },
   "devDependencies": {
-    "@babel/cli": "7.1.5",
-    "@babel/core": "7.1.6",
-    "@babel/preset-env": "7.1.6",
+    "@babel/cli": "7.2.0",
+    "@babel/core": "7.2.0",
+    "@babel/preset-env": "7.2.0",
     "@babel/register": "7.0.0",
     "babel-loader": "8.0.4",
     "babel-plugin-istanbul": "5.1.0",
