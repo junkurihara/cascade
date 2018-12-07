@@ -72,6 +72,9 @@ class Cascade extends Array {
 
     const precedence = this.slice(0, this.length -1);
     await Promise.all(precedence.map( async (proc, idx) => {
+      if (typeof proc.config.encrypt.externalKey === 'undefined' || proc.config.encrypt.externalKey) {
+        throw new Error('PrecedenceMustBeExternalKey');
+      }
       if (typeof proc.config.encrypt.onetimeKey === 'undefined') throw new Error('NoKeyParamsGiven');
 
       const suiteObject = {encrypt_decrypt: proc.config.encrypt.suite};
@@ -105,6 +108,9 @@ class Cascade extends Array {
       }
 
       this[idx].keys = await importKeys('object', {keys:onetimeKeyObject, suite: suiteObject, mode: modeArray});
+      if (typeof this[this.length-1].config.encrypt.externalKey === 'undefined' || !this[this.length-1].config.encrypt.externalKey) {
+        throw new Error('FinalStepMustBeExternalKey');
+      }
     }));
   }
 

@@ -42,6 +42,21 @@ describe(`${env}: cascaded single public key encryption/decryption with simultan
     ]);
   });
 
+
+  it('jscu: EC/RSA encryption and signing hybrid-step procedure test without externalKey entry in the final step',  async function () {
+    this.timeout(50000);
+    await jscuMainRoutineEphemeralWithoutExternalKeyEntryInFinalStep(message, param, [
+      { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
+    ]);
+  });
+
+  it('jscu: EC/RSA encryption and signing hybrid-step procedure test without externalKey entry in the first step',  async function () {
+    this.timeout(50000);
+    await jscuMainRoutineEphemeralWithoutExternalKeyEntryInFirstStep(message, param, [
+      { encrypt: param.jscuOnetimeSessionEncryptConfWithoutExternalKey, sign: {required: true} },
+    ]);
+  });
+
   it('jscu: EC/RSA encryption and signing mono-step procedure test',  async function () {
     this.timeout(50000);
     await jscuMainRoutine(message, param, []);
@@ -140,6 +155,50 @@ async function jscuMainRoutineEphemeral(message, param, precedenceProcedure){
       expect(decrypted[0].data.toString() === message.toString(), `failed at ${p}`).to.be.true;
       expect(decrypted.every( (obj) => obj.signatures.every( (s) => s.valid)), `failed at ${p}`).to.be.true;
 
+    }));
+  }));
+}
+
+async function jscuMainRoutineEphemeralWithoutExternalKeyEntryInFinalStep(message, param, precedenceProcedure){
+  await Promise.all(param.paramArray.map(async (paramObject) => {
+    await Promise.all(paramObject.param.map(async (p, idx) => {
+
+      const encryptionKeys = {
+        publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString],
+        privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}] // for Signing
+      };
+      const encryptionProcedure = precedenceProcedure.concat(
+        [{encrypt: param.jscuEncryptConfEphemeralNoExternalKey(paramObject), sign: param.jscuSignConf(paramObject)}]
+      );
+
+      const encryptionKeyImported = await cascade.importKeys(
+        'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['encrypt', 'sign']}
+      );
+
+      const eProcess = await cascade.createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure}).catch(e => e);
+      expect(eProcess.message === 'FinalStepMustBeExternalKey').to.be.true;
+    }));
+  }));
+}
+
+async function jscuMainRoutineEphemeralWithoutExternalKeyEntryInFirstStep(message, param, precedenceProcedure){
+  await Promise.all(param.paramArray.map(async (paramObject) => {
+    await Promise.all(paramObject.param.map(async (p, idx) => {
+
+      const encryptionKeys = {
+        publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString],
+        privateKeyPassSets: [{privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}] // for Signing
+      };
+      const encryptionProcedure = precedenceProcedure.concat(
+        [{encrypt: param.jscuEncryptConfEphemeralNoExternalKey(paramObject), sign: param.jscuSignConf(paramObject)}]
+      );
+
+      const encryptionKeyImported = await cascade.importKeys(
+        'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu' }, mode: ['encrypt', 'sign']}
+      );
+
+      const eProcess = await cascade.createEncryptionCascade({keys: encryptionKeyImported, procedure: encryptionProcedure}).catch(e => e);
+      expect(eProcess.message === 'PrecedenceMustBeExternalKey').to.be.true;
     }));
   }));
 }
