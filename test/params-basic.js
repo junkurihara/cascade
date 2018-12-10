@@ -11,30 +11,40 @@ const modulusLength = [ 2048, 2048 ];
 const userIds = [ 'test@example.com' ];
 const paramArray = [{name: 'ec', param: curves}, {name: 'rsa', param: modulusLength}];
 
-const openpgpEncryptConf = { suite: 'openpgp', options: { detached: true, compression: 'zlib' }};
+const openpgpEncryptConf = { externalKey: true, suite: 'openpgp', options: { detached: true, compression: 'zlib' }};
 const openpgpSignConf = {required: true, suite: 'openpgp', options: {}};
 
-const jscuSessionEncryptConf = {suite: 'jscu', options: {name: 'AES-GCM'}};
+const jscuSessionEncryptConf = {externalKey: true, suite: 'jscu', options: {name: 'AES-GCM'}};
 const openpgpgSessionEncryptConf = {suite: 'openpgp', options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }};
 
 const jscuOnetimeSessionEncryptConf = {
-  onetimeKey: {keyParams: {type: 'session', length: 32}},
+  externalKey: false,
   suite: 'jscu',
+  onetimeKey: {keyParams: {type: 'session', length: 32}},
+  options: {name: 'AES-GCM'}
+};
+const jscuOnetimeSessionEncryptConfWithoutExternalKey = {
+  externalKey: true,
+  suite: 'jscu',
+  onetimeKey: {keyParams: {type: 'session', length: 32}},
   options: {name: 'AES-GCM'}
 };
 const openpgpOnetimeSessionEncryptConf = {
-  onetimeKey: {keyParams: {type: 'session', length: 32}},
+  externalKey: false,
   suite: 'openpgp',
+  onetimeKey: {keyParams: {type: 'session', length: 32}},
   options: {algorithm: 'aes256', aead: true, aead_mode: 'eax' }
 };
 
 const jscuOnetimePublicEncryptConf = {
+  externalKey: false,
   suite: 'jscu',
   onetimeKey: {keyParams: {type: 'ec', curve: 'P-256'} },
   options: { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' }
 };
 
 const openpgpOnetimePublicEncryptConf = {
+  externalKey: false,
   suite: 'openpgp',
   onetimeKey: {userIds: ['user@example.com'], keyParams: {type: 'ec', keyExpirationTime: 0, curve: 'P-256'}},
   options: { detached: true, compression: 'zlib' }
@@ -81,6 +91,7 @@ class ParamsBasic{
 
   jscuEncryptConf (paramObject, idx) {
     return {
+      externalKey: true,
       suite: 'jscu',
       options: (paramObject.name === 'ec')
         ? {
@@ -92,6 +103,14 @@ class ParamsBasic{
   }
 
   jscuEncryptConfEphemeral (paramObject) {
+    return {
+      externalKey: true,
+      suite: 'jscu',
+      options: (paramObject.name === 'ec') ? { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' } : {hash: 'SHA-256'},
+    };
+  }
+
+  jscuEncryptConfEphemeralNoExternalKey (paramObject) {
     return {
       suite: 'jscu',
       options: (paramObject.name === 'ec') ? { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, info: '' } : {hash: 'SHA-256'},
@@ -112,6 +131,7 @@ class ParamsBasic{
   get jscuSessionEncryptConf () { return jscuSessionEncryptConf; }
   get openpgpgSessionEncryptConf () { return openpgpgSessionEncryptConf; }
   get jscuOnetimeSessionEncryptConf () { return jscuOnetimeSessionEncryptConf; }
+  get jscuOnetimeSessionEncryptConfWithoutExternalKey () { return jscuOnetimeSessionEncryptConfWithoutExternalKey; }
   get openpgpOnetimeSessionEncryptConf () { return openpgpOnetimeSessionEncryptConf; }
   get jscuOnetimePublicEncryptConf () { return jscuOnetimePublicEncryptConf; }
   get openpgpOnetimePublicEncryptConf () { return openpgpOnetimePublicEncryptConf; }
