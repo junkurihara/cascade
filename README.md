@@ -150,12 +150,13 @@ const encryptionKeyImported = await cascade.importKeys(
 );
 ```
 
-The configuration object for encryption is also required like the following form that must be matched with the type of given encryption and signing keys imported. The following is an example for the case where the given public and private keys are PEM-formatted EC keys, i.e., ECDH+HKDF public key encryption and ECDSA signing, via `js-crypto-utils` (as referred to as `jscu` in the code block).
+The configuration object for encryption is also required like the following form that must be matched with the type of given encryption and signing keys imported. The following is an example for the case where the given public and private keys are PEM-formatted EC keys, i.e., ECDH+HKDF public key encryption and ECDSA signing, via `js-crypto-utils` (as referred to as `jscu` in the code block). In the configuration, the encrypt object must have `externalKey` entry to explicitly specify the origin of the encryption key in the step.
 
 ```javascript
 // Encryption and signing configuration
 const encryptionConfig = {
   encrypt: {
+    externalKey: true,
     suite: 'jscu',
     options: {
       // HKDF with SHA-256 is employed on the master secret derived from ECDH.
@@ -237,6 +238,7 @@ All we need to prepare for the cascaded x-brid encryption/decryption is exactly 
 const encryptionProcedure = [
   { // step 1
     encrypt: {
+      externalKey: false,
       suite: 'jscu',
       onetimeKey: {keyParams: {type: 'session', length: 32}}, options: {name: 'AES-GCM'}
     },
@@ -244,6 +246,7 @@ const encryptionProcedure = [
   },
   { // step 2
     encrypt: {
+      externalKey: true,
       suite: 'jscu', options: { hash: 'SHA-256', info: '', keyLength: 32, encrypt: 'AES-GCM' }
     },
     sign: { suite: 'jscu', required: true, options: { hash: 'SHA-256' } }
@@ -251,7 +254,7 @@ const encryptionProcedure = [
 ];
 ```
 
-The above example describes a procedure of **hybrid encryption** where the given message is first encrypted under a one-time session key generated internally at `Cascade` (step 1), and the session key is then encrypted under the externally given public key (step 2). We can see that the `encrypt.onetimeKey` specifies the key parameters generated at the step 1, and that the step 2 does not require the entry since public key(s) are given externally. In terms of signatures, the signing parameters and keys given the final step, i.e., step 2, will be applied all the other steps if `sign.required = true`.
+The above example describes a procedure of **hybrid encryption** where the given message is first encrypted under a one-time session key generated internally at `Cascade` (step 1), and the session key is then encrypted under the externally given public key (step 2). We can see that the `encrypt.onetimeKey` specifies the key parameters generated at the step 1, and that the step 2 does not require the entry since public key(s) are given externally. In order to explain the origin of the encryption key explicitly `externalKey` must be given in each step. In terms of signatures, the signing parameters and keys given the final step, i.e., step 2, will be applied all the other steps if `sign.required = true`.
 
 After setting up an encryption procedure, we then obtain a `Keys` object by importing key strings in an exactly same manner as the basic encryption given above. This `Keys` object must be matched the parameters of the final step in the given encryption procedure. We then instantiate a `Cascade` object with the `Keys` object and the given encryption procedure.
 
