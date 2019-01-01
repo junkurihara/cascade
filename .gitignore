@@ -9,3 +9,5 @@ yarn-error.log
 .vscode/
 .nyc_output/
 esdocs/
+*.bundle.js
+test.html
