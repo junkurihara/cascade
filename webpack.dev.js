@@ -149,7 +149,7 @@ const testHtmlTemplate =
   '  <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />\n' +
   '  <script src="../../node_modules/@babel/polyfill/browser.js"></script>\n' +
   '  <script src="./openpgp.min.js"></script>\n' +
-  '  <script src="../../node_modules/js-crypto-utils/dist/jscu.bundle.js"></script>' +
+  '  <script src="../../node_modules/js-crypto-utils/dist/jscu.bundle.min.js"></script>' +
   '</head>\n' +
   '<body>\n' +
   '<div id="mocha"></div>\n' +
