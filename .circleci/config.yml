@@ -43,7 +43,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn add --dev coveralls && npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls
+      - run: yarn add --dev coveralls && yarn test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls
 
       # - run: yarn karma
 
@@ -66,7 +66,7 @@ jobs:
         command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
     - run:
         name: Build production module
-        command: npm run build
+        command: yarn build
     - run:
         name: Publish package
         command: npm publish
@@ -78,7 +78,7 @@ jobs:
         at: ~/repo
     - run:
         name: Build API documentation webpage
-        command: npm run docs
+        command: yarn docs
     - run:
         name: Publish webpage
         command: mkdir -p ~/cascade-webpage && cd ~/cascade-webpage && git clone https://github.com/junkurihara/cascade-webpage.git . && git config user.email "junkurihara@users.noreply.github.com" && git config user.name "Circle CI" && rm -rf docs && mv ~/repo/esdocs docs && git add . && git commit -am 'Updated via CircleCI' && git push -q https://${GITHUB_PERSONAL_TOKEN}@github.com/junkurihara/cascade-webpage.git master
