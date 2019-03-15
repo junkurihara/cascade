@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -52,8 +52,8 @@
     "cross-env": "5.2.0",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
-    "jsdom": "13.2.0",
-    "karma": "4.0.0",
+    "jsdom": "14.0.0",
+    "karma": "4.0.1",
     "karma-chrome-launcher": "2.2.0",
     "karma-cli": "2.0.0",
     "karma-coverage": "1.1.2",
@@ -63,7 +63,7 @@
     "mocha": "6.0.2",
     "mocha-sinon": "2.1.0",
     "nyc": "13.3.0",
-    "webpack": "4.29.5",
+    "webpack": "4.29.6",
     "webpack-cli": "3.2.3",
     "webpack-common-shake": "2.1.0",
     "webpack-merge": "4.2.1"
@@ -75,7 +75,7 @@
     "js-encoding-utils": "^0.3.4",
     "lodash.clonedeep": "^4.5.0",
     "msgpack-lite": "^0.1.26",
-    "openpgp": "^4.4.8"
+    "openpgp": "^4.4.10"
   },
   "browser": {
     "openpgp": false,
