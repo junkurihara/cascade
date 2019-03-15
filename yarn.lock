@@ -5635,10 +5635,10 @@ once@1.x, once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-openpgp@^4.4.8:
-  version "4.4.8"
-  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-4.4.8.tgz#647eee8343798ecd0c5b47c5eeb553a66ae9beb8"
-  integrity sha512-8kiIAtA8YaAmwpuqCmHwTFpD54KHviWWicS+26L1MCxtUTW4WSlvSudWxVm5if8LnjKS6+vcLA40ZH5Ig/5yZw==
+openpgp@^4.4.10:
+  version "4.4.10"
+  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-4.4.10.tgz#b093821d3dc178cd19907e09e06b791b6d189f60"
+  integrity sha512-OdDK5+tVApsVFMmrbzVtLKlZHWOjy5LDQCbVOkun9jMXNhaJ+eX6DArN6BpPs+liVztqBzCqmTKgZ+tvmUNtqg==
   dependencies:
     "@mattiasbuelens/web-streams-polyfill" "^0.3.1"
     address-rfc2822 "^2.0.3"
