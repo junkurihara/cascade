@@ -69,10 +69,10 @@
     "webpack-merge": "4.2.1"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.2.5",
-    "@babel/runtime": "^7.3.4",
-    "js-crypto-utils": "^0.14.20",
-    "js-encoding-utils": "^0.3.4",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/runtime": "^7.4.3",
+    "js-crypto-utils": "^0.14.23",
+    "js-encoding-utils": "^0.3.6",
     "lodash.clonedeep": "^4.5.0",
     "msgpack-lite": "^0.1.26",
     "openpgp": "^4.4.10"
