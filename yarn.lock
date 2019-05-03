@@ -4536,6 +4536,13 @@ js-encoding-utils@^0.3.6:
   dependencies:
     "@babel/runtime" "^7.4.3"
 
+js-encoding-utils@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.4.0.tgz#bc6ccd65ef0e1d7fbf12bfb7819fee9d191d04a1"
+  integrity sha512-jJlfCAAXwhEHsxMfbqFj/F4eNxN9yu1xqmYA3aRGMXGVD7Ao9HaBaKpQoUkW27b+VKo7zk52daX3/HEdT1nyhg==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
+
 js-levenshtein@^1.1.3:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.4.tgz#3a56e3cbf589ca0081eb22cd9ba0b1290a16d26e"
