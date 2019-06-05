@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -75,7 +75,7 @@
     "js-encoding-utils": "^0.5.1",
     "lodash.clonedeep": "^4.5.0",
     "msgpack-lite": "^0.1.26",
-    "openpgp": "^4.4.10"
+    "openpgp": "~4.4.10"
   },
   "browser": {
     "openpgp": false,
