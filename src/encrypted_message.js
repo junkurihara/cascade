@@ -11,7 +11,7 @@ const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_encrypt', 'session_key_encrypt'];
 
 
-export function importEncryptedBuffer(serialized){
+export const importEncryptedBuffer = (serialized) => {
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
   let des;
   try {
@@ -28,9 +28,9 @@ export function importEncryptedBuffer(serialized){
   });
 
   return createEncryptedMessage( des.suite, des.keyType, messageList, des.options );
-}
+};
 
-export function importRawEncryptedBufferList(array){
+export const importRawEncryptedBufferList = (array) => {
   if (!(array instanceof Array)) throw new Error('NotArrayOfSerializedData');
   array.forEach( (ser) => {
     if(!(ser instanceof Uint8Array)) throw new Error('NotUint8ArraySerializedData');
@@ -47,23 +47,23 @@ export function importRawEncryptedBufferList(array){
   } catch (e) { throw new Error(`FailedToParseRawEncryptedMessage: ${e.message}`); }
 
   return deserializedArray;
-}
+};
 
 
-export function createEncryptedMessage(suite, keyType, message, options = {}) {
+export const createEncryptedMessage = (suite, keyType, message, options = {}) => {
   // assertion
   if (suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
   if (keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
 
   return new EncryptedMessage(suite, keyType, message, options);
-}
+};
 
-export function createRawEncryptedMessage(data, keyId, params) {
+export const createRawEncryptedMessage = (data, keyId, params) => {
   if (!(data instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
   if (!(keyId instanceof KeyId) && !(keyId instanceof KeyIdList)) throw new Error('NonKeyIdOrKeyIdListObject');
 
   return new RawEncryptedMessage(data, keyId, params);
-}
+};
 
 export class EncryptedMessage {
   constructor(suite, keyType, message, options = {}) {

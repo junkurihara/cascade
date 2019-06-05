@@ -4,7 +4,7 @@
 
 import params from './config.js';
 
-export function getJscu() {
+export const getJscu = () => {
   let jscu;
   if (typeof window !== 'undefined' && typeof window.jscu !== 'undefined'){
     jscu = window.jscu;
@@ -17,9 +17,9 @@ export function getJscu() {
     } // work around
   }
   return jscu;
-}
+};
 
-export function getOpenPgp(){
+export const getOpenPgp = () => {
   // load openpgp
   let openpgp;
   let workerPath;
@@ -51,4 +51,4 @@ export function getOpenPgp(){
   openpgp.config.show_comment = false;
 
   return openpgp;
-}
+};

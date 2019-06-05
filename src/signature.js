@@ -9,7 +9,7 @@ import msgpack from 'msgpack-lite';
 const suites = ['jscu', 'openpgp'];
 const keyTypes = ['public_key_sign'];
 
-export function importSignatureBuffer(serialized){
+export const importSignatureBuffer = (serialized) => {
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
   let des;
   try {
@@ -21,9 +21,9 @@ export function importSignatureBuffer(serialized){
   const signatureList = des.signatures.map( (elem) => createRawSignature(elem.data, createKeyId(elem.keyId)) );
 
   return createSignature(des.suite, des.keyType, signatureList, des.options );
-}
+};
 
-export function createSignature(suite, keyType, signatures, options = {}){
+export const createSignature = (suite, keyType, signatures, options = {}) => {
   // assertion
   if(suites.indexOf(suite) < 0) throw new Error('UnsupportedSuite');
   if(keyTypes.indexOf(keyType) < 0) throw new Error('UnsupportedKeyType');
@@ -31,7 +31,7 @@ export function createSignature(suite, keyType, signatures, options = {}){
   if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
 
   return new Signature(suite, keyType, signatures, options);
-}
+};
 
 export class Signature {
   constructor(suite, keyType, signatures, options = {}){
@@ -73,13 +73,13 @@ class SignatureList extends Array {
   filter(callback) { return this.toArray().filter(callback); }
 }
 
-export function createRawSignature(sig, keyId){
+export const createRawSignature = (sig, keyId) => {
   // assertion
   if(!(sig instanceof Uint8Array)) throw new Error('NonUint8ArraySignature');
   if(!(keyId instanceof KeyId)) throw new Error('NonKeyIdObject');
 
   return new RawSignature(sig, keyId);
-}
+};
 
 export class RawSignature extends Uint8Array {
   constructor(sig, keyId){

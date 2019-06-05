@@ -6,7 +6,7 @@ import msgpack from 'msgpack-lite';
 import {importEncryptedBuffer, EncryptedMessage} from './encrypted_message.js';
 import {importSignatureBuffer, Signature} from './signature.js';
 
-export function importCascadedBuffer(serialized){
+export const importCascadedBuffer = (serialized) => {
   if (!(serialized instanceof Uint8Array)) throw new Error('NonUint8ArraySerializedData');
   let des;
   try {
@@ -23,9 +23,9 @@ export function importCascadedBuffer(serialized){
   });
 
   return createCascadedData(desComponentList);
-}
+};
 
-export function createCascadedData(data) {
+export const createCascadedData = (data) => {
   // assertion
   if (!(data instanceof Array)) throw new Error('NotArrayForCascadedData');
   data.map( (obj) => {
@@ -35,7 +35,7 @@ export function createCascadedData(data) {
   });
 
   return new CascadedData(data);
-}
+};
 
 export class CascadedData extends Array {
   constructor(data){

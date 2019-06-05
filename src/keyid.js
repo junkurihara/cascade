@@ -13,11 +13,11 @@ import cloneDeep from 'lodash.clonedeep';
  * @param len
  * @return {KeyId}
  */
-export function fromOpenPgpKey(keyObject, len=config.publicKeyIdLEN){
+export const fromOpenPgpKey = (keyObject, len=config.publicKeyIdLEN) => {
   const fp = keyObject.getFingerprint();
   const buf = jseu.encoder.hexStringToArrayBuffer(fp);
   return createKeyId(buf.slice(0, len));
-}
+};
 
 /**
  * Calculate key Id from jwk-formatted key
@@ -27,10 +27,10 @@ export function fromOpenPgpKey(keyObject, len=config.publicKeyIdLEN){
  * @param len
  * @return {Promise<KeyId>}
  */
-export async function fromJscuKey(keyObject, len=config.publicKeyIdLEN) {
+export const fromJscuKey = async (keyObject, len=config.publicKeyIdLEN) => {
   const thumbPrintBuf = await keyObject.getJwkThumbprint(config.publicKeyIdHash, 'binary');
   return createKeyId(thumbPrintBuf.slice(0, len));
-}
+};
 
 /**
  * Just a hash of raw binary key
@@ -38,18 +38,18 @@ export async function fromJscuKey(keyObject, len=config.publicKeyIdLEN) {
  * @param len
  * @return {Promise<KeyId>}
  */
-export async function fromRawKey(bin, len = config.sessionKeyIdLength) {
+export const fromRawKey = async (bin, len = config.sessionKeyIdLength) => {
   const jscu = getJscu();
   const digest = await jscu.hash.compute(bin, config.sessionKeyIdHash);
   return createKeyId(digest.slice(0, len));
-}
+};
 
 
-export function createKeyId(keyId){
+export const createKeyId = (keyId) => {
   if(!(keyId instanceof Uint8Array)) throw new Error('NotUint8ArrayKeyId');
   const localKeyId = cloneDeep(keyId);
   return new KeyId(localKeyId);
-}
+};
 
 export class KeyId extends Uint8Array {
   // eslint-disable-next-line no-useless-constructor
@@ -66,11 +66,11 @@ export class KeyId extends Uint8Array {
 
 
 // NOTE: KeyIdList is used only for EncryptedMessage generated in OpenPGP.
-export function createKeyIdList (keyIds) {
+export const createKeyIdList = (keyIds) => {
   const obj = new KeyIdList();
   obj._init(keyIds);
   return obj;
-}
+};
 
 export class KeyIdList extends Array {
   _init(keyIds){
