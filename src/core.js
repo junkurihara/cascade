@@ -21,7 +21,7 @@ import {Jscu} from './suite_jscu.js';
  *   keyParams: {type: 'ECC', curve} } }
  * @return {Promise<*>}
  */
-export async function generateKey (keyParams) {
+export const generateKey = async (keyParams) => {
   const keyObj = await generateKeyObject(keyParams);
 
   // formatting
@@ -50,7 +50,7 @@ export async function generateKey (keyParams) {
     }
     else throw new Error('InvalidCryptoSuite');
   }
-}
+};
 
 /**
  * Basic encryption API that enables signing simultaneously with encrypting message.
@@ -59,7 +59,7 @@ export async function generateKey (keyParams) {
  * @param config
  * @return {Promise<{success: boolean, status: string, data: any}>}
  */
-export async function encrypt({message, keys, config}){
+export const encrypt = async ({message, keys, config}) => {
   // assertion
   if (typeof config.encrypt === 'undefined') throw new Error('InvalidConfigForEncryption');
   if (!keys.canEncrypt()) throw new Error('UnsupportedKeyForEncryption');
@@ -89,7 +89,7 @@ export async function encrypt({message, keys, config}){
   }).catch( (e) => { throw new Error(`EncryptionFailed: ${e.message}`); });
 
   return Object.assign(encrypted, signed);
-}
+};
 
 /**
  * Decrypt given message and additionally verify attached signatures simultaneously.
@@ -97,7 +97,7 @@ export async function encrypt({message, keys, config}){
  * @param keys
  * @return {Promise<*>}
  */
-export async function decrypt({data, keys}){
+export const decrypt = async ({data, keys}) => {
   if(typeof data.message === 'undefined') throw new Error('InvalidEncryptedDataFormat');
   if(!keys.canDecrypt()) throw new Error('UnsupportedKeyForDecryption');
 
@@ -122,7 +122,7 @@ export async function decrypt({data, keys}){
   else if (typeof decrypted.signatures !== 'undefined') verified = decrypted.signatures;
 
   return {data: decrypted.data, signatures: verified};
-}
+};
 
 /**
  * Returns the signature objects.
@@ -131,7 +131,7 @@ export async function decrypt({data, keys}){
  * @param config
  * @return {Promise<{success: boolean, status: string, data}>}
  */
-export async function sign({message, keys, config}){
+export const sign = async ({message, keys, config}) => {
   // assertion
   if (typeof config.sign === 'undefined') throw new Error('InvalidConfigForSigning');
   if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
@@ -147,7 +147,7 @@ export async function sign({message, keys, config}){
       throw new Error(`SigningFailed: ${e.message}`);
     });
   } else throw new Error('InvalidPrivateKeys');
-}
+};
 
 /**
  * Returns verification result
@@ -156,7 +156,7 @@ export async function sign({message, keys, config}){
  * @param keys
  * @return {Promise<*>}
  */
-export async function verify({message, signature, keys}){
+export const verify = async ({message, signature, keys}) => {
   // assertion
   if (typeof signature === 'undefined') throw new Error('InvalidObjectForSignature');
   if (!keys.canVerify()) throw new Error('UnsupportedKeyForVerification');
@@ -171,7 +171,7 @@ export async function verify({message, signature, keys}){
       throw new Error(`VerificationFailed: ${e.message}`);
     });
   } else throw new Error('InvalidSignatureOrInvalidPublicKey');
-}
+};
 
 const cryptoSuite = (suiteName) => {
   let suiteObj;

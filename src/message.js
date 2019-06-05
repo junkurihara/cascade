@@ -10,12 +10,12 @@ import cloneDeep from 'lodash.clonedeep'; //'lodash/cloneDeep';
  * @param msg
  * @return {Message}
  */
-export function importMessage(msg){
+export const importMessage = (msg) => {
   const localMessage = cloneDeep(msg);
   const obj = new Message();
   obj._init(localMessage);
   return obj;
-}
+};
 
 class Message {
   _init(msg){

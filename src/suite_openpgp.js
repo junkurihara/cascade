@@ -161,7 +161,7 @@ export class OpenPGP extends Suite {
 
     let signatureObj = {};
     if (keys.privateKeys && encrypted.signature) { // if detached is true
-      const signatureObjectList = OpenPGP._listFromOpenPgpSig(encrypted.signature.packets, signingKeys);
+      const signatureObjectList = await OpenPGP._listFromOpenPgpSig(encrypted.signature.packets, signingKeys);
       signatureObj = {signature: createSignature('openpgp', 'public_key_sign', signatureObjectList, {})};
     }
 
@@ -229,7 +229,7 @@ export class OpenPGP extends Suite {
       privateKeys: keys.privateKeys // for signing (optional)
     };
     const signature = await openpgp.sign(Object.assign(opt, options));
-    const signatureObjectList = OpenPGP._listFromOpenPgpSig(signature.signature.packets, keys.privateKeys);
+    const signatureObjectList = await OpenPGP._listFromOpenPgpSig(signature.signature.packets, keys.privateKeys);
     return {signature: createSignature('openpgp', 'public_key_sign', signatureObjectList, {})};
   }
 
@@ -259,19 +259,20 @@ export class OpenPGP extends Suite {
     return verified.concat(list.unverified);
   }
 
-  static _listFromOpenPgpSig (signatures, keys) {
+  static async _listFromOpenPgpSig (signatures, keys) {
     if (!(signatures instanceof Array)) throw new Error('InvalidSignatureList');
 
     const externalKeyIds = [];
     keys.map( (x) => x.getKeys().map( (k) => { externalKeyIds.push(utilKeyId.fromOpenPgpKey(k));} ) );
 
+    const openpgp = getOpenPgp();
     const signatureObjects = [];
-    externalKeyIds.map( (fp) => {
+    await Promise.all(externalKeyIds.map( async (fp) => {
       const correspondingSig = signatures.filter( (sig) => sig.issuerKeyId.toHex() === fp.toHex().slice(0,16));
-      correspondingSig.map((sig) => {
-        signatureObjects.push(createRawSignature(sig.write(), fp));
-      });
-    });
+      await Promise.all(correspondingSig.map(async (sig) => {
+        signatureObjects.push(createRawSignature(await openpgp.stream.readToEnd(sig.write()), fp));
+      }));
+    }));
 
     return signatureObjects;
   }

@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -44,6 +44,7 @@
     "@babel/plugin-transform-runtime": "7.4.4",
     "@babel/preset-env": "7.4.5",
     "@babel/register": "7.4.4",
+    "babel-eslint": "10.0.1",
     "babel-loader": "8.0.6",
     "babel-plugin-istanbul": "5.1.4",
     "babel-plugin-transform-remove-console": "6.9.4",
@@ -52,6 +53,7 @@
     "cross-env": "5.2.0",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
+    "eslint": "^5.16.0",
     "jsdom": "15.1.1",
     "karma": "4.1.0",
     "karma-chrome-launcher": "2.2.0",
@@ -69,13 +71,13 @@
     "webpack-merge": "4.2.1"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.4.4",
-    "@babel/runtime": "^7.4.5",
-    "js-crypto-utils": "^0.15.3",
-    "js-encoding-utils": "^0.5.1",
-    "lodash.clonedeep": "^4.5.0",
-    "msgpack-lite": "^0.1.26",
-    "openpgp": "~4.4.10"
+    "@babel/polyfill": "~7.4.4",
+    "@babel/runtime": "~7.4.5",
+    "js-crypto-utils": "0.15.4",
+    "js-encoding-utils": "0.5.1",
+    "lodash.clonedeep": "~4.5.0",
+    "msgpack-lite": "~0.1.26",
+    "openpgp": "~4.5.2"
   },
   "browser": {
     "openpgp": false,

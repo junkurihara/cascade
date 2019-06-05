@@ -69,7 +69,7 @@ export class Keys {
  * @param mode
  * @return {Promise<Keys>}
  */
-export async function importKeys(format='string', {keys, suite, mode}){
+export const importKeys = async (format='string', {keys, suite, mode}) => {
   const localFormat = cloneDeep(format);
   const localKeys = cloneDeep(keys);
   const localSuite = cloneDeep(suite);
@@ -78,7 +78,7 @@ export async function importKeys(format='string', {keys, suite, mode}){
   const keyObj = new Keys();
   await keyObj.from(localFormat, {keys: localKeys, suite: localSuite, mode: localMode});
   return keyObj;
-}
+};
 
 
 /**
@@ -88,7 +88,7 @@ export async function importKeys(format='string', {keys, suite, mode}){
  * @param mode
  * @return {Promise<{keys, suite: *, mode: *}>}
  */
-async function importKeyStrings({keys, suite, mode}){
+const importKeyStrings = async ({keys, suite, mode}) => {
   const keyObjects = {};
 
   if (keys.sessionKey) keyObjects.sessionKey = keys.sessionKey; // symmetric key
@@ -121,7 +121,7 @@ async function importKeyStrings({keys, suite, mode}){
   }));
 
   return { keys: keyObjects, suite, mode };
-}
+};
 
 /**
  * just import from key object
@@ -130,7 +130,7 @@ async function importKeyStrings({keys, suite, mode}){
  * @param mode
  * @return {Promise<{keys, suite: *, mode: *}>}
  */
-async function importKeyObjects({keys, suite, mode}){
+const importKeyObjects = async ({keys, suite, mode}) => {
   const keyObjects = {};
 
   if (keys.sessionKey) keyObjects.sessionKey = keys.sessionKey; // symmetric key
@@ -140,7 +140,7 @@ async function importKeyObjects({keys, suite, mode}){
   if (keys.privateKeys) keyObjects.privateKeys = keys.privateKeys;
 
   return {keys: keyObjects, suite, mode};
-}
+};
 
 
 /**
@@ -148,7 +148,7 @@ async function importKeyObjects({keys, suite, mode}){
  * @param keyParams
  * @return {Promise<*>}
  */
-export async function generateKeyObject(keyParams) {
+export const generateKeyObject = async (keyParams) => {
   const localKeyParams = cloneDeep(keyParams);
   let returnKey;
   if (localKeyParams.suite === 'openpgp') { /** OpenPGP **/
@@ -175,4 +175,4 @@ export async function generateKeyObject(keyParams) {
   else throw new Error('UnsupportedCryptoSuite');
 
   return returnKey;
-}
+};
