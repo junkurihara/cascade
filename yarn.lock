@@ -5401,10 +5401,10 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-openpgp@~4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-4.5.2.tgz#924b82698143aca4bee79eb165abed668405576a"
-  integrity sha512-vi+jLDY4jHZ6+LUeWRLI43YV8BWtMYnw0ohAV8j5dd67sDpQKDZ92N5uEIiCieudcSoRtP0r/dwM6k+JvO3/gQ==
+openpgp@~4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/openpgp/-/openpgp-4.5.3.tgz#fd1c803663b9eff529195a9809e854458fe9a9b9"
+  integrity sha512-QU3TUMgw4UEjhqCUNcLizCdAX8M0eA+h5GCiIji7hOanT1r4R/J3647SRUbW6MjHYyg6N5i4IMzGQMlpFc+Ihg==
   dependencies:
     asn1.js "^5.0.0"
     node-fetch "^2.1.2"
