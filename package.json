@@ -73,8 +73,8 @@
   "dependencies": {
     "@babel/polyfill": "~7.4.4",
     "@babel/runtime": "~7.5.0",
-    "js-crypto-utils": "0.16.2",
-    "js-encoding-utils": "0.5.2",
+    "js-crypto-utils": "0.16.3",
+    "js-encoding-utils": "0.5.3",
     "lodash.clonedeep": "~4.5.0",
     "msgpack-lite": "~0.1.26"
   },
