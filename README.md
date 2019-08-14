@@ -2,7 +2,7 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 --
 [![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
 [![CircleCI](https://circleci.com/gh/junkurihara/cascade.svg?style=svg)](https://circleci.com/gh/junkurihara/cascade)
-[![Coverage Status](https://coveralls.io/repos/github/junkurihara/cascade/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/cascade?branch=develop)
+[![codecov](https://codecov.io/gh/junkurihara/cascade/branch/develop/graph/badge.svg)](https://codecov.io/gh/junkurihara/cascade)
 [![Dependencies](https://david-dm.org/junkurihara/cascade.svg)](https://david-dm.org/junkurihara/cascade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ebead374220cd81a02b9/maintainability)](https://codeclimate.com/github/junkurihara/cascade/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -43,31 +43,21 @@ We also mention that a classical broadcast encryption based on tree can be possi
 
 # Supported Crypto Suites
 
-This library currently supports two cryptographic suites, OpenPGP and js-crypto-utils. We adopted [openpgpjs](https://openpgpjs.org/) as an implementation of OpenPGP. On the other hand, [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js.
+This library currently supports one cryptographic suite, js-crypto-utils. [js-crypto-utils](https://github.com/junkurihara/jscu) is a simple crypto suite for plain implementations of cryptographic functions unlike fully-specified suites like OpenPGP. We should note that js-crypto-utils can be viewed as a integrated wrapper or interfaces of RFC standardized functions that are mostly built-in ones of browsers and Node.js. At the initial implementation, although we had adopted [openpgpjs](https://openpgpjs.org/) as a suite, it has been disruptively changing its (internal) APIs to follow the OpenPGP RFC standards and hence we purged the OpenPGP support from cascade due to the toughness of tracking its changes.
 
 * Encryption and decryption:
   * js-crypto-utils
     * Public key encryption (ECDH, HKDF and AES256-GCM combination)
     * Public key encryption (RSA-OAEP)
     * Session key encryption (AES-GCM)
-  * OpenPGP
-    * Public key encryption (Elliptic curve cryptography)
-    * Public key encryption (RSA)
-    * Session key encryption (AES-EAX)
 * Signing and verification:
   * js-crypto-utils
     * RSA-PSS signature (May not work in IE11 and Edge.)
     * RSASSA-PKCS1-v1_5 signature
     * ECDSA signature
-  * OpenPGP
-    * RSA signature
-    * ECDSA signature
 * Key generation:
   * js-crypto-utils
     * Public and private key pair generation w/ and w/o passphrase in PEM armored format (ECC and RSA)
-    * Session key generation
-  * OpenPGP
-    * Public and private key pair generation w/ and w/o passphrase in OpenPGP armored format (ECC and RSA)
     * Session key generation
 
 # Installation and Setup
@@ -91,12 +81,7 @@ Of cource, you can also directly import the source code by cloning this Github r
 
 ## Finishing up the setup
 
-The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` and `openpgpjs` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, both of or either one of `js-crypto-utils` (`jscu.bundle.js`) and `openpgpjs` (`openpgp.js`/`openpgp.min.js`) must be pre-loaded by `<script>` tags in html files**. Also we should note that for `openpgpjs`, the webworker file `openpgp.worker.js`/`openpgp.worker.min.js` is required to be located in the directory where the `openpgp.js`/`openpgp.min.js` exists. For browsers, the default path to `openpgp.worker.js`/`openpgp.worker.min.js` is the root of your url path, and you can change it by directly specifying the location as follows.
-
-```javascript
-import cascade from 'crypto-cascade';
-cascade.config.openpgp.workerPathWeb = 'path/to/openpgp.worker.min.js';
-```
+The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**. 
 
 # Usage
 
@@ -104,7 +89,7 @@ Here we give some basic example of usecases of `Cascade`. This section is organi
 
 ## Key generation
 
-`Cascade` provides a basic function to generate PEM-formatted and OpenPGP-armored public private key pairs. The following example describes an example to generate PEM-formatted public and private keys of elliptic curve cryptography using `js-crypto-utils`.
+`Cascade` provides a basic function to generate PEM-formatted public/private key pairs. The following example describes an example to generate PEM-formatted public and private keys of elliptic curve cryptography using `js-crypto-utils`.
 
 ```javascript
 const keyParam = {
@@ -129,7 +114,7 @@ const keyPair = await cascade.generateKey(keyParam);
 
 Then, the protected private key is encoded as `EncryptedPrivateKeyInfo`.
 
-Note that in addition to `jscu` as `keyParam.suite`, `openpgp` is also available. The key generation API can generate not only EC public and private key strings but also RSA ones and session keys, where generated session keys are just random bytes given in `Uint8Array` unlike formatted strings of public and private keys.
+The key generation API can generate not only EC public and private key strings but also RSA ones and session keys, where generated session keys are just random bytes given in `Uint8Array` unlike formatted strings of public and private keys.
 
 ## Basic encryption simultaneously with signing
 
@@ -348,7 +333,7 @@ deserialized.insert(idx, deserializedExtracted);
 
 # Note
 
-At this point, limitations of `Cascade` are basically from those of [js-crypto-utils](https://github.com/junkurihara/jscu) and [openpgpjs](https://openpgpjs.org/). Please refer to their documents first.
+At this point, limitations of `Cascade` are basically from those of [js-crypto-utils](https://github.com/junkurihara/jscu). Please refer to their documents first.
 
 # Lisence
 

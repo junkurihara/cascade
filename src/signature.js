@@ -6,7 +6,7 @@ import jseu from 'js-encoding-utils';
 import cloneDeep from 'lodash.clonedeep';
 import msgpack from 'msgpack-lite';
 
-const suites = ['jscu', 'openpgp'];
+const suites = ['jscu'];
 const keyTypes = ['public_key_sign'];
 
 export const importSignatureBuffer = (serialized) => {

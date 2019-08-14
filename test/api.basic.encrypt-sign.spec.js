@@ -50,6 +50,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
     }));
   });
 
+  /*
   it('jscu: EC/RSA encryption and signing test with ephemeral ECDH keys',  async function () {
     this.timeout(50000);
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -77,119 +78,5 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
       }));
     }));
   });
-  
-  it('openpgp: RSA/EC encryption and signing test',  async function () {
-    this.timeout(50000);
-    await Promise.all(param.paramArray.map( async (paramObject) => {
-      await Promise.all(paramObject.param.map( async (p, idx) => {
-        const encryptionKeys = {
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ],
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ] // for Signing
-        };
-        const encryptConfig = { encrypt: param.openpgpEncryptConf, sign: param.openpgpSignConf };
-
-        const encryptionKeyImported = await cascade.importKeys(
-          'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['encrypt', 'sign']}
-        );
-        const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-
-        const decryptionKeys = {
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ] // for verification
-        };
-        const decryptionKeyImported = await cascade.importKeys(
-          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
-        );
-        const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
-      }));
-    }));
-  });
-
-
-  it('mix1 (encrypt: openpgp, sign: jscu): RSA/EC encryption and signing test',  async function () {
-    this.timeout(50000);
-    await Promise.all(param.paramArray.map( async (paramObject) => {
-      await Promise.all(paramObject.param.map( async (p, idx) => {
-        const encryptionKeys = {
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ],
-          privateKeyPassSets:[ { privateKey:param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: '' } ] // for Signing
-        };
-        const encryptConfig = { encrypt: param.openpgpEncryptConf, sign: param.jscuSignConf(paramObject) };
-
-        const encryptionKeyImported = await cascade.importKeys(
-          'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
-        );
-        const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-
-        const decryptionKeys = {
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],
-          publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString ] // for verification
-        };
-        const decryptionKeyImported = await cascade.importKeys(
-          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
-        );
-        const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
-      }));
-    }));
-  });
-
-
-  it('mix2 (encrypt: jscu, sign: openpgp): RSA/EC encryption and sining test',  async function () {
-    this.timeout(50000);
-    await Promise.all(param.paramArray.map( async (paramObject) => {
-      await Promise.all(paramObject.param.map( async (p, idx) => {
-        const encryptionKeys = {
-          publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString ],
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ] // for Signing
-        };
-        const encryptConfig = { encrypt: param.jscuEncryptConf(paramObject, idx), sign: param.openpgpSignConf };
-
-        const encryptionKeyImported = await cascade.importKeys(
-          'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'openpgp'}, mode: ['encrypt', 'sign']}
-        );
-        const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-
-        const decryptionKeys = {
-          privateKeyPassSets:[ { privateKey:param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ] // for verification
-        };
-        const decryptionKeyImported = await cascade.importKeys(
-          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
-        );
-        const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
-      }));
-    }));
-  });
-
-  it('mix2 (encrypt: jscu, sign: openpgp): RSA/EC encryption and sining test with ephemeral ECDH keys',  async function () {
-    this.timeout(50000);
-    await Promise.all(param.paramArray.map( async (paramObject) => {
-      await Promise.all(paramObject.param.map( async (p, idx) => {
-        const encryptionKeys = {
-          publicKeys: [param.Keys[paramObject.name][idx].publicKey.keyString ],
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ] // for Signing
-        };
-        const encryptConfig = { encrypt: param.jscuEncryptConfEphemeral(paramObject), sign: param.openpgpSignConf };
-
-        const encryptionKeyImported = await cascade.importKeys(
-          'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'openpgp'}, mode: ['encrypt', 'sign']}
-        );
-        const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-
-        const decryptionKeys = {
-          privateKeyPassSets:[ { privateKey:param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ] // for verification
-        };
-        const decryptionKeyImported = await cascade.importKeys(
-          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
-        );
-        const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
-      }));
-    }));
-  });
-
+  */
 });

@@ -49,34 +49,5 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
       }));
     }));
   });
-  
-  it('openpgp: symmetric key encryption and public key signing test',  async function () {
-    this.timeout(50000);
-    await Promise.all(param.paramArray.map( async (paramObject) => {
-      await Promise.all(paramObject.param.map( async (p, idx) => {
-        const encryptionKeys = {
-          sessionKey: param.Keys.sessionKey,
-          privateKeyPassSets:[ { privateKey:param.KeysGPG[paramObject.name][idx].privateKey.keyString, passphrase: '' } ] // for Signing
-        };
-        const encryptConfig = { encrypt: param.openpgpgSessionEncryptConf, sign: param.openpgpSignConf };
-
-        const encryptionKeyImported = await cascade.importKeys(
-          'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['encrypt', 'sign']}
-        );
-        const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-
-        const decryptionKeys = {
-          sessionKey: param.Keys.sessionKey,
-          publicKeys: [param.KeysGPG[paramObject.name][idx].publicKey.keyString ] // for verification
-        };
-        const decryptionKeyImported = await cascade.importKeys(
-          'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'openpgp', sign_verify: 'openpgp'}, mode: ['decrypt', 'verify']}
-        );
-        const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
-      }));
-    }));
-  });
-
 
 });

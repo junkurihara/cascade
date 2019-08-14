@@ -4,17 +4,11 @@
 
 import {generateKeyObject} from './keys.js';
 import {importMessage} from './message.js';
-import {OpenPGP} from './suite_openpgp.js';
 import {Jscu} from './suite_jscu.js';
 
 /**
  * Generate key (pair). This API must be called externally.
  * @param keyParams {object}: a parameter to generate keys in the form of like
- * OpenPGP:
- * { suite: 'openpgp',
- *   userIds,
- *   passphrase: 'omg',
- *   keyParams: { type: 'ECC', keyExpirationTime: 0, curve: 'P-256' } }
  * Simple Crypto Suite using WebCryptoAPI/OpenSSL:
  * { suite: 'jscu',
  *   passphrase: 'omg',
@@ -29,15 +23,7 @@ export const generateKey = async (keyParams) => {
     return keyObj;
   }
   else {
-    if(keyParams.suite === 'openpgp') { /** OpenPGP **/
-      return {
-        publicKey: { keyString: keyObj.publicKey.armor(), keyId: keyObj.keyId },
-        privateKey: Object.assign(
-          { keyString: keyObj.privateKey.armor(), keyId: keyObj.keyId },
-          (keyParams.passphrase) ? {passphrase: keyParams.passphrase} : {})
-      };
-    }
-    else if (keyParams.suite === 'jscu') { /** js-crypto-utils **/
+    if (keyParams.suite === 'jscu') { /** js-crypto-utils **/
       return {
         publicKey: {
           keyString: await keyObj.publicKey.export('pem', {outputPublic: true}),
@@ -69,10 +55,7 @@ export const encrypt = async ({message, keys, config}) => {
 
   // do signing
   let signed = {};
-  if (typeof config.sign !== 'undefined' && config.sign.required &&
-    (typeof config.encrypt === 'undefined' ||
-    (typeof config.encrypt !== 'undefined' && !(config.encrypt.suite === 'openpgp' && config.sign.suite === 'openpgp')))
-  ){
+  if (typeof config.sign !== 'undefined' && config.sign.required){
     if (keys.suite.sign_verify !== config.sign.suite) throw new Error('UnmatchedKeyTypeToSigningSuite');
     if (!keys.canSign()) throw new Error('UnsupportedKeyForSign');
     signed = await cryptoSuite(keys.suite.sign_verify).sign({
@@ -176,7 +159,6 @@ export const verify = async ({message, signature, keys}) => {
 const cryptoSuite = (suiteName) => {
   let suiteObj;
   if (suiteName === 'jscu') suiteObj = Jscu;
-  else if (suiteName === 'openpgp') suiteObj = OpenPGP;
   else throw new Error('UnknownSuite');
   return suiteObj;
 };

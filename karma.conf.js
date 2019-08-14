@@ -24,9 +24,7 @@ module.exports = function(config) {
     frameworks: ['mocha'],
 
     files: [
-      {pattern: './test/html/openpgp.worker.min.js', watched: false, included: false, served: true},
       './node_modules/js-crypto-utils/dist/jscu.bundle.min.js',
-      './test/html/openpgp.min.js',
       './test/**/*.spec.js'
     ],
 
