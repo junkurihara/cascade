@@ -2,7 +2,6 @@
  * cascade.js
  */
 
-import {OpenPGP} from './suite_openpgp.js';
 import {Jscu} from './suite_jscu.js';
 import {generateKeyObject, importKeys, Keys} from './keys.js';
 import {Signature} from './signature.js';
@@ -94,7 +93,6 @@ class Cascade extends Array {
       if (keyParams.keyParams.type === 'session') nextStepMessage = onetimeKey.key;
       else {
         if (keyParams.suite === 'jscu') nextStepMessage = await onetimeKey.privateKey.export('der');
-        else if (keyParams.suite === 'openpgp') nextStepMessage = onetimeKey.privateKey.toPacketlist().write();
         else throw new Error('UnknownSuite');
       }
       this[idx+1].message = nextStepMessage;
@@ -154,9 +152,6 @@ class Cascade extends Array {
           if (this[idx-1].data.message.suite === 'jscu'){
             nextDecryptionKeyObject = {privateKeys: [await Jscu.importKey('der', decrypted[idx].data)]};
           }
-          else if (this[idx-1].data.message.suite === 'openpgp'){
-            nextDecryptionKeyObject = {privateKeys: [await OpenPGP.importKey('der', decrypted[idx].data)]};
-          }
           else throw new Error('UnknownSuite');
         }
 
@@ -164,14 +159,6 @@ class Cascade extends Array {
         if (this[idx-1].data.signature instanceof Signature && typeof verificationKeys !== 'undefined'){
           nextDecryptionKeyObject.publicKeys = verificationKeys;
           suiteObject.sign_verify = this[idx-1].data.signature.suite;
-          modeArray.push('verify');
-        }
-        // WA for embedded signature
-        else if (typeof this[idx-1].data.message !== 'undefined'
-          && this[idx-1].data.message.suite === 'openpgp'
-          && typeof verificationKeys !== 'undefined' ) {
-          nextDecryptionKeyObject.publicKeys = verificationKeys;
-          suiteObject.sign_verify = 'openpgp';
           modeArray.push('verify');
         }
 

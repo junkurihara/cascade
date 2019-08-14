@@ -8,18 +8,6 @@ import {getJscu} from './util.js';
 import cloneDeep from 'lodash.clonedeep';
 
 /**
- * Calculate key id from openpgp key object
- * @param keyObject
- * @param len
- * @return {KeyId}
- */
-export const fromOpenPgpKey = (keyObject, len=config.publicKeyIdLEN) => {
-  const fp = keyObject.getFingerprint();
-  const buf = jseu.encoder.hexStringToArrayBuffer(fp);
-  return createKeyId(buf.slice(0, len));
-};
-
-/**
  * Calculate key Id from jwk-formatted key
  * Key id is defined as jwk public key thumbprint (NOTE: not private key thumbprint)
  * see the spec here => https://tools.ietf.org/html/rfc7638

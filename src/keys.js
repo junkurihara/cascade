@@ -4,7 +4,6 @@
 
 import cloneDeep from 'lodash.clonedeep';//'lodash/cloneDeep';
 import {Jscu} from './suite_jscu.js';
-import {OpenPGP} from './suite_openpgp.js';
 
 export class Keys {
   async from(format, {keys, suite, mode}){
@@ -103,7 +102,6 @@ const importKeyStrings = async ({keys, suite, mode}) => {
 
       let suiteObj;
       if (suite[modeOjbect.name] === 'jscu') suiteObj = Jscu;
-      else if (suite[modeOjbect.name] === 'openpgp') suiteObj = OpenPGP;
       else throw new Error('InvalidSuite');
 
       if (mode.indexOf(modeOjbect.op.public) >= 0) {
@@ -144,25 +142,14 @@ const importKeyObjects = async ({keys, suite, mode}) => {
 
 
 /**
- * Basic key generator via openpgp/jscu APIs. Returns raw objects of keys in both environments from the spec with some additional args.
+ * Basic key generator via jscu APIs. Returns raw objects of keys in both environments from the spec with some additional args.
  * @param keyParams
  * @return {Promise<*>}
  */
 export const generateKeyObject = async (keyParams) => {
   const localKeyParams = cloneDeep(keyParams);
   let returnKey;
-  if (localKeyParams.suite === 'openpgp') { /** OpenPGP **/
-    returnKey = await OpenPGP.generateKey({
-      userIds: localKeyParams.userIds,
-      passphrase: localKeyParams.passphrase,
-      params: localKeyParams.keyParams
-    })
-      .catch((e) => {
-        throw new Error(`GPGKeyGenerationFailed: ${e.message}`);
-      });
-
-  }
-  else if (localKeyParams.suite === 'jscu') { /** js-crypto-utils **/
+  if (localKeyParams.suite === 'jscu') { /** js-crypto-utils **/
     returnKey = await Jscu.generateKey({
       passphrase: localKeyParams.passphrase,
       params: localKeyParams.keyParams,

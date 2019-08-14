@@ -39,7 +39,6 @@ const webpackConfig = {
   },
   externals:[{
     'js-crypto-utils': true,
-    'openpgp': true
   }],
   node: {
     fs: 'empty',

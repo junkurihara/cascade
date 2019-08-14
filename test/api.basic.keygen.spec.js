@@ -12,32 +12,6 @@ describe(`${env}: public and private key pair generation test`, () => {
   const modulusLength = [ 2048, 4096 ];
   const userIds = [ 'kurihara@zettant.com' ];
 
-  it('OpenPGP key generation with passphrase', async function () {
-    this.timeout(5000);
-
-    const keyArray = await Promise.all( curves.map ( (curve) => {
-      const keyParam = {suite: 'openpgp', userIds, passphrase: 'omg', keyParams: {type: 'ec', keyExpirationTime: 0, curve}};
-      return core.generateKey(keyParam);
-    }) );
-    // console.log(keyArray);
-    const ok = keyArray.every( (k) => !!k.privateKey.passphrase);
-    expect(ok).to.be.true;
-  });
-
-  it('OpenPGP key generation without passphrase', async function () {
-    this.timeout(5000);
-
-    const baseParam = { type: 'ec', keyExpirationTime: 0 };
-
-    const keyArray = await Promise.all( curves.map ( (curve) => {
-      const keyParam = {suite: 'openpgp', userIds, keyParams: Object.assign(baseParam, {curve})};
-      return core.generateKey(keyParam);
-    }) );
-    // console.log(keyArray);
-    const ng = keyArray.every( (k) => !k.privateKey.passphrase);
-    expect(ng).to.be.true;
-  });
-
   it('JSCU EC public key pair generation', async function () {
     this.timeout(5000);
     let success = true;
@@ -81,15 +55,6 @@ describe(`${env}: public and private key pair generation test`, () => {
     expect(success).to.be.true;
     // keyArray.map( (x) => {console.log(x);});
   });
-
-  it('OpenPGP symmetric session key generation', async function (){
-    this.timeout(5000);
-    const keyParam = {suite: 'openpgp', keyParams: {type: 'session', length: 32}};
-    const key = await core.generateKey(keyParam);
-    expect((key.key instanceof Uint8Array) && (key.key.length === 32)).to.be.true;
-    // console.log(key);
-  });
-
 
   it('JSCU symmetric session key generation', async function (){
     this.timeout(5000);

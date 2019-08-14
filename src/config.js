@@ -21,15 +21,4 @@ export default {
   },
 
   ////////////////////////////////////////////////////////////
-  // OpenPGP
-  openpgp : {
-    defaultUser : '<example@example.com>',
-
-    // openpgp.worker.js must be located in the place where api_openpgp.js and js-file bundling core-file.
-    // Namely in this project, they are located in 'dist',
-    // and it will be './', i.e., the root path of the url, from the viewpoint of bundled file.
-    workerPathWeb: './openpgp.worker.min.js',
-
-    workerPathNode: '../node_modules/openpgp/dist/openpgp.worker.min.js',
-  }
 };
