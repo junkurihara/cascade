@@ -4325,18 +4325,18 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-aes@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/js-crypto-aes/-/js-crypto-aes-0.5.5.tgz#37a816f3236678725927b5787f7a06e1d471007d"
-  integrity sha512-Wz6ZdMHQFRdmg0QZPFgo6LwNOXyY0pAka47q2Z7eLWlgMSVHli9XZ20hPZCugI2Wi6IXw7ZZki80PR/qVQndtQ==
+js-crypto-aes@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-aes/-/js-crypto-aes-0.6.0.tgz#72de11af8a4d23c8d23b75f88a37dd19e274aecd"
+  integrity sha512-KyIfif8NDgQ98CmQcN9PzirG1GB70fdtci65kcESoKkg+WaDvRzeROKacyxzHHEyQxwpVxU3KAZBgsIG3h0LSg==
   dependencies:
     "@babel/runtime" "~7.5.0"
     js-crypto-env "^0.2.4"
 
-js-crypto-ec@^0.5.9:
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.5.9.tgz#488641acb667ce209461fdafe380e7907c243c21"
-  integrity sha512-1yq5WcotdgayssuC62dG5OeuquShU++w0oxkYH8SR5R5DyvrekWypitkjKmSk2P9Hum2e1s+O2D/fWeXmSTpGg==
+js-crypto-ec@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.5.10.tgz#7c42bc8b9342a32722e748f46285631c41484cd9"
+  integrity sha512-QbdX7Uub/HhI1GbV6j4XhLisBA/T+4tEUoot8zAR1gFW+BgqvTcl8DpkcA3DjOY53eHDvw0J0AtYJoEQMP4Baw==
   dependencies:
     "@babel/runtime" "~7.5.0"
     asn1.js "~5.2.0"
@@ -4344,7 +4344,7 @@ js-crypto-ec@^0.5.9:
     elliptic "~6.5.0"
     js-crypto-env "^0.2.4"
     js-crypto-hash "^0.5.2"
-    js-crypto-key-utils "^0.6.9"
+    js-crypto-key-utils "^0.6.10"
     js-crypto-random "^0.3.5"
     js-encoding-utils "0.5.3"
 
@@ -4367,10 +4367,10 @@ js-crypto-hash@^0.5.2:
     md5 "~2.2.1"
     sha3 "~2.0.4"
 
-js-crypto-hkdf@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/js-crypto-hkdf/-/js-crypto-hkdf-0.6.3.tgz#633e9a327913056e1d4832e373a04a36073b9295"
-  integrity sha512-FM0cWIrV+FiKQoQklYP0VvFVSOfSsVL60EtZgcfG3z+0oKRn/TjjB+ZDgQ/47Fz56Zh66w5W7G780GURQqZRdw==
+js-crypto-hkdf@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/js-crypto-hkdf/-/js-crypto-hkdf-0.6.4.tgz#b2abc2ef83b0b657833a4c61b3e8c469b89a5c9f"
+  integrity sha512-kFOR6kyEEoXKXQYtiaF898HpcSdpS7DZzg1hcqj617g+6iQ9EZShrQw5jCuu9TvV8Xm8BTMkJQvBnyZhReuFqA==
   dependencies:
     "@babel/runtime" "~7.5.0"
     js-crypto-env "^0.2.4"
@@ -4386,17 +4386,17 @@ js-crypto-hmac@^0.5.3:
     js-crypto-env "^0.2.4"
     js-crypto-hash "^0.5.2"
 
-js-crypto-key-utils@^0.6.9:
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.6.9.tgz#8d37f987699735f7300361a0611606afe5c7045b"
-  integrity sha512-FbmX591sIdwDkaa3XHAFp5WJ0bv+kZWWgMDt++L1TXPJTIH/thOB7Y3lG0CghXM/x5UYpynWZWHEWW+lB0Do3w==
+js-crypto-key-utils@^0.6.10:
+  version "0.6.10"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.6.10.tgz#17095a81749f019921937fdbc6b5fc0791e207ab"
+  integrity sha512-tvfnD1h2qbzrGCr5BKnXk6CqbDOveuWZedTcYfhNPI+ZTdXqDyMbC2DnuehcdSaO9gflWnDsMrg02PkEXL0NGg==
   dependencies:
     "@babel/runtime" "~7.5.0"
     asn1.js "~5.2.0"
     buffer "~5.4.0"
     des.js "~1.0.0"
     elliptic "~6.5.0"
-    js-crypto-aes "^0.5.5"
+    js-crypto-aes "^0.6.0"
     js-crypto-hash "^0.5.2"
     js-crypto-pbkdf "^0.4.3"
     js-crypto-random "^0.3.5"
@@ -4421,36 +4421,36 @@ js-crypto-random@^0.3.5:
     "@babel/runtime" "~7.5.0"
     js-crypto-env "^0.2.4"
 
-js-crypto-rsa@^0.5.9:
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.5.9.tgz#cb4fb996d2e361cd7245f4c06212d0acc243fc21"
-  integrity sha512-FmAXDnA4znKd2yhv7p5o1uxpSyXJI+uy84SucvAcsNn93kxA8Jfpx41RRFM8kw8szTf2fCI28VNL2SQ6Waevjg==
+js-crypto-rsa@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.5.10.tgz#6b7d981afc13cdb0591c05d90811c916ac102ec5"
+  integrity sha512-FuyPxNsW+PnMPhl1Sm0RtNUAAJuNFnQx7biKW6HE6UkyGFv1m88YzZSISYVh93C41bWCX72yyjVh5ctzMLa8JQ==
   dependencies:
     "@babel/runtime" "~7.5.0"
     bn.js "~5.0.0"
     js-crypto-env "^0.2.4"
     js-crypto-hash "^0.5.2"
-    js-crypto-key-utils "^0.6.9"
+    js-crypto-key-utils "^0.6.10"
     js-crypto-random "^0.3.5"
     js-encoding-utils "0.5.3"
 
-js-crypto-utils@0.16.3:
-  version "0.16.3"
-  resolved "https://registry.yarnpkg.com/js-crypto-utils/-/js-crypto-utils-0.16.3.tgz#79001e64e3964d8be477ee6b515b3c2d893e3a85"
-  integrity sha512-Fn8FGJmB93lu3VqoNdpi9rfYTv6WlVkmEKBQK4ca50nKd+IFjYrse7LjcYQstDLJYVjm/wU362CZci4+vWbMrA==
+js-crypto-utils@0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-utils/-/js-crypto-utils-0.17.0.tgz#3a4a37ad5b0207a38eff219e24193ff90f288586"
+  integrity sha512-3JMCYWCjVX3/qjGKNX2YHeex+ArglSv57OZo8lsbXo5Tex3Vd1vq9Fp7KAXeslxZsrDqHrC64rATHqU04IHKiA==
   dependencies:
     "@babel/runtime" "~7.5.0"
-    js-crypto-aes "^0.5.5"
-    js-crypto-ec "^0.5.9"
+    js-crypto-aes "^0.6.0"
+    js-crypto-ec "^0.5.10"
     js-crypto-hash "^0.5.2"
-    js-crypto-hkdf "^0.6.3"
+    js-crypto-hkdf "^0.6.4"
     js-crypto-hmac "^0.5.3"
-    js-crypto-key-utils "^0.6.9"
+    js-crypto-key-utils "^0.6.10"
     js-crypto-pbkdf "^0.4.3"
     js-crypto-random "^0.3.5"
-    js-crypto-rsa "^0.5.9"
+    js-crypto-rsa "^0.5.10"
     js-encoding-utils "0.5.3"
-    js-x509-utils "^0.4.9"
+    js-x509-utils "^0.4.10"
     lodash.clonedeep "~4.5.0"
 
 js-encoding-utils@0.5.3:
@@ -4473,20 +4473,20 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-x509-utils@^0.4.9:
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/js-x509-utils/-/js-x509-utils-0.4.9.tgz#4856ec09775b118d37a6c215b3b0cfa48f3a366b"
-  integrity sha512-cP4QOzc8R6WTfjMtn0YgrC9ZVDGXWGPW2lgyLoliA+3YdHx0W8MTFcAqGvfsmw21o/v6yxmrYUUpM33f/nFERg==
+js-x509-utils@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/js-x509-utils/-/js-x509-utils-0.4.10.tgz#ce10fad481d3d7dea35d7096857b348cd1f8e382"
+  integrity sha512-9T0PGVXoshJMSGxy3Z7kRAAFUGwSozCipp3dLQzI+CYIAmW/b3Q8VFTZjWAEKXWIYtqpYyFjLo3s8pokh2rulg==
   dependencies:
     "@babel/runtime" "~7.5.0"
     asn1.js "~5.2.0"
     asn1.js-rfc5280 "~3.0.0"
     bn.js "~5.0.0"
     buffer "~5.4.0"
-    js-crypto-ec "^0.5.9"
-    js-crypto-key-utils "^0.6.9"
+    js-crypto-ec "^0.5.10"
+    js-crypto-key-utils "^0.6.10"
     js-crypto-random "^0.3.5"
-    js-crypto-rsa "^0.5.9"
+    js-crypto-rsa "^0.5.10"
     js-encoding-utils "0.5.3"
 
 js-yaml@3.13.1, js-yaml@3.x, js-yaml@^3.13.1:
