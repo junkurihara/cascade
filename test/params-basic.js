@@ -77,6 +77,19 @@ class ParamsBasic{
     };
   }
 
+  jscuKeyWrappingConf (paramObject, idx) {
+    return {
+      externalKey: true,
+      suite: 'jscu',
+      options: (paramObject.name === 'ec')
+        ? {
+          privateKeyPass: {privateKey: this.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}, // only for ECDH
+          hash: 'SHA-256', encrypt: 'AES-KW', keyLength: 32, info: ''
+        }
+        : {hash: 'SHA-256'},
+    };
+  }
+
   jscuEncryptConfEphemeral (paramObject) {
     return {
       externalKey: true,
