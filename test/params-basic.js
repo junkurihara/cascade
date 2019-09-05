@@ -84,7 +84,7 @@ class ParamsBasic{
       options: (paramObject.name === 'ec')
         ? {
           privateKeyPass: {privateKey: this.Keys[paramObject.name][idx].privateKey.keyString, passphrase: ''}, // only for ECDH
-          hash: 'SHA-256', encrypt: 'AES-KW', keyLength: 32
+          hash: 'SHA-256', encrypt: 'AES-KW', keyLength: 32, info: ''
         }
         : {hash: 'SHA-256'},
     };
