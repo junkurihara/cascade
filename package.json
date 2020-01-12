@@ -39,11 +39,11 @@
     "cleanup": "rm -rf ./dist coverage .nyc_output; rm -rf ./test/html/*.bundle.js; rm -rf ./test/html/test.html; rm -rf ./node_modules"
   },
   "devDependencies": {
-    "@babel/cli": "7.7.7",
-    "@babel/core": "7.7.7",
-    "@babel/plugin-transform-runtime": "7.7.6",
-    "@babel/preset-env": "7.7.7",
-    "@babel/register": "7.7.7",
+    "@babel/cli": "7.8.0",
+    "@babel/core": "7.8.0",
+    "@babel/plugin-transform-runtime": "7.8.0",
+    "@babel/preset-env": "7.8.0",
+    "@babel/register": "7.8.0",
     "babel-eslint": "10.0.3",
     "babel-loader": "8.0.6",
     "babel-plugin-istanbul": "6.0.0",
@@ -71,8 +71,8 @@
     "webpack-merge": "4.2.2"
   },
   "dependencies": {
-    "@babel/polyfill": "~7.7.0",
-    "@babel/runtime": "~7.7.6",
+    "@babel/polyfill": "~7.8.0",
+    "@babel/runtime": "~7.8.0",
     "js-crypto-utils": "0.18.2",
     "js-encoding-utils": "0.5.6",
     "lodash.clonedeep": "~4.5.0",
