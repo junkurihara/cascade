@@ -39,11 +39,11 @@
     "cleanup": "rm -rf ./dist coverage .nyc_output; rm -rf ./test/html/*.bundle.js; rm -rf ./test/html/test.html; rm -rf ./node_modules"
   },
   "devDependencies": {
-    "@babel/cli": "7.10.4",
-    "@babel/core": "7.10.4",
-    "@babel/plugin-transform-runtime": "7.10.4",
+    "@babel/cli": "7.10.5",
+    "@babel/core": "7.10.5",
+    "@babel/plugin-transform-runtime": "7.10.5",
     "@babel/preset-env": "7.10.4",
-    "@babel/register": "7.10.4",
+    "@babel/register": "7.10.5",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.1.0",
     "babel-plugin-istanbul": "6.0.0",
