@@ -5,7 +5,6 @@
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const ShakePlugin = require('webpack-common-shake').Plugin;
 
 // webpack main configration
 const webpackConfig = {
@@ -13,7 +12,6 @@ const webpackConfig = {
   plugins:[
     new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000}),
-    new ShakePlugin()
   ],
 };
 

@@ -1,15 +1,15 @@
 // Karma configuration
 // Generated on Wed Jun 13 2018 13:09:34 GMT+0900 (JST)
 const common = require('./webpack.common.js');
-const webpackConfig = require('./webpack.dev.js');
+// const webpackConfig = require('./webpack.dev.js');
 // const babelExtraPlugins = ['babel-plugin-istanbul'];
-const getWebpackConfig = () => {
-  const config = webpackConfig(null, {mode: 'development'});
-  delete config.entry;
-  delete config.output;
-
-  return config;
-};
+// const getWebpackConfig = () => {
+//   const config = webpackConfig(null, {mode: 'development'});
+//   delete config.entry;
+//   delete config.output;
+//
+//   return config;
+// };
 
 
 module.exports = function(config) {
@@ -23,9 +23,13 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha'],
 
+
+    // list of files / patterns to load in the browser
     files: [
       './node_modules/js-crypto-utils/dist/jscu.bundle.min.js',
-      './test/**/*.spec.js'
+      `./dist/${common.bundleName}`,
+      //'./test/**/*.spec.js'
+      './test/html/*.bundle.js'
     ],
 
 
@@ -33,31 +37,40 @@ module.exports = function(config) {
     exclude: [
     ],
 
-    proxies: {
-      '/': '/base/test/html'  // to load openpgp worker.js located in dist
-    },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './src/**/*.js': ['coverage'],
-      './test/**/*.spec.js': ['webpack']
+      // './src/**/*.js': ['coverage'],
+      './test/html/*.bundle.js': ['coverage']
+      // './test/**/*.spec.js': ['webpack']
     },
 
-    webpack: getWebpackConfig(),
-
-    webpackMiddleware: {
-      // webpack-dev-middleware configuration
-      // i. e.
-      stats: 'errors-only',
-    },
+    // webpack: getWebpackConfig(),
+    //
+    // webpackMiddleware: {
+    //   // webpack-dev-middleware configuration
+    //   // i. e.
+    //   stats: 'errors-only',
+    // },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'coverage'],
-    coverageReporter: { type: 'lcov' },
-
+    reporters: ['mocha', 'coverage', 'karma-remap-istanbul'],
+    //coverageReporter: { type: 'lcov' },
+    remapIstanbulReporter: {
+      remapOptions: {
+        exclude: /root\/(node_modules|webpack|test|[^(src)])\?*/
+      }, //additional remap options
+      reportOptions: {}, //additional report options
+      //出力形式や、出力先を指定する
+      reports: {
+        lcovonly: 'coverage/remap/lcov/lcov.info',
+        html: 'coverage/remap/html',
+        cobertura: 'coverage/remap/cobertura/cobertura.xml'
+      }
+    },
 
     // web server port
     port: 9876,
@@ -78,7 +91,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    //browsers: ['ChromeHeadless'],
+    // browsers: ['ChromeHeadless'],
     // browsers: ['Chrome'],
     browsers: ["Chrome-headless"],
     customLaunchers: {
@@ -87,6 +100,7 @@ module.exports = function(config) {
         flags: ['--headless', '--remote-debugging-port=9222', '--no-sandbox']
       }
     },
+
 
 
     // Continuous Integration mode

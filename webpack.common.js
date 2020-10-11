@@ -40,10 +40,6 @@ const webpackConfig = {
   externals:[{
     'js-crypto-utils': true,
   }],
-  node: {
-    fs: 'empty',
-    Buffer: false
-  }
 };
 
 webpackConfig.entry[libName] = [entry];

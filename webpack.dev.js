@@ -10,6 +10,9 @@ const jsdom = require('jsdom');
 // webpack main configration
 const webpackConfig = {
   mode: 'development',
+  resolve: {
+    fallback: { 'path': require.resolve('path-browserify') }
+  },
   plugins:[
     new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000}),
@@ -19,7 +22,10 @@ const webpackConfig = {
       }
     })
   ],
-  devtool: 'inline-source-map' // add inline source map
+  devtool: 'inline-source-map', // add inline source map
+  output: {
+    devtoolModuleFilenameTemplate: 'root/[resource-path]'
+  },
 };
 
 // export main configuration adjusted to various environments
@@ -148,7 +154,6 @@ const testHtmlTemplate =
   '  <title>Title</title>\n' +
   '  <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />\n' +
   '  <script src="../../node_modules/@babel/polyfill/browser.js"></script>\n' +
-  '  <script src="../../node_modules/js-crypto-utils/dist/jscu.bundle.min.js"></script>' +
   '</head>\n' +
   '<body>\n' +
   '<div id="mocha"></div>\n' +
