@@ -11,3 +11,4 @@ yarn-error.log
 esdocs/
 *.bundle.js
 test.html
+yarn.lock

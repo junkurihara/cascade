@@ -79,10 +79,10 @@ export class EncryptedMessage {
   }
 
   extract() {
-    const returnArray = cloneDeep(this._message);
+    const msgArray = cloneDeep(this._message.toArray());
     this._message = new RawEncryptedMessageList();
     this._message._set([]);
-    return returnArray.toArray();
+    return msgArray;
   }
 
   insert(messageArray) {

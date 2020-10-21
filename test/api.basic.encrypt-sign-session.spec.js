@@ -3,10 +3,6 @@ const testEnv = getTestEnv();
 const cascade = testEnv.library;
 const env = testEnv.envName;
 
-import chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
-
 import {createParam} from './params-basic.js';
 
 describe(`${env}: session key encryption/decryption with simultaneous signing/verification`, () => {
@@ -14,16 +10,14 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
   let message;
   let param;
 
-  before(async function () {
-    this.timeout(50000);
+  beforeAll(async () => {
     message = new Uint8Array(32);
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  });
+  }, 50000);
 
-  it('jscu: symmetric key encryption and public key signing test',  async function () {
-    this.timeout(50000);
+  it('jscu: symmetric key encryption and public key signing test',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -45,9 +39,9 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
           'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
         );
         const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-        expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
+        expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
       }));
     }));
-  });
+  }, 50000);
 
 });
