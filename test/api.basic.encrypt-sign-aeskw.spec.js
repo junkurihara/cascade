@@ -3,10 +3,6 @@ const testEnv = getTestEnv();
 const cascade = testEnv.library;
 const env = testEnv.envName;
 
-import chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
-
 import {createParam} from './params-basic.js';
 
 describe(`${env}: single public key wrapping/unwrapping with simultaneous signing/verification`, () => {
@@ -14,16 +10,14 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
   let message;
   let param;
 
-  before(async function () {
-    this.timeout(50000);
+  beforeAll(async () => {
     message = new Uint8Array(32);
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  });
+  },50000);
 
-  it('jscu: ECDH KeyWrapping and signing test',  async function () {
-    this.timeout(50000);
+  it('jscu: ECDH KeyWrapping and signing test',  async () => {
     const paramObject = param.paramArray[0];
 
     await Promise.all(paramObject.param.map( async (p, idx) => {
@@ -37,7 +31,7 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
         'string', {keys: encryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['encrypt', 'sign']}
       );
       const encryptionResult = await cascade.encrypt({ message, keys: encryptionKeyImported, config: encryptConfig});
-      console.log(encryptionResult);
+      // console.log(encryptionResult);
 
       const decryptionKeys = {
         privateKeyPassSets:[ { privateKey: param.Keys[paramObject.name][idx].privateKey.keyString, passphrase: '' } ],
@@ -47,13 +41,12 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
         'string', {keys: decryptionKeys, suite: {encrypt_decrypt: 'jscu', sign_verify: 'jscu'}, mode: ['decrypt', 'verify']}
       );
       const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
-      expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
+      expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
     }));
-  });
+  }, 50000);
 
   /*
-  it('jscu: EC/RSA encryption and signing test with ephemeral ECDH keys',  async function () {
-    this.timeout(50000);
+  it('jscu: EC/RSA encryption and signing test with ephemeral ECDH keys',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
       await Promise.all(paramObject.param.map( async (p, idx) => {
         const encryptionKeys = {
@@ -78,6 +71,6 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
         expect(decryptionResult.signatures.every((s) => s.valid), `failed at ${p}`).to.be.true;
       }));
     }));
-  });
+  }, 50000);
   */
 });
