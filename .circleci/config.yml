@@ -45,11 +45,12 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn test && ./node_modules/.bin/nyc report --reporter=text-lcov > ./lcov.info
+      - run: yarn test
+      - run: yarn karma
+      - run: sudo apt install lcov
+      - run: find ./coverage  -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
       - codecov/upload:
-          file: ./lcov.info
-
-      # - run: yarn karma
+          file: ./coverage/merged-lcov.info
 
       - store_artifacts:
           path: ./coverage
