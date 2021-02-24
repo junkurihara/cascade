@@ -15,7 +15,7 @@ describe(`${env}: message-pack test`, () => {
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing test',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -49,7 +49,7 @@ describe(`${env}: message-pack test`, () => {
         expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption test with multiple public keys', async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -85,6 +85,6 @@ describe(`${env}: message-pack test`, () => {
         expect(decryptionResult.data.toString()===message.toString()).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
 });

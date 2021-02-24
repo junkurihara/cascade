@@ -15,66 +15,66 @@ describe(`${env}: cascaded single public key encryption/decryption with simultan
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing mono-step procedure test with ECDH ephemeral keys',  async () => {
     await jscuMainRoutineEphemeral(message, param, []);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test via session key encrypt with ECDH ephemeral keys',  async () => {
     await jscuMainRoutineEphemeral(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt with ECDH ephemeral keys',  async () => {
     await jscuMainRoutineEphemeral(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test without externalKey entry in the final step',  async () => {
     await jscuMainRoutineEphemeralWithoutExternalKeyEntryInFinalStep(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test without externalKey entry in the first step',  async () => {
     await jscuMainRoutineEphemeralWithoutExternalKeyEntryInFirstStep(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConfWithoutExternalKey, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing mono-step procedure test',  async () => {
     await jscuMainRoutine(message, param, []);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test via session key encrypt',  async () => {
     await jscuMainRoutine(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt',  async () => {
     await jscuMainRoutine(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt',  async () => {
     await jscuMainRoutine(message, param, [
       { encrypt: param.jscuOnetimePublicEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing hybrid-step procedure test via public key encrypt with ephemeralKeys',  async () => {
     await jscuMainRoutineEphemeral(message, param, [
       { encrypt: param.jscuOnetimePublicEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
 });
 

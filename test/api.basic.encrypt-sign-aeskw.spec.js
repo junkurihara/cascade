@@ -15,7 +15,7 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  },50000);
+  },100000);
 
   it('jscu: ECDH KeyWrapping and signing test',  async () => {
     const paramObject = param.paramArray[0];
@@ -43,7 +43,7 @@ describe(`${env}: single public key wrapping/unwrapping with simultaneous signin
       const decryptionResult = await cascade.decrypt({ data: encryptionResult, keys: decryptionKeyImported });
       expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
     }));
-  }, 50000);
+  }, 100000);
 
   /*
   it('jscu: EC/RSA encryption and signing test with ephemeral ECDH keys',  async () => {

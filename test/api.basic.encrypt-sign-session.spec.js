@@ -15,7 +15,7 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: symmetric key encryption and public key signing test',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -42,6 +42,6 @@ describe(`${env}: session key encryption/decryption with simultaneous signing/ve
         expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
 });

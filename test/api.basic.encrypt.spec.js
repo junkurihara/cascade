@@ -40,7 +40,7 @@ describe(`${env}: public key encryption/decryption`, () => {
         expect(decryptionResult.data.toString()===message.toString()).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption test with ephemeral ECDH key', async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -65,7 +65,7 @@ describe(`${env}: public key encryption/decryption`, () => {
         expect(decryptionResult.data.toString()===message.toString()).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption test with multiple public keys', async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -96,7 +96,7 @@ describe(`${env}: public key encryption/decryption`, () => {
         expect(decryptionResult.data.toString()===message.toString()).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption test with multiple public keys with ephemeral ECDH', async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -127,6 +127,6 @@ describe(`${env}: public key encryption/decryption`, () => {
         expect(decryptionResult.data.toString()===message.toString()).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
 });

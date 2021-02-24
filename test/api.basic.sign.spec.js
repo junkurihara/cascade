@@ -15,7 +15,7 @@ describe(`${env}: public key signing/verification`, () => {
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA signing test',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -40,7 +40,7 @@ describe(`${env}: public key signing/verification`, () => {
         expect(decryptionResult.every((s) => s.valid)).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA signing test with multiple secret keys',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -72,6 +72,6 @@ describe(`${env}: public key signing/verification`, () => {
         expect(decryptionResult.every((s) => (s.valid || s.valid === undefined))).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
 });

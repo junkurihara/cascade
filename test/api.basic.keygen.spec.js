@@ -16,7 +16,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).toBeTruthy();
     // console.log(keyArray);
-  }, 5000);
+  }, 100000);
 
   it('JSCU protected EC public key pair generation', async () => {
     let success = true;
@@ -26,7 +26,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).toBeTruthy();
     // console.log(keyArray);
-  },5000);
+  },100000);
 
   it('JSCU RSA public key pair generation', async () => {
     let success = true;
@@ -36,7 +36,7 @@ describe(`${env}: public and private key pair generation test`, () => {
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).toBeTruthy();
     // console.log(keyArray);
-  },5000);
+  },100000);
 
   it('JSCU protected RSA public key pair generation', async () => {
     let success = true;
@@ -46,13 +46,13 @@ describe(`${env}: public and private key pair generation test`, () => {
     }) ).catch( (e) => {console.error(e.message); success = false; });
     expect(success).toBeTruthy();
     // keyArray.map( (x) => {console.log(x);});
-  },5000);
+  },100000);
 
   it('JSCU symmetric session key generation', async () => {
     const keyParam = {suite: 'jscu', keyParams: {type: 'session', length: 32}};
     const key = await core.generateKey(keyParam);
     expect((key.key instanceof Uint8Array) && (key.key.length === 32)).toBeTruthy();
     // console.log(key);
-  },5000);
+  },100000);
 
 });

@@ -15,14 +15,14 @@ describe(`${env}: cascaded single public key encryption/decryption with encrypte
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing tribrid-step procedure test via session key encrypt with ECDH ephemeral keys',  async () => {
     await jscuMainRoutineEphemeral(message, param, [
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
       { encrypt: param.jscuOnetimeSessionEncryptConf, sign: {required: true} },
     ]);
-  }, 50000);
+  }, 100000);
 
 });
 

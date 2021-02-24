@@ -15,7 +15,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
     for (let i = 0; i < 32; i++) message[i] = 0xFF & i;
 
     param = await createParam();
-  }, 50000);
+  }, 100000);
 
   it('jscu: EC/RSA encryption and signing test',  async () => {
     await Promise.all(param.paramArray.map( async (paramObject) => {
@@ -42,7 +42,7 @@ describe(`${env}: single public key encryption/decryption with simultaneous sign
         expect(decryptionResult.signatures.every((s) => s.valid)).toBeTruthy();
       }));
     }));
-  }, 50000);
+  }, 100000);
 
   /*
   it('jscu: EC/RSA encryption and signing test with ephemeral ECDH keys',  async () => {
