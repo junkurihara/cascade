@@ -1,34 +1,25 @@
 /**
  * prepare.js
  */
-const common = require('../webpack.common.js');
+
+import common from '../webpack.baseconfig.json';
 
 export function getTestEnv(){
   let envName;
   let message;
   let library;
-  if(process.env.TEST_ENV === 'bundle'){
-    envName = 'Bundle';
-    message = '**This is a test with a bundled library';
-    library = require(`../dist/${common.bundleName}`);
-  }
-  else if (process.env.TEST_ENV === 'window'){
+  if (process.env.TEST_ENV === 'window'){
     if(typeof window !== 'undefined' && typeof window[common.libName] !== 'undefined'){
       envName = 'Window';
       library = window[common.libName];
       message = '**This is a test with a library imported from window.**';
     }
-    else{
-      envName = 'Source (Not Window)';
-      library = require(`../src/${common.entryName}`);
-      message = '**This is a test with source codes in src.**';
-    }
+    else throw new Error('The library is not loaded in window object.');
   }
   else {
     envName = 'Source';
-    library = require(`../src/${common.entryName}`);
+    library = require('../src/index');
     message = '**This is a test with source codes in src.**';
-
   }
 
   return {library, envName, message};
