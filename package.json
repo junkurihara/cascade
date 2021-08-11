@@ -61,7 +61,7 @@
     "webpack-cli": "4.7.2"
   },
   "dependencies": {
-    "@babel/runtime": "~7.14.0",
+    "@babel/runtime": "~7.15.0",
     "js-crypto-utils": "1.0.2",
     "js-encoding-utils": "0.6.2",
     "lodash.clonedeep": "~4.5.0",
