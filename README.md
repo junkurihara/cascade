@@ -3,7 +3,6 @@ Cascade - Encryption and signing library for x-brid encryption via several crypt
 [![npm version](https://badge.fury.io/js/crypto-cascade.svg)](https://badge.fury.io/js/crypto-cascade)
 [![CircleCI](https://circleci.com/gh/junkurihara/cascade.svg?style=svg)](https://circleci.com/gh/junkurihara/cascade)
 [![codecov](https://codecov.io/gh/junkurihara/cascade/branch/develop/graph/badge.svg)](https://codecov.io/gh/junkurihara/cascade)
-[![Dependencies](https://david-dm.org/junkurihara/cascade.svg)](https://david-dm.org/junkurihara/cascade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ebead374220cd81a02b9/maintainability)](https://codeclimate.com/github/junkurihara/cascade/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -81,7 +80,7 @@ Of cource, you can also directly import the source code by cloning this Github r
 
 ## Finishing up the setup
 
-The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**. 
+The `Cascade` library doesn't internally import cryptographic suites, i.e., `js-crypto-utils` in a static manner, but it loads them in a dynamic manner. In particular, it calls those suites via `require` for `Node.js` and as `window` objects for browsers. This means that **for browsers, `js-crypto-utils` (`jscu.bundle.js`) must be pre-loaded by `<script>` tags in html files**.
 
 # Usage
 
