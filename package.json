@@ -1,6 +1,6 @@
 {
   "name": "crypto-cascade",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Cascade - An encryption and signing library for x-brid encryption via several crypto suites",
   "author": "Jun Kurihara",
   "license": "MIT",
