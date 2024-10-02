@@ -34,13 +34,13 @@
     "cleanup": "rm -rf ./dist coverage ./node_modules"
   },
   "devDependencies": {
-    "@babel/cli": "7.25.6",
+    "@babel/cli": "7.25.7",
     "@babel/core": "7.25.2",
-    "@babel/eslint-parser": "7.25.1",
-    "@babel/plugin-transform-regenerator": "7.24.7",
+    "@babel/eslint-parser": "7.25.7",
+    "@babel/plugin-transform-regenerator": "7.25.7",
     "@babel/plugin-transform-runtime": "7.25.4",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.25.4",
+    "@babel/preset-env": "7.25.7",
     "babel-jest": "29.7.0",
     "babel-loader": "9.2.1",
     "babel-plugin-transform-remove-console": "6.9.4",
