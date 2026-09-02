@@ -34,13 +34,13 @@
     "cleanup": "rm -rf ./dist coverage ./node_modules"
   },
   "devDependencies": {
-    "@babel/cli": "7.29.7",
-    "@babel/core": "7.29.7",
-    "@babel/eslint-parser": "7.29.7",
-    "@babel/plugin-transform-regenerator": "7.29.8",
-    "@babel/plugin-transform-runtime": "7.29.7",
+    "@babel/cli": "8.0.4",
+    "@babel/core": "8.0.1",
+    "@babel/eslint-parser": "8.0.1",
+    "@babel/plugin-transform-regenerator": "8.0.2",
+    "@babel/plugin-transform-runtime": "8.0.1",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.29.7",
+    "@babel/preset-env": "8.0.2",
     "babel-jest": "30.5.1",
     "babel-loader": "10.1.1",
     "babel-plugin-transform-remove-console": "6.9.4",
@@ -61,7 +61,7 @@
     "webpack-cli": "7.2.3"
   },
   "dependencies": {
-    "@babel/runtime": "~7.29.0",
+    "@babel/runtime": "~8.0.0",
     "js-crypto-utils": "1.0.7",
     "js-encoding-utils": "0.7.3",
     "lodash.clonedeep": "~4.5.0",
